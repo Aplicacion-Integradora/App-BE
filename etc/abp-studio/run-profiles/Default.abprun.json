@@ -1,0 +1,10 @@
+﻿{
+  "applications": {
+    "ScriptedReviews.HttpApi.Host": {
+      "type": "dotnet-project",
+      "launchUrl": "https://localhost:44325",
+      "path": "../../../src/ScriptedReviews.HttpApi.Host/ScriptedReviews.HttpApi.Host.csproj",
+      "kubernetesService": ".*-httpapihost$"  
+    }
+  }
+}

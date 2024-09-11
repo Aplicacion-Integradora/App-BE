@@ -1,0 +1,85 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.Account": {
+      "version": "8.2.3",
+      "isInstalled": true
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "8.2.3",
+      "isInstalled": true
+    },
+    "Volo.Abp.Identity": {
+      "version": "8.2.3",
+      "isInstalled": true
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "8.2.3",
+      "isInstalled": true
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "ScriptedReviews.Application": {
+      "path": "src/ScriptedReviews.Application/ScriptedReviews.Application.abppkg",
+      "folder": "src"
+    },
+    "ScriptedReviews.Application.Tests": {
+      "path": "test/ScriptedReviews.Application.Tests/ScriptedReviews.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "ScriptedReviews.Domain.Shared": {
+      "path": "src/ScriptedReviews.Domain.Shared/ScriptedReviews.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "ScriptedReviews.Application.Contracts": {
+      "path": "src/ScriptedReviews.Application.Contracts/ScriptedReviews.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "ScriptedReviews.HttpApi": {
+      "path": "src/ScriptedReviews.HttpApi/ScriptedReviews.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "ScriptedReviews.HttpApi.Client": {
+      "path": "src/ScriptedReviews.HttpApi.Client/ScriptedReviews.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "ScriptedReviews.EntityFrameworkCore.Tests": {
+      "path": "test/ScriptedReviews.EntityFrameworkCore.Tests/ScriptedReviews.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "ScriptedReviews.EntityFrameworkCore": {
+      "path": "src/ScriptedReviews.EntityFrameworkCore/ScriptedReviews.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "ScriptedReviews.TestBase": {
+      "path": "test/ScriptedReviews.TestBase/ScriptedReviews.TestBase.abppkg",
+      "folder": "test"
+    },
+    "ScriptedReviews.Domain.Tests": {
+      "path": "test/ScriptedReviews.Domain.Tests/ScriptedReviews.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "ScriptedReviews.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/ScriptedReviews.HttpApi.Client.ConsoleTestApp/ScriptedReviews.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "ScriptedReviews.DbMigrator": {
+      "path": "src/ScriptedReviews.DbMigrator/ScriptedReviews.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "ScriptedReviews.HttpApi.Host": {
+      "path": "src/ScriptedReviews.HttpApi.Host/ScriptedReviews.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "ScriptedReviews.Domain": {
+      "path": "src/ScriptedReviews.Domain/ScriptedReviews.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}
