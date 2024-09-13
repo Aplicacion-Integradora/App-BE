@@ -14,6 +14,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using ScriptedReviews.Series;
 
 namespace ScriptedReviews.EntityFrameworkCore;
 
@@ -26,7 +27,7 @@ public class ScriptedReviewsDbContext :
     IIdentityDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-
+    public DbSet<Serie> Series { get; set; }
 
     #region Entities from the modules
 
@@ -68,6 +69,13 @@ public class ScriptedReviewsDbContext :
         base.OnModelCreating(builder);
 
         /* Include modules to your migration db context */
+        builder.Entity<Serie>(s =>
+        {
+            s.ToTable(ScriptedReviewsConsts.DbTablePrefix + "Series",
+                ScriptedReviewsConsts.DbSchema);
+            s.ConfigureByConvention();  //auto configure for base class props
+            s.Property(x => x.Title).IsRequired().HasMaxLength(128);
+        });
 
         builder.ConfigurePermissionManagement();
         builder.ConfigureSettingManagement();
