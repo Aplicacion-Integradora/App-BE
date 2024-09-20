@@ -9,6 +9,6 @@ namespace ScriptedReviews.Series
 {
     public class SerieDto: EntityDto<int>
     {
-        public string Title { get; set; }
+        public required string Title { get; set; }
     }
 }

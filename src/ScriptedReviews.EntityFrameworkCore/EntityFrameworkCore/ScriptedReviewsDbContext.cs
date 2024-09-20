@@ -15,6 +15,10 @@ using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using ScriptedReviews.Series;
+using ScriptedReviews.Chapters;
+using ScriptedReviews.Seasons;
+using ScriptedReviews.Watchlists;
+
 
 namespace ScriptedReviews.EntityFrameworkCore;
 
@@ -28,6 +32,11 @@ public class ScriptedReviewsDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Serie> Series { get; set; }
+    public DbSet<Season> Seasons { get; set; }
+    public DbSet<Chapter> Chapters { get; set; }
+    public DbSet<Watchlist> Watchlists { get; set; }
+
+    
 
     #region Entities from the modules
 
@@ -75,6 +84,27 @@ public class ScriptedReviewsDbContext :
                 ScriptedReviewsConsts.DbSchema);
             s.ConfigureByConvention();  //auto configure for base class props
             s.Property(x => x.Title).IsRequired().HasMaxLength(128);
+        });
+
+        builder.Entity<Season>(s =>
+        {
+            s.ToTable(ScriptedReviewsConsts.DbTablePrefix + "Seasons",
+                ScriptedReviewsConsts.DbSchema);
+            s.ConfigureByConvention();  //auto configure for base class props
+        });
+
+        builder.Entity<Chapter>(s =>
+        {
+            s.ToTable(ScriptedReviewsConsts.DbTablePrefix + "Chapters",
+                ScriptedReviewsConsts.DbSchema);
+            s.ConfigureByConvention();  //auto configure for base class props
+        });
+
+        builder.Entity<Watchlist>(s =>
+        {
+            s.ToTable(ScriptedReviewsConsts.DbTablePrefix + "Watchlists",
+                ScriptedReviewsConsts.DbSchema);
+            s.ConfigureByConvention();  //auto configure for base class props
         });
 
         builder.ConfigurePermissionManagement();
