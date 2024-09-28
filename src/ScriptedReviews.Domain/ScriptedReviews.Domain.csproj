@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ScriptedReviews.Application.Contracts\ScriptedReviews.Application.Contracts.csproj" />
     <ProjectReference Include="..\ScriptedReviews.Domain.Shared\ScriptedReviews.Domain.Shared.csproj" />
   </ItemGroup>
 
