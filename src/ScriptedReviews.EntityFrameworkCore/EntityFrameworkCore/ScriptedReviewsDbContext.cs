@@ -18,6 +18,7 @@ using ScriptedReviews.Series;
 using ScriptedReviews.Chapters;
 using ScriptedReviews.Seasons;
 using ScriptedReviews.Watchlists;
+using ScriptedReviews.Notifications;
 
 
 namespace ScriptedReviews.EntityFrameworkCore;
@@ -35,6 +36,7 @@ public class ScriptedReviewsDbContext :
     public DbSet<Season> Seasons { get; set; }
     public DbSet<Chapter> Chapters { get; set; }
     public DbSet<Watchlist> Watchlists { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     
 
@@ -105,6 +107,15 @@ public class ScriptedReviewsDbContext :
             s.ToTable(ScriptedReviewsConsts.DbTablePrefix + "Watchlists",
                 ScriptedReviewsConsts.DbSchema);
             s.ConfigureByConvention();  //auto configure for base class props
+        });
+
+        builder.Entity<Notification>(b =>
+        {
+            b.ToTable("Notifications");
+            b.Property(n => n.Description).IsRequired().HasMaxLength(1024);
+            b.Property(n => n.Type).IsRequired().HasMaxLength(128);
+            b.Property(n => n.WasRead).HasDefaultValue(false);
+            b.Property(n => n.SentTime).HasDefaultValueSql("GETDATE()");
         });
 
         builder.ConfigurePermissionManagement();

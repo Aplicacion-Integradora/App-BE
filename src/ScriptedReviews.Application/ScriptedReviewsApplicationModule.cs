@@ -8,6 +8,8 @@ using Volo.Abp.Modularity;
 using Volo.Abp.TenantManagement;
 using Microsoft.Extensions.DependencyInjection;
 using ScriptedReviews.Series;
+using ScriptedReviews.BackgroundWorkers;
+using Volo.Abp.BackgroundWorkers;
 
 namespace ScriptedReviews;
 
@@ -31,5 +33,14 @@ public class ScriptedReviewsApplicationModule : AbpModule
         });
 
         context.Services.AddTransient<ISeriesApiService, OmdbService>();
+
+        // Registrar el BackgroundWorker en el contenedor de servicios
+        context.Services.AddSingleton<NotificationBackgroundWorker>();
+
+        // Registrar el worker en el administrador de BackgroundWorkers
+        context.Services.AddHostedService<NotificationBackgroundWorker>();
     }
+
 }
+
+

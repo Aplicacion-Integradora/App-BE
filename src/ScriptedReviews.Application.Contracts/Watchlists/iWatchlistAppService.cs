@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScriptedReviews.Watchlists.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace ScriptedReviews.Watchlists
     public interface iWatchlistAppService : IApplicationService
     {
         Task AddSerieAsync(int serieId);
+        Task<List<WatchlistDto>> GetSeriesWithChangesAsync();
     }
 }

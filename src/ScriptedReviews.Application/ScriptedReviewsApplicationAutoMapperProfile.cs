@@ -1,5 +1,7 @@
 using AutoMapper;
 using ScriptedReviews.Series;
+using ScriptedReviews.Watchlists;
+using ScriptedReviews.Watchlists.Dtos;
 
 namespace ScriptedReviews;
 
@@ -14,5 +16,6 @@ public class ScriptedReviewsApplicationAutoMapperProfile : Profile
         CreateMap<Serie, SerieDto>();
         CreateMap<CreateUpdateSerieDto, Serie>();
 
+        CreateMap<Watchlist, WatchlistDto>();
     }
 }

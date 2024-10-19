@@ -1,16 +1,16 @@
-﻿using ScriptedReviews.Series;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Volo.Abp.Domain.Entities;
+using Volo.Abp.Application.Dtos;
+using ScriptedReviews.Series;
 
-namespace ScriptedReviews.Watchlists
+namespace ScriptedReviews.Watchlists.Dtos
 {
-    public class Watchlist : AggregateRoot<int>
+    public class WatchlistDto : EntityDto<int>
     {
-        public List<Serie> Series { get; set; }
+        public List<SerieDto> Series { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
         public bool HasChanges { get; set; }
