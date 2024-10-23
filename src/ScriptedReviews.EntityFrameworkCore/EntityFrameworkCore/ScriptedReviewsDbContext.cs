@@ -19,6 +19,8 @@ using ScriptedReviews.Chapters;
 using ScriptedReviews.Seasons;
 using ScriptedReviews.Watchlists;
 using ScriptedReviews.Notifications;
+using ScriptedReviews.Ratings;
+using System.Reflection.Emit;
 
 
 namespace ScriptedReviews.EntityFrameworkCore;
@@ -37,8 +39,9 @@ public class ScriptedReviewsDbContext :
     public DbSet<Chapter> Chapters { get; set; }
     public DbSet<Watchlist> Watchlists { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
 
-    
+
 
     #region Entities from the modules
 
@@ -116,6 +119,17 @@ public class ScriptedReviewsDbContext :
             b.Property(n => n.Type).IsRequired().HasMaxLength(128);
             b.Property(n => n.WasRead).HasDefaultValue(false);
             b.Property(n => n.SentTime).HasDefaultValueSql("GETDATE()");
+        });
+
+        builder.Entity<Rating>(b =>
+        {
+            b.ToTable("Ratings"); // Nombre de la tabla en la base de datos
+            b.Property(r => r.RatingNumber).IsRequired();
+            b.Property(r => r.Comment).HasMaxLength(1000);
+            b.HasOne(r => r.Serie)
+                .WithMany()
+                .HasForeignKey(r => r.SeriesId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.ConfigurePermissionManagement();
