@@ -16,6 +16,7 @@ namespace ScriptedReviews.Ratings
 
     public class RatingDto
     {
+        public Guid UserId { get; set; }
         public Guid Id { get; set; }
         public Guid SeriesId { get; set; }
         public int Rating { get; set; }
