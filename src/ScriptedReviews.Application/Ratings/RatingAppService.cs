@@ -41,6 +41,13 @@ namespace ScriptedReviews.Ratings
                 throw new UserFriendlyException("No puedes calificar una serie que no te pertenece.");
             }
 
+            // Verificar si la serie está en la watchlist del usuario
+            // se podría sacar el usuario que tiene la primera serie de la watchlist, ya que todas van a ser propiedad del mismo usuario
+            // y comparar este con el usuario actual (current user)
+            // quizás no sea necesario ya que arriba se verifica que la serie pertenezca al usuario y que el usuario autenticado es el
+            // propietario de la serie
+
+
             // Crear la calificación
             var Rating = new Rating
             {
