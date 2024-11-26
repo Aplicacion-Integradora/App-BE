@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SeriesComponent } from './series/series.component';
 import { SharedModule } from '../shared/shared.module';
 import { SerieRoutingModule } from './serie-routing.module';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 
 
@@ -11,7 +12,8 @@ import { SerieRoutingModule } from './serie-routing.module';
   imports: [
     CommonModule,
     SharedModule,
-    SerieRoutingModule
+    SerieRoutingModule,
+    NgxDatatableModule
   ]
 })
 export class SerieModule { }

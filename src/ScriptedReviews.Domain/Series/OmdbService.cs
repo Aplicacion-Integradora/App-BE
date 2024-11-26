@@ -38,14 +38,14 @@ namespace ScriptedReviews.Series
                 {
                     series.Add(new SerieDto { 
                         Title = serieOmdb.Title,
-                        Image = serieOmdb.Image,
+                        Poster = serieOmdb.Poster,
                         Genre = serieOmdb.Genre,
-                        ReleaseDate = serieOmdb.ReleaseDate,
-                        Duration = serieOmdb.Duration,
-                        Country = serieOmdb.Country,
-                        Director = serieOmdb.Director,
-                        Cast = serieOmdb.Cast,
-                        Writer = serieOmdb.Writer
+                        Year = serieOmdb.Year
+                        //Duration = serieOmdb.Duration,
+                        //Country = serieOmdb.Country,
+                        //Director = serieOmdb.Director,
+                        //Cast = serieOmdb.Cast,
+                        //Writer = serieOmdb.Writer
                     });
                 }
 
@@ -66,21 +66,21 @@ namespace ScriptedReviews.Series
         {
             public string Title { get; set; }
 
-            public string Image { get; set; }
+            public string Poster { get; set; }
 
             public string Genre { get; set; }
 
-            public string ReleaseDate { get; set; }
+            public string Year { get; set; }
 
-            public string Duration { get; set; }
+            //public string Duration { get; set; }
 
-            public string Country { get; set; }
+            //public string Country { get; set; }
 
-            public string Director { get; set; }
+            //public string Director { get; set; }
 
-            public string Cast { get; set; }
+            //public string Cast { get; set; }
 
-            public string Writer { get; set; }
+            //public string Writer { get; set; }
         }
     }
 }

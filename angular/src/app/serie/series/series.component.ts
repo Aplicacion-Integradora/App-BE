@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SerieDto } from '@proxy/series';
+import { SerieDto, SerieService } from '@proxy/series';
 
 @Component({
   selector: 'app-series',
@@ -8,4 +8,17 @@ import { SerieDto } from '@proxy/series';
 })
 export class SeriesComponent {
   series = [] as SerieDto[];
+
+  serieTitle: string = "";
+
+  constructor(private serieService: SerieService) {
+
+  }
+  public searchSeries() {
+    if (this.serieTitle.trim()) {
+      this.serieService.search(this.serieTitle.trim(), "").subscribe(response => this.series = response || []);
+    }
+  }
+
 }
+
