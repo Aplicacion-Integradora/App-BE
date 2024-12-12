@@ -17,7 +17,7 @@ namespace ScriptedReviews.Series
 
             protected OmdbService_Tests()
             {
-                _service = GetRequiredService<OmdbService>();
+                _service = new OmdbService();
             }
 
             [Fact]
@@ -32,6 +32,19 @@ namespace ScriptedReviews.Series
                 //Assert
                 result.Count.ShouldBeGreaterThan(0);
                 result.ShouldContain(b => b.Title == title);
+            }
+
+            [Fact]
+            public async Task Should_Search_None_Serie()
+            {
+                //Arrange
+                var title = "guarioehnuigaoe";
+
+                //Act
+                var result = await _service.GetSeriesAsync(title, String.Empty);
+
+                //Assert
+                result.Count.ShouldBe(0);
             }
         }
 }
