@@ -6,6 +6,8 @@ using Volo.Abp.AutoMapper;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using Volo.Abp.TenantManagement;
+using Microsoft.Extensions.DependencyInjection;
+using ScriptedReviews.Series;
 
 namespace ScriptedReviews;
 
@@ -27,5 +29,7 @@ public class ScriptedReviewsApplicationModule : AbpModule
         {
             options.AddMaps<ScriptedReviewsApplicationModule>();
         });
+
+        context.Services.AddTransient<ISeriesApiService, OmdbService>();
     }
 }
