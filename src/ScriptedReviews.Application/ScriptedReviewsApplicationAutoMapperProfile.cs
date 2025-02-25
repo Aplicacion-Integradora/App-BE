@@ -1,4 +1,5 @@
 using AutoMapper;
+using ScriptedReviews.MonitoringLogs;
 using ScriptedReviews.Series;
 using ScriptedReviews.Watchlists;
 using ScriptedReviews.Watchlists.Dtos;
@@ -17,5 +18,7 @@ public class ScriptedReviewsApplicationAutoMapperProfile : Profile
         CreateMap<CreateUpdateSerieDto, Serie>();
 
         CreateMap<Watchlist, WatchlistDto>();
+
+        CreateMap<ApiMonitoringLog, ApiMonitoringLogDto>();
     }
 }

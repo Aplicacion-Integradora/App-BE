@@ -21,6 +21,7 @@ using ScriptedReviews.Watchlists;
 using ScriptedReviews.Notifications;
 using ScriptedReviews.Ratings;
 using System.Reflection.Emit;
+using ScriptedReviews.MonitoringLogs;
 
 
 namespace ScriptedReviews.EntityFrameworkCore;
@@ -40,7 +41,7 @@ public class ScriptedReviewsDbContext :
     public DbSet<Watchlist> Watchlists { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Rating> Ratings { get; set; }
-
+    public DbSet<ApiMonitoringLog> ApiMonitoringLogs { get; set; }
 
 
     #region Entities from the modules
@@ -130,6 +131,20 @@ public class ScriptedReviewsDbContext :
                 .WithMany()
                 .HasForeignKey(r => r.SeriesId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<ApiMonitoringLog>(b =>
+        {
+            b.ToTable("ApiMonitoringLogs");
+            b.HasKey(x => x.Id);
+            b.Property(x => x.Id).ValueGeneratedOnAdd(); //  Esto permite que SQL Server genere automáticamente el ID
+            b.Property(a => a.Endpoint).IsRequired().HasMaxLength(256);
+            b.Property(a => a.HttpMethod).IsRequired().HasMaxLength(10);
+            b.Property(a => a.ResponseTime).IsRequired();
+            b.Property(a => a.HttpStatusCode).IsRequired();
+            b.Property(a => a.UserAgent).HasMaxLength(512);
+            b.Property(a => a.IPAddress).HasMaxLength(45);
+            b.Property(a => a.CreatedAt).IsRequired();
         });
 
         builder.ConfigurePermissionManagement();
