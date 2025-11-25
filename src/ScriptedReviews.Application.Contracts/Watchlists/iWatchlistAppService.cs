@@ -8,7 +8,7 @@ using Volo.Abp.Application.Services;
 
 namespace ScriptedReviews.Watchlists
 {
-    public interface iWatchlistAppService : IApplicationService
+    public interface IWatchlistAppService : IApplicationService
     {
         Task AddSerieAsync(int serieId);
         Task<List<WatchlistDto>> GetSeriesWithChangesAsync();

@@ -13,36 +13,34 @@ namespace ScriptedReviews.Notifications
     public class NotificationAppService : ApplicationService, INotificationAppService
     {
         private readonly IRepository<Notification, int> _notificationRepository;
-        private readonly IRepository<Watchlist, int> _watchlistRepository;  // Lista de seguimiento
-        private readonly iWatchlistAppService _watchlistAppService;
+        private readonly IRepository<Watchlist, int> _watchlistRepository;
+        private readonly IWatchlistAppService _watchlistAppService;
 
         public NotificationAppService(
             IRepository<Notification, int> notificationRepository,
-            IRepository<Watchlist, int> watchlistRepository)
+            IRepository<Watchlist, int> watchlistRepository,
+            IWatchlistAppService watchlistAppService)
         {
             _notificationRepository = notificationRepository;
             _watchlistRepository = watchlistRepository;
+            _watchlistAppService = watchlistAppService;
         }
 
         public async Task GenerateNotificationsAsync()
         {
-            // Obtener las series de la lista de seguimiento con cambios
             var seriesWithChanges = await _watchlistAppService.GetSeriesWithChangesAsync();
-            //var seriesWithChanges = await WatchlistAppService.GetSeriesWithChangesAsync(s => s.HasChanges);
 
             foreach (var series in seriesWithChanges)
             {
                 var notification = new Notification
                 {
                     Description = $"La serie '{series.Name}' ha tenido cambios recientes.",
-                    Type = "Email",  // Ejemplo de método, puede ser dinámico
+                    Type = "Email",
                     WasRead = false
                 };
 
                 await _notificationRepository.InsertAsync(notification);
             }
-
-            await CurrentUnitOfWork.SaveChangesAsync();  // Persistir en la base de datos
         }
     }
 }

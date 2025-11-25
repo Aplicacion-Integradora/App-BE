@@ -9,6 +9,7 @@ using ScriptedReviews.Notifications;
 using ScriptedReviews.Watchlists;
 using System.Threading;
 using System.Linq;
+using ScriptedReviews.Watchlists.Dtos;
 
 namespace ScriptedReviews.Application.Tests.Notifications
 {
@@ -16,19 +17,20 @@ namespace ScriptedReviews.Application.Tests.Notifications
         where TStartupModule : IAbpModule
     {
         private readonly NotificationAppService _notificationAppService;
-        private readonly Mock<IRepository<Watchlist, int>> _mockWatchlistRepository;
         private readonly Mock<IRepository<Notification, int>> _mockNotificationRepository;
+        private readonly Mock<IRepository<Watchlist, int>> _mockWatchlistRepository;
+        private readonly Mock<IWatchlistAppService> _mockWatchlistAppService;
 
         protected NotificationAppService_Tests()
         {
-            // Configurar los repositorios simulados
-            _mockWatchlistRepository = new Mock<IRepository<Watchlist, int>>();
             _mockNotificationRepository = new Mock<IRepository<Notification, int>>();
+            _mockWatchlistRepository = new Mock<IRepository<Watchlist, int>>();
+            _mockWatchlistAppService = new Mock<IWatchlistAppService>();
 
-            // Crear la instancia del servicio bajo prueba con los repositorios simulados
             _notificationAppService = new NotificationAppService(
                 _mockNotificationRepository.Object,
-                _mockWatchlistRepository.Object
+                _mockWatchlistRepository.Object,
+                _mockWatchlistAppService.Object
             );
         }
 
@@ -36,16 +38,15 @@ namespace ScriptedReviews.Application.Tests.Notifications
         public async Task Should_Generate_Notifications_When_Watchlist_Has_Changes()
         {
             // Arrange
-            var watchlistWithChanges = new List<Watchlist>
-            {
-                new Watchlist { Id = 1, Name = "Serie A", HasChanges = true },
-                new Watchlist { Id = 2, Name = "Serie B", HasChanges = true }
-            };
+            var watchlistWithChanges = new List<WatchlistDto>
+        {
+            new WatchlistDto { Id = 1, Name = "Serie A", HasChanges = true },
+            new WatchlistDto { Id = 2, Name = "Serie B", HasChanges = true }
+        };
 
-            // Configurar el repositorio para que devuelva la lista de series con cambios
-            _mockWatchlistRepository
-                .Setup(repo => repo.GetQueryableAsync())
-                .ReturnsAsync(watchlistWithChanges.AsQueryable());
+            _mockWatchlistAppService
+                .Setup(s => s.GetSeriesWithChangesAsync())
+                .ReturnsAsync(watchlistWithChanges);
 
             // Act
             await _notificationAppService.GenerateNotificationsAsync();
@@ -55,7 +56,6 @@ namespace ScriptedReviews.Application.Tests.Notifications
                 repo => repo.InsertAsync(It.IsAny<Notification>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()),
                 Times.Exactly(watchlistWithChanges.Count)
             );
-
         }
     }
 }

@@ -11,7 +11,6 @@ namespace ScriptedReviews.Watchlists.Dtos
     public class WatchlistDto : EntityDto<int>
     {
         public List<SerieDto> Series { get; set; }
-        public int Id { get; set; }
         public string Name { get; set; }
         public bool HasChanges { get; set; }
     }
