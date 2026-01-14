@@ -1,14 +1,14 @@
-﻿using System;
+﻿using ScriptedReviews.Series;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 
-namespace ScriptedReviews.Watchlists
+namespace ScriptedReviews.Watchlist 
 {
-    public interface iWatchlistAppService : IApplicationService
+    public interface IWatchListAppService : IApplicationService
     {
+        Task<List<SerieDto>> GetMyWatchlistAsync();
         Task AddSerieAsync(int serieId);
+        Task RemoveSerieAsync(int serieId);
     }
 }
