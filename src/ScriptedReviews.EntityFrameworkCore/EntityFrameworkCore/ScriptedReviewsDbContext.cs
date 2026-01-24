@@ -1,4 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using ScriptedReviews.Chapters;
+using ScriptedReviews.Ratings;
+using ScriptedReviews.Seasons;
+using ScriptedReviews.Series;
+using ScriptedReviews.Watchlists;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
@@ -9,15 +14,11 @@ using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
+using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
-using ScriptedReviews.Series;
-using ScriptedReviews.Chapters;
-using ScriptedReviews.Seasons;
-using ScriptedReviews.Watchlists;
 
 
 namespace ScriptedReviews.EntityFrameworkCore;
@@ -32,6 +33,7 @@ public class ScriptedReviewsDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Serie> Series { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
     public DbSet<Season> Seasons { get; set; }
     public DbSet<Chapter> Chapters { get; set; }
     public DbSet<Watchlist> Watchlists { get; set; }
