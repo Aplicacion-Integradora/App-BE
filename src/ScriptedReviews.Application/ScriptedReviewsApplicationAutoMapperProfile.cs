@@ -1,4 +1,5 @@
 using AutoMapper;
+using ScriptedReviews.Ratings;
 using ScriptedReviews.Series;
 
 namespace ScriptedReviews;
@@ -13,6 +14,6 @@ public class ScriptedReviewsApplicationAutoMapperProfile : Profile
 
         CreateMap<Serie, SerieDto>();
         CreateMap<CreateUpdateSerieDto, Serie>();
-
+        CreateMap<Rating, RatingDto>();
     }
 }
