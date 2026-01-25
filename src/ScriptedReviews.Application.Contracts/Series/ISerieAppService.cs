@@ -10,6 +10,7 @@ namespace ScriptedReviews.Series
 {
     public interface ISerieAppService: ICrudAppService<SerieDto, int, PagedAndSortedResultRequestDto, CreateUpdateSerieDto, CreateUpdateSerieDto>
     {
-
+        // Método para la Operación 2.2
+        Task<SerieDto> ImportarSerieAsync(string titulo);
     }
 }
