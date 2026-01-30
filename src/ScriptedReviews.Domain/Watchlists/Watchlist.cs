@@ -11,7 +11,8 @@ namespace ScriptedReviews.Watchlists
     public class Watchlist : AggregateRoot<int>
     {
         public List<Serie> Series { get; set; }
-        public int Id { get; set; }
+        public Guid UserId { get; set; }
+
         public string Name { get; set; }
         public bool HasChanges { get; set; }
     }

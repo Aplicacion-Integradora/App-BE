@@ -10,6 +10,8 @@ namespace ScriptedReviews.Notifications
 {
     public class Notification : AggregateRoot<int>
     {
+
+        public Guid UserId {  get; set; }
         public string Description { get; set; }
 
         public DateTime? SentTime { get; set; }

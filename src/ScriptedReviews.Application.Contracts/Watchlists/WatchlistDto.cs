@@ -12,6 +12,8 @@ namespace ScriptedReviews.Watchlists.Dtos
     {
         public List<SerieDto> Series { get; set; }
         public string Name { get; set; }
+
+        public Guid UserId { get; set; }
         public bool HasChanges { get; set; }
     }
 }
