@@ -6,20 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ScriptedReviews.Migrations
 {
     /// <inheritdoc />
-    public partial class addRating : Migration
+    public partial class Add_Rating : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<Guid>(
-                name: "Id",
-                table: "AppSeries",
-                type: "uniqueidentifier",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int")
-                .OldAnnotation("SqlServer:Identity", "1, 1");
-
             migrationBuilder.AddColumn<Guid>(
                 name: "UserId",
                 table: "AppSeries",
@@ -27,23 +18,13 @@ namespace ScriptedReviews.Migrations
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
-            migrationBuilder.AlterColumn<Guid>(
-                name: "SerieId",
-                table: "AppSeasons",
-                type: "uniqueidentifier",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Ratings",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SeriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SeriesId = table.Column<int>(type: "int", nullable: false),
                     RatingNumber = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -75,24 +56,6 @@ namespace ScriptedReviews.Migrations
             migrationBuilder.DropColumn(
                 name: "UserId",
                 table: "AppSeries");
-
-            migrationBuilder.AlterColumn<int>(
-                name: "Id",
-                table: "AppSeries",
-                type: "int",
-                nullable: false,
-                oldClrType: typeof(Guid),
-                oldType: "uniqueidentifier")
-                .Annotation("SqlServer:Identity", "1, 1");
-
-            migrationBuilder.AlterColumn<int>(
-                name: "SerieId",
-                table: "AppSeasons",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(Guid),
-                oldType: "uniqueidentifier",
-                oldNullable: true);
         }
     }
 }

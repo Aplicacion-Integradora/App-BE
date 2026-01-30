@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ScriptedReviews.Migrations
 {
     [DbContext(typeof(ScriptedReviewsDbContext))]
-    [Migration("20241030211746_addRatingTable")]
-    partial class addRatingTable
+    [Migration("20260129192626_Add_Rating")]
+    partial class Add_Rating
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,11 +125,8 @@ namespace ScriptedReviews.Migrations
 
             modelBuilder.Entity("ScriptedReviews.Ratings.Rating", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
                         .IsRequired()
@@ -151,8 +148,8 @@ namespace ScriptedReviews.Migrations
                     b.Property<int>("RatingNumber")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SeriesId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("SeriesId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -199,8 +196,8 @@ namespace ScriptedReviews.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SerieId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("SerieId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -211,9 +208,11 @@ namespace ScriptedReviews.Migrations
 
             modelBuilder.Entity("ScriptedReviews.Series.Serie", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Cast")
                         .IsRequired()
