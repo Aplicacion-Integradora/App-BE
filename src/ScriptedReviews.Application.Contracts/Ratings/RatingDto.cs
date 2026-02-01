@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +7,20 @@ using Volo.Abp.Application.Dtos;
 
 namespace ScriptedReviews.Ratings
 {
-    public class RatingDto : EntityDto<int>
+    public class CreateRatingDto
+    {
+        public int SeriesId { get; set; }
+        public int RatingNumber { get; set; }
+        public string Comment { get; set; }
+    }
+
+    public class RatingDto
     {
         public Guid UserId { get; set; }
+        public Guid Id { get; set; }
         public int SeriesId { get; set; }
-        public int RatingNumber { get; set; } 
+        public int RatingNumber { get; set; }
         public string Comment { get; set; }
+        public DateTime CreationTime { get; set; }
     }
 }

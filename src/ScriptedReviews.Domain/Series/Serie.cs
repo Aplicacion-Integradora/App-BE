@@ -36,5 +36,8 @@ namespace ScriptedReviews.Series
 
         public List<Season> Seasons { get; set; }
 
+        public Guid UserId { get; set; }
+
+
     }
 }

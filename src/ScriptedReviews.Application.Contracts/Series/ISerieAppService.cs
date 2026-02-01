@@ -8,8 +8,8 @@ using Volo.Abp.Application.Services;
 
 namespace ScriptedReviews.Series
 {
-    public interface ISerieAppService: ICrudAppService<SerieDto, int, PagedAndSortedResultRequestDto, CreateUpdateSerieDto, CreateUpdateSerieDto>
+    public interface ISerieAppService : ICrudAppService<SerieDto, int, PagedAndSortedResultRequestDto, CreateUpdateSerieDto, CreateUpdateSerieDto>
     {
-
+        Task<ICollection<SerieDto>> SearchAsync(string? title, string? genre);
     }
 }
