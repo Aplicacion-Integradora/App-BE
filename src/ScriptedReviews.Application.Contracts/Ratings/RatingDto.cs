@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,5 +23,13 @@ namespace ScriptedReviews.Ratings
         public int RatingNumber { get; set; }
         public string Comment { get; set; }
         public DateTime CreationTime { get; set; }
+    }
+
+    public class UpdateRatingDto
+    {
+        [Required]
+        public int RatingNumber { get; set; } // La nueva puntuación 
+
+        public string Comment { get; set; } // El nuevo comentario
     }
 }

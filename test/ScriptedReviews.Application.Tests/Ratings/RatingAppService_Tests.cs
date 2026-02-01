@@ -12,7 +12,7 @@ using Volo.Abp.Security.Claims;
 using Volo.Abp.Users;
 using Xunit;
 
-namespace ScriptedReviews.Application.Tests.Ratings
+namespace ScriptedReviews.Ratings
 {
     public abstract class RatingAppService_Tests<TStartupModule> : ScriptedReviewsApplicationTestBase<TStartupModule>
         where TStartupModule : IAbpModule
@@ -22,6 +22,7 @@ namespace ScriptedReviews.Application.Tests.Ratings
 
         private readonly IRepository<Serie, int> _serieRepository;
         private readonly IRepository<IdentityUser, Guid> _userRepository;
+        private readonly IRepository<Rating, Guid> _ratingRepository;
 
         protected RatingAppService_Tests()
         {
@@ -29,6 +30,7 @@ namespace ScriptedReviews.Application.Tests.Ratings
             _currentPrincipalAccessor = GetRequiredService<ICurrentPrincipalAccessor>();
             _serieRepository = GetRequiredService<IRepository<Serie, int>>();
             _userRepository = GetRequiredService<IRepository<IdentityUser, Guid>>();
+            _ratingRepository = GetRequiredService<IRepository<Rating, Guid>>();
         }
 
         [Fact]
@@ -88,6 +90,82 @@ namespace ScriptedReviews.Application.Tests.Ratings
                     result.Comment.ShouldBe("Muy buena serie");
                     result.SeriesId.ShouldBe(serie.Id);
                     result.UserId.ShouldBe(fakeUserId);
+                });
+            }
+        }
+            
+        [Fact]
+        public async Task Should_Update_Rating()
+        {
+            // Arrange
+            var fakeUserId = Guid.NewGuid();
+
+            // Insertamos usuario para evitar error de foreign key
+            var user = new IdentityUser(fakeUserId, "updater_user", "update@test.com");
+            await _userRepository.InsertAsync(user, true);
+
+            var claims = new List<Claim>
+            {
+                new Claim(AbpClaimTypes.UserId, fakeUserId.ToString()),
+                new Claim(AbpClaimTypes.UserName, "updater_user")
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var principal = new ClaimsPrincipal(identity);
+
+            // Act
+            using (_currentPrincipalAccessor.Change(principal))
+            {
+                await WithUnitOfWorkAsync(async () =>
+                {
+                    // Creamos la serie con todos sus campos obligatorios
+                    var serie = new Serie
+                    {
+                        Title = "Serie to Update",
+                        Description = "Descripción para probar update",
+                        UserId = fakeUserId,
+                        Image = "test-img.jpg",
+                        Genre = "Drama",
+                        Language = "Spanish",
+                        ReleaseDate = "2024",
+                        Duration = "50 min",
+                        Rating = "N/A",
+                        Country = "Test",
+                        Director = "Test",
+                        Cast = "Test",
+                        Writer = "Test"
+                    };
+                    await _serieRepository.InsertAsync(serie, true);
+
+                    // Creamos calificación para luego editarla
+                    var initialRating = new Rating
+                    {
+                        SeriesId = serie.Id,
+                        UserId = fakeUserId,
+                        RatingNumber = 5,
+                        Comment = "Me encantó"
+                    };
+                    await _ratingRepository.InsertAsync(initialRating, true);
+
+                    // Los datos que vamos a usar para modificar la calificación
+                    var updateInput = new UpdateRatingDto
+                    {
+                        // No pasamos SeriesId aquí porque suele ir en la URL o parámetro aparte
+                        RatingNumber = 1,
+                        Comment = "Al final no me gustó tanto"
+                    };
+
+                    // Llamamos al servicio (Update)
+                    var result = await _ratingAppService.UpdateRatingAsync(serie.Id, updateInput);
+
+                    // Assert
+                    result.ShouldNotBeNull();
+                    result.RatingNumber.ShouldBe(1);
+                    result.Comment.ShouldBe("Al final no me gustó tanto");
+
+                    // Opcional: Verificar directamente en base de datos para estar 100% seguros
+                    var dbRating = await _ratingRepository.GetAsync(initialRating.Id);
+                    dbRating.RatingNumber.ShouldBe(1);
+                    dbRating.Comment.ShouldBe("Al final no me gustó tanto");
                 });
             }
         }

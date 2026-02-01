@@ -1,8 +1,7 @@
-﻿using ScriptedReviews.Application.Tests.Ratings;
-using ScriptedReviews.Ratings;
+﻿using ScriptedReviews.EntityFrameworkCore;
 using Xunit;
 
-namespace ScriptedReviews.EntityFrameworkCore.Ratings;
+namespace ScriptedReviews.Ratings;
 
 [Collection(ScriptedReviewsTestConsts.CollectionDefinitionName)]
 public class EfCoreRatingAppService_Tests : RatingAppService_Tests<ScriptedReviewsEntityFrameworkCoreTestModule>

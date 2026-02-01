@@ -21,48 +21,6 @@ namespace ScriptedReviews.Ratings
     [Authorize]
     public class RatingAppService : ScriptedReviewsAppService, IRatingAppService
     {
-        private readonly IRepository<Rating, int> _ratingRepository;
-
-        public RatingAppService(IRepository<Rating, int> ratingRepository)
-        {
-            _ratingRepository = ratingRepository;
-        }
-
-        public async Task<RatingDto> UpdateRatingAsync(int seriesId, UpdateRatingDto input)
-        {
-            // 1. Obtener el ID del usuario actual
-            var currentUserId = CurrentUser.Id;
-            // El null check es opcional si usamos [Authorize]
-            if (currentUserId == null)
-            {
-                throw new UserFriendlyException("Debes iniciar sesión para editar una calificación.");
-            }
-
-            // 2. Buscar la calificación existente en la BD
-            // Buscamos una fila que coincida con la Serie Y con el Usuario
-            var rating = await _ratingRepository.FirstOrDefaultAsync(r => r.SeriesId == seriesId && r.UserId == currentUserId);
-
-            if (rating == null)
-            {
-                throw new UserFriendlyException("No has calificado esta serie, por lo que no puedes editarla.");
-            }
-
-            // 3. Actualizar los datos 
-            rating.RatingNumber = input.Rating;
-            rating.Comment = input.Comment;
-
-            // 4. Guardar los cambios
-            await _ratingRepository.UpdateAsync(rating);
-
-            // 5. Devolver el resultado convertido a DTO
-            return ObjectMapper.Map<Rating, RatingDto>(rating);
-        }
-    }
-}
-
-
-    public class RatingAppService : ApplicationService, IRatingAppService
-    {
         private readonly IRepository<Rating, Guid> _ratingRepository;
         private readonly IRepository<Serie, int> _serieRepository;
         private readonly IRepository<IdentityUser, Guid> _userRepository;
@@ -77,6 +35,7 @@ namespace ScriptedReviews.Ratings
             _userRepository = userRepository;
         }
 
+        [Authorize]
         public async Task<RatingDto> RateAsync(CreateRatingDto input)
         {
             // Verificar que la serie pertenece al usuario
@@ -85,12 +44,6 @@ namespace ScriptedReviews.Ratings
             {
                 throw new UserFriendlyException("La serie no fue encontrada.");
             }
-
-            //Verificar que el usuario no sea nulo
-            /*if (users.Id == null)
-            {
-                throw new UserFriendlyException("Debes estar logueado para calificar.");
-            }*/
 
             // Verificar si el usuario autenticado es el propietario de la serie
             if (series.UserId != CurrentUser.Id.Value)
@@ -116,6 +69,36 @@ namespace ScriptedReviews.Ratings
         {
             var ratings = await _ratingRepository.GetListAsync();
             return ObjectMapper.Map<List<Rating>, List<RatingDto>>(ratings);
+        }
+
+        [Authorize]
+        public async Task<RatingDto> UpdateRatingAsync(int seriesId, UpdateRatingDto input)
+        {
+            // Chequeamos que el usuario no sea nulo, y en caso de no serlo, se prosigue con el Task
+            if (CurrentUser.Id == null)
+            {
+                throw new UserFriendlyException("Debes iniciar sesión para editar una calificación.");
+            }
+            var currentUserId = CurrentUser.Id.Value;
+
+            // 2. Buscar la calificación existente en la BD
+            // Buscamos una fila que coincida con la Serie Y con el Usuario
+            var rating = await _ratingRepository.FirstOrDefaultAsync(r => r.SeriesId == seriesId && r.UserId == currentUserId);
+
+            if (rating == null)
+            {
+                throw new UserFriendlyException("No has calificado esta serie, por lo que no puedes editarla.");
+            }
+
+            // 3. Actualizar los datos 
+            rating.RatingNumber = input.RatingNumber;
+            rating.Comment = input.Comment;
+
+            // 4. Guardar los cambios
+            await _ratingRepository.UpdateAsync(rating);
+
+            // 5. Devolver el resultado convertido a DTO
+            return ObjectMapper.Map<Rating, RatingDto>(rating);
         }
     }
 }

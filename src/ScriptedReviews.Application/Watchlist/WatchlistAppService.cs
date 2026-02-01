@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 
 namespace ScriptedReviews.Watchlists
 {
-    public class WatchlistAppService : ApplicationService, iWatchlistAppService
+    public class WatchlistAppService : ApplicationService, IWatchlistAppService
     {
         public async Task AddSerieAsync(int serieId)
         {

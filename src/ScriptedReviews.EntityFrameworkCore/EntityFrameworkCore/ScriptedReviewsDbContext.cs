@@ -6,7 +6,6 @@ using ScriptedReviews.Seasons;
 using ScriptedReviews.Series;
 using ScriptedReviews.Watchlists;
 using ScriptedReviews.Notifications;
-using ScriptedReviews.Ratings;
 using ScriptedReviews.MonitoringLogs;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -42,7 +41,6 @@ public class ScriptedReviewsDbContext :
     public DbSet<Chapter> Chapters { get; set; }
     public DbSet<Watchlist> Watchlists { get; set; }
     public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Rating> Ratings { get; set; }
     public DbSet<ApiMonitoringLog> ApiMonitoringLogs { get; set; }
 
     #region Entities from the modules

@@ -14,35 +14,45 @@ namespace ScriptedReviews.Notifications
     {
         private readonly IRepository<Notification, int> _notificationRepository;
         private readonly IRepository<Watchlist, int> _watchlistRepository;  // Lista de seguimiento
-        private readonly iWatchlistAppService _watchlistAppService;
+        private readonly IWatchlistAppService _watchlistAppService;
 
         public NotificationAppService(
             IRepository<Notification, int> notificationRepository,
-            IRepository<Watchlist, int> watchlistRepository)
+            IRepository<Watchlist, int> watchlistRepository,
+            IWatchlistAppService watchlistAppService)
         {
             _notificationRepository = notificationRepository;
             _watchlistRepository = watchlistRepository;
+            _watchlistAppService = watchlistAppService;
         }
 
         public async Task GenerateNotificationsAsync()
         {
-            // Obtener las series de la lista de seguimiento con cambios
-            var seriesWithChanges = await _watchlistAppService.GetSeriesWithChangesAsync();
-            //var seriesWithChanges = await WatchlistAppService.GetSeriesWithChangesAsync(s => s.HasChanges);
+            // 1. Obtenemos las watchlists que tienen cambios
+            var watchlistsWithChanges = await _watchlistAppService.GetSeriesWithChangesAsync();
 
-            foreach (var series in seriesWithChanges)
+            // 2. Primer Bucle: Recorremos cada Lista de Seguimiento
+            foreach (var watchlist in watchlistsWithChanges)
             {
-                var notification = new Notification
+                // 3. Segundo Bucle: Recorremos las SERIES que están DENTRO de esa lista
+                // Asumimos que 'watchlist.Series' trae las series afectadas o todas las de la lista
+                if (watchlist.Series != null)
                 {
-                    Description = $"La serie '{series.Name}' ha tenido cambios recientes.",
-                    Type = "Email",  // Ejemplo de método, puede ser dinámico
-                    WasRead = false
-                };
+                    foreach (var serie in watchlist.Series)
+                    {
+                        var notification = new Notification
+                        {
+                            // AHORA SÍ: Usamos el nombre de la SERIE, no de la lista
+                            // Puedes incluso mencionar en qué lista estaba:
+                            Description = $"La serie '{serie.Title}' (en tu lista '{watchlist.Name}') ha tenido cambios recientes.",
+                            Type = "Email",
+                            WasRead = false
+                        };
 
-                await _notificationRepository.InsertAsync(notification);
+                        await _notificationRepository.InsertAsync(notification);
+                    }
+                }
             }
-
-            await CurrentUnitOfWork.SaveChangesAsync();  // Persistir en la base de datos
         }
     }
 }
