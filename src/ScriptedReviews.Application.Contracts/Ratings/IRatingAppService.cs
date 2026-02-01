@@ -1,14 +1,18 @@
-﻿using System;
+﻿using ScriptedReviews.Series;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 
 namespace ScriptedReviews.Ratings
 {
     public interface IRatingAppService : IApplicationService
     {
-        Task<RatingDto> RateSeriesAsync(CreateRatingDto input);
+        Task<RatingDto> RateAsync(CreateRatingDto input);
+        Task<List<RatingDto>> GetListAsync();
     }
+
 }

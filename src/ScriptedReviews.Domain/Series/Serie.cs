@@ -10,7 +10,6 @@ namespace ScriptedReviews.Series
 {
     public class Serie: AggregateRoot<int>
     {
-        public Guid Id {  get; set; }
         public string Title {  get; set; }
 
         public string Description { get; set; }
