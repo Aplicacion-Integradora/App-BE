@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ScriptedReviews.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ScriptedReviews.Migrations
 {
     [DbContext(typeof(ScriptedReviewsDbContext))]
-    partial class ScriptedReviewsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250225190758_AddApiMonitoringLog")]
+    partial class AddApiMonitoringLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,8 +179,11 @@ namespace ScriptedReviews.Migrations
 
             modelBuilder.Entity("ScriptedReviews.Ratings.Rating", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Comment")
                         .IsRequired()
@@ -199,8 +205,8 @@ namespace ScriptedReviews.Migrations
                     b.Property<int>("RatingNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("SeriesId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("SeriesId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -247,8 +253,8 @@ namespace ScriptedReviews.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SerieId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("SerieId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -259,11 +265,9 @@ namespace ScriptedReviews.Migrations
 
             modelBuilder.Entity("ScriptedReviews.Series.Serie", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Cast")
                         .IsRequired()
