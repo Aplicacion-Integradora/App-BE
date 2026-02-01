@@ -19,5 +19,8 @@ namespace ScriptedReviews.Ratings
 
         // Relación con la entidad Series
         public virtual Serie Serie { get; set; }
+
+        // Relación con la entidad User
+        //public virtual User User { get; set; }
     }
 }

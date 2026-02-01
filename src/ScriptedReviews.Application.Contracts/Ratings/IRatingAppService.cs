@@ -1,5 +1,5 @@
+﻿using System;
 ﻿using ScriptedReviews.Series;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +11,10 @@ namespace ScriptedReviews.Ratings
 {
     public interface IRatingAppService : IApplicationService
     {
+        // Método que permitirá modificar la calificación desde la API
+        Task<RatingDto> UpdateRatingAsync(int seriesId, UpdateRatingDto input);
+    }
+}
         Task<RatingDto> RateAsync(CreateRatingDto input);
         Task<List<RatingDto>> GetListAsync();
     }

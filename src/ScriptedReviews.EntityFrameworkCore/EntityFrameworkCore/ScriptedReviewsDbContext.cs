@@ -1,4 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using ScriptedReviews.Chapters;
+using ScriptedReviews.Ratings;
+using ScriptedReviews.Seasons;
+using ScriptedReviews.Series;
+using ScriptedReviews.Watchlists;
+using ScriptedReviews.Notifications;
+using ScriptedReviews.Ratings;
+using ScriptedReviews.MonitoringLogs;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
@@ -9,19 +18,11 @@ using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
+using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
-using ScriptedReviews.Series;
-using ScriptedReviews.Chapters;
-using ScriptedReviews.Seasons;
-using ScriptedReviews.Watchlists;
-using ScriptedReviews.Notifications;
-using ScriptedReviews.Ratings;
-using System.Reflection.Emit;
-using ScriptedReviews.MonitoringLogs;
 
 
 namespace ScriptedReviews.EntityFrameworkCore;
@@ -36,6 +37,7 @@ public class ScriptedReviewsDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Serie> Series { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
     public DbSet<Season> Seasons { get; set; }
     public DbSet<Chapter> Chapters { get; set; }
     public DbSet<Watchlist> Watchlists { get; set; }
@@ -137,7 +139,7 @@ public class ScriptedReviewsDbContext :
         {
             b.ToTable("ApiMonitoringLogs");
             b.HasKey(x => x.Id);
-            b.Property(x => x.Id).ValueGeneratedOnAdd(); //  Esto permite que SQL Server genere automáticamente el ID
+            b.Property(x => x.Id).ValueGeneratedOnAdd(); //  Esto permite que SQL Server genere automÃ¡ticamente el ID
             b.Property(a => a.Endpoint).IsRequired().HasMaxLength(256);
             b.Property(a => a.HttpMethod).IsRequired().HasMaxLength(10);
             b.Property(a => a.ResponseTime).IsRequired();
