@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using Volo.Abp;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.Sqlite;
@@ -10,13 +11,15 @@ using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.Uow;
+using Volo.Abp.Autofac;
 
 namespace ScriptedReviews.EntityFrameworkCore;
 
 [DependsOn(
-    typeof(ScriptedReviewsApplicationTestModule),
     typeof(ScriptedReviewsEntityFrameworkCoreModule),
-    typeof(AbpEntityFrameworkCoreSqliteModule)
+    typeof(AbpEntityFrameworkCoreSqliteModule),
+    typeof(ScriptedReviewsApplicationModule),
+    typeof(AbpAutofacModule)
 )]
 public class ScriptedReviewsEntityFrameworkCoreTestModule : AbpModule
 {
@@ -38,6 +41,8 @@ public class ScriptedReviewsEntityFrameworkCoreTestModule : AbpModule
 
         ConfigureInMemorySqlite(context.Services);
 
+        context.Services.AddTransient<Volo.Abp.Domain.Repositories.IRepository<ScriptedReviews.Ratings.Rating, Guid>,
+        Volo.Abp.Domain.Repositories.EntityFrameworkCore.EfCoreRepository<ScriptedReviewsDbContext, ScriptedReviews.Ratings.Rating, Guid>>();
     }
 
     private void ConfigureInMemorySqlite(IServiceCollection services)
@@ -50,6 +55,12 @@ public class ScriptedReviewsEntityFrameworkCoreTestModule : AbpModule
             {
                 context.DbContextOptions.UseSqlite(_sqliteConnection);
             });
+        });
+
+        // ESTO ES LO QUE HACE QUE FUNCIONE:
+        services.AddAbpDbContext<ScriptedReviewsDbContext>(options =>
+        {
+            options.AddDefaultRepositories(includeAllEntities: true);
         });
     }
 

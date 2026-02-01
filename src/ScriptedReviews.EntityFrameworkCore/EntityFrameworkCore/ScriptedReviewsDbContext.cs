@@ -43,7 +43,6 @@ public class ScriptedReviewsDbContext :
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<ApiMonitoringLog> ApiMonitoringLogs { get; set; }
 
-
     #region Entities from the modules
 
     /* Notice: We only implemented IIdentityProDbContext 
@@ -124,13 +123,14 @@ public class ScriptedReviewsDbContext :
 
         builder.Entity<Rating>(b =>
         {
-            b.ToTable("Ratings"); // Nombre de la tabla en la base de datos
+            b.ToTable("Ratings");
             b.Property(r => r.RatingNumber).IsRequired();
             b.Property(r => r.Comment).HasMaxLength(1000);
             b.HasOne(r => r.Serie)
                 .WithMany()
                 .HasForeignKey(r => r.SeriesId)
                 .OnDelete(DeleteBehavior.Cascade);
+            b.ConfigureByConvention();
         });
 
         builder.Entity<ApiMonitoringLog>(b =>
