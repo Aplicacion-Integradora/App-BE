@@ -27,7 +27,7 @@ public class ScriptedReviewsTestBaseModule : AbpModule
         context.Services.AddAlwaysAllowAuthorization();
     }
 
-    public override void OnApplicationInitialization(ApplicationInitializationContext context)
+  /*  public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         SeedTestData(context);
     }
@@ -43,5 +43,5 @@ public class ScriptedReviewsTestBaseModule : AbpModule
                     .SeedAsync();
             }
         });
-    }
+    } */
 }
