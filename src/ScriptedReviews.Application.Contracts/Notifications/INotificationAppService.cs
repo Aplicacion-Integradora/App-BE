@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScriptedReviews.Notifications.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,6 @@ namespace ScriptedReviews.Notifications
         /// <summary>
         /// Método para generar notificaciones basado en cambios en la lista de seguimiento.
         /// </summary>
-        Task GenerateNotificationsAsync();
+        Task<List<NotificationDto>> GetMyNotificationsAsync();
     }
 }

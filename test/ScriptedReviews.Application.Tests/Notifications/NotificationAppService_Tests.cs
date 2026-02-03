@@ -62,7 +62,7 @@ public abstract class NotificationAppService_Tests<TStartupModule> : ScriptedRev
 
         // Act
         await _notificationAppService.GenerateNotificationsAsync();
-
+        
         // Assert
         _mockNotificationRepository.Verify(
             repo => repo.InsertAsync(

@@ -13,32 +13,25 @@ using Volo.Abp.Threading;
 
 namespace ScriptedReviews.BackgroundWorkers
 {
-    public class NotificationBackgroundWorker : AsyncPeriodicBackgroundWorkerBase, ISingletonDependency, IHostedService
+    public class NotificationBackgroundWorker
+    : AsyncPeriodicBackgroundWorkerBase, ISingletonDependency
     {
-        private readonly INotificationAppService _notificationAppService;
-
-        public NotificationBackgroundWorker(INotificationAppService notificationAppService, AbpAsyncTimer timer, IServiceScopeFactory serviceScopeFactory)
+        private readonly NotificationGenerator _notificationGenerator;
+        public NotificationBackgroundWorker(
+        NotificationGenerator notificationGenerator,
+        AbpAsyncTimer timer,
+        IServiceScopeFactory serviceScopeFactory)
         : base(timer, serviceScopeFactory)
         {
-            _notificationAppService = notificationAppService;
-            Timer.Period = 3600000;  // Ejecutar cada hora (3600000 ms)
+            _notificationGenerator = notificationGenerator;
+            Timer.Period = 3600000;
         }
 
         protected override async Task DoWorkAsync(PeriodicBackgroundWorkerContext workerContext)
         {
-            // Llama al servicio para generar las notificaciones
-            await _notificationAppService.GenerateNotificationsAsync();
-        }
-
-        // Implementación de IHostedService
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            return StartAsync();  // Llama al método StartAsync del BackgroundWorkerBase
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return StopAsync();  // Llama al método StopAsync del BackgroundWorkerBase
+            await _notificationGenerator.GenerateAsync();
         }
     }
+
+
 }

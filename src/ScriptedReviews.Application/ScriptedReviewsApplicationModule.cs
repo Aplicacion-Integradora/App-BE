@@ -38,7 +38,7 @@ public class ScriptedReviewsApplicationModule : AbpModule
         context.Services.AddSingleton<NotificationBackgroundWorker>();
 
         // Registrar el worker en el administrador de BackgroundWorkers
-        context.Services.AddHostedService<NotificationBackgroundWorker>();
+       // context.Services.AddHostedService<NotificationBackgroundWorker>();
     }
 
 }
