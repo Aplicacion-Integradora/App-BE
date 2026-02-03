@@ -118,7 +118,6 @@ public class ScriptedReviewsDbContext :
             b.Property(n => n.Description).IsRequired().HasMaxLength(1024);
             b.Property(n => n.Type).IsRequired().HasMaxLength(128);
             b.Property(n => n.WasRead).HasDefaultValue(false);
-            b.Property(n => n.SentTime).HasDefaultValueSql("GETDATE()");
         });
 
         builder.Entity<Rating>(b =>

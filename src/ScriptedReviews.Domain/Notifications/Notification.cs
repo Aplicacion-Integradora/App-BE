@@ -11,7 +11,7 @@ namespace ScriptedReviews.Notifications
     public class Notification : AggregateRoot<int>
     {
 
-        public Guid UserId {  get; set; }
+        public Guid UserId { get; set; }
         public string Description { get; set; }
 
         public DateTime? SentTime { get; set; }
@@ -19,5 +19,11 @@ namespace ScriptedReviews.Notifications
         public string Type { get; set; }
 
         public bool WasRead { get; set; }
+
+        public Notification()
+        {
+            SentTime = DateTime.Now;
+            WasRead = false;
+        }
     }
 }

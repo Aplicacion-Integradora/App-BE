@@ -34,11 +34,7 @@ public class ScriptedReviewsApplicationModule : AbpModule
 
         context.Services.AddTransient<ISeriesApiService, OmdbService>();
 
-        // Registrar el BackgroundWorker en el contenedor de servicios
-        context.Services.AddSingleton<NotificationBackgroundWorker>();
 
-        // Registrar el worker en el administrador de BackgroundWorkers
-       // context.Services.AddHostedService<NotificationBackgroundWorker>();
     }
 
 }

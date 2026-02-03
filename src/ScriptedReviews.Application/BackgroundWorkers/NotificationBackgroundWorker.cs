@@ -16,20 +16,21 @@ namespace ScriptedReviews.BackgroundWorkers
     public class NotificationBackgroundWorker
     : AsyncPeriodicBackgroundWorkerBase, ISingletonDependency
     {
-        private readonly NotificationGenerator _notificationGenerator;
         public NotificationBackgroundWorker(
-        NotificationGenerator notificationGenerator,
-        AbpAsyncTimer timer,
-        IServiceScopeFactory serviceScopeFactory)
-        : base(timer, serviceScopeFactory)
+            AbpAsyncTimer timer,
+            IServiceScopeFactory serviceScopeFactory)
+            : base(timer, serviceScopeFactory)
         {
-            _notificationGenerator = notificationGenerator;
             Timer.Period = 3600000;
         }
 
         protected override async Task DoWorkAsync(PeriodicBackgroundWorkerContext workerContext)
         {
-            await _notificationGenerator.GenerateAsync();
+            var notificationGenerator = workerContext
+            .ServiceProvider
+            .GetRequiredService<NotificationGenerator>();
+
+            await notificationGenerator.GenerateAsync();
         }
     }
 

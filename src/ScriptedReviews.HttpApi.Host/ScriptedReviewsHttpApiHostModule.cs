@@ -1,43 +1,46 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using OpenIddict.Server.AspNetCore;
+using OpenIddict.Validation.AspNetCore;
+using ScriptedReviews.BackgroundWorkers;
+using ScriptedReviews.EntityFrameworkCore;
+using ScriptedReviews.HealthChecks;
+using ScriptedReviews.MultiTenancy;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Extensions.DependencyInjection;
-using OpenIddict.Validation.AspNetCore;
-using OpenIddict.Server.AspNetCore;
-using ScriptedReviews.EntityFrameworkCore;
-using ScriptedReviews.MultiTenancy;
-using Microsoft.OpenApi.Models;
+using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Studio;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.Autofac;
-using Volo.Abp.Localization;
-using Volo.Abp.Modularity;
-using Volo.Abp.UI.Navigation.Urls;
-using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
-using Microsoft.AspNetCore.Hosting;
-using ScriptedReviews.HealthChecks;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
+using Volo.Abp.Autofac;
+using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.Identity;
+using Volo.Abp.Localization;
+using Volo.Abp.Modularity;
 using Volo.Abp.OpenIddict;
-using Volo.Abp.Swashbuckle;
-using Volo.Abp.Studio.Client.AspNetCore;
 using Volo.Abp.Security.Claims;
+using Volo.Abp.Studio;
+using Volo.Abp.Studio.Client.AspNetCore;
+using Volo.Abp.Swashbuckle;
+using Volo.Abp.UI.Navigation.Urls;
+using Volo.Abp.VirtualFileSystem;
 
 namespace ScriptedReviews;
 
@@ -206,7 +209,7 @@ public class ScriptedReviewsHttpApiHostModule : AbpModule
         });
     }
 
-    public override void OnApplicationInitialization(ApplicationInitializationContext context)
+    public override async Task OnApplicationInitializationAsync(ApplicationInitializationContext context)
     {
         var app = context.GetApplicationBuilder();
         var env = context.GetEnvironment();
@@ -251,5 +254,7 @@ public class ScriptedReviewsHttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+
+        await context.AddBackgroundWorkerAsync<NotificationBackgroundWorker>();
     }
 }
