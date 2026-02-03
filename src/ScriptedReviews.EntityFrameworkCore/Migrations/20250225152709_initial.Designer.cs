@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ScriptedReviews.Migrations
 {
     [DbContext(typeof(ScriptedReviewsDbContext))]
-    [Migration("20241018225227_agregarTablaNotificacion")]
-    partial class agregarTablaNotificacion
+    [Migration("20250225152709_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,6 +123,47 @@ namespace ScriptedReviews.Migrations
                     b.ToTable("Notifications", (string)null);
                 });
 
+            modelBuilder.Entity("ScriptedReviews.Ratings.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)")
+                        .HasColumnName("ConcurrencyStamp");
+
+                    b.Property<string>("ExtraProperties")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ExtraProperties");
+
+                    b.Property<int>("RatingNumber")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("SeriesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeriesId");
+
+                    b.ToTable("Ratings", (string)null);
+                });
+
             modelBuilder.Entity("ScriptedReviews.Seasons.Season", b =>
                 {
                     b.Property<int>("Id")
@@ -158,8 +199,8 @@ namespace ScriptedReviews.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SerieId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("SerieId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -170,11 +211,9 @@ namespace ScriptedReviews.Migrations
 
             modelBuilder.Entity("ScriptedReviews.Series.Serie", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Cast")
                         .IsRequired()
@@ -232,6 +271,9 @@ namespace ScriptedReviews.Migrations
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("WatchlistId")
                         .HasColumnType("int");
@@ -2150,6 +2192,17 @@ namespace ScriptedReviews.Migrations
                     b.HasKey("TenantId", "Name");
 
                     b.ToTable("AbpTenantConnectionStrings", (string)null);
+                });
+
+            modelBuilder.Entity("ScriptedReviews.Ratings.Rating", b =>
+                {
+                    b.HasOne("ScriptedReviews.Series.Serie", "Serie")
+                        .WithMany()
+                        .HasForeignKey("SeriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Serie");
                 });
 
             modelBuilder.Entity("ScriptedReviews.Seasons.Season", b =>

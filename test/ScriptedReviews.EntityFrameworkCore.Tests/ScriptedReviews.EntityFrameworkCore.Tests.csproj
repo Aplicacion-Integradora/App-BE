@@ -9,8 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\ScriptedReviews.Application\ScriptedReviews.Application.csproj" />
     <ProjectReference Include="..\..\src\ScriptedReviews.EntityFrameworkCore\ScriptedReviews.EntityFrameworkCore.csproj" />
-    <ProjectReference Include="..\ScriptedReviews.Application.Tests\ScriptedReviews.Application.Tests.csproj" />
+		<ProjectReference Include="..\ScriptedReviews.Application.Tests\ScriptedReviews.Application.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

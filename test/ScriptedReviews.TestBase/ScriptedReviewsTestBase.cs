@@ -6,6 +6,7 @@ using Volo.Abp;
 using Volo.Abp.Modularity;
 using Volo.Abp.Uow;
 using Volo.Abp.Testing;
+using ScriptedReviews.EntityFrameworkCore;
 
 namespace ScriptedReviews;
 
@@ -64,4 +65,13 @@ public abstract class ScriptedReviewsTestBase<TStartupModule> : AbpIntegratedTes
             }
         }
     }
+    protected ScriptedReviewsTestBase()
+    {
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ScriptedReviewsDbContext>();
+            context.Database.EnsureCreated(); // Asegura que la base de datos de pruebas se crea correctamente
+        }
+    }
+
 }

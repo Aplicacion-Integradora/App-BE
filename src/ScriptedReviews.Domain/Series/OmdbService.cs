@@ -15,7 +15,7 @@ namespace ScriptedReviews.Series
         private static readonly string apiKey = "a6754de0"; 
         private static readonly string baseUrl = "http://www.omdbapi.com/";
 
-        public async Task<ICollection<SerieDto>> GetSeriesAsync(string title, string gender)
+        public async Task<ICollection<SerieDto>> GetSeriesAsync(string title, string genre)
         {
             using HttpClient client = new HttpClient();
 
@@ -36,7 +36,17 @@ namespace ScriptedReviews.Series
 
                 foreach (var serieOmdb in seriesOmdb)
                 {
-                    series.Add(new SerieDto { Title = serieOmdb.Title });
+                    series.Add(new SerieDto { 
+                        Title = serieOmdb.Title,
+                        Image = serieOmdb.Image,
+                        Genre = serieOmdb.Genre,
+                        ReleaseDate = serieOmdb.ReleaseDate,
+                        Duration = serieOmdb.Duration,
+                        Country = serieOmdb.Country,
+                        Director = serieOmdb.Director,
+                        Cast = serieOmdb.Cast,
+                        Writer = serieOmdb.Writer
+                    });
                 }
 
                 return series;
@@ -56,7 +66,6 @@ namespace ScriptedReviews.Series
         {
             public string Title { get; set; }
 
-
             public string Image { get; set; }
 
             public string Genre { get; set; }
@@ -64,8 +73,6 @@ namespace ScriptedReviews.Series
             public string ReleaseDate { get; set; }
 
             public string Duration { get; set; }
-
-            public string Rating { get; set; }
 
             public string Country { get; set; }
 

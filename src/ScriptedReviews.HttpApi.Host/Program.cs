@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ScriptedReviews.MonitoringMiddleware;
 using Serilog;
 using Serilog.Events;
 
@@ -54,5 +56,18 @@ public class Program
         {
             Log.CloseAndFlush();
         }
+    }
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseMiddleware<ApiMonitoringMiddleware>(); // Registrar el Middleware
+
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }
