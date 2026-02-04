@@ -18,7 +18,8 @@ namespace ScriptedReviews.Series
         public string Writer { get; set; }
         public string Image { get; set; }     
         public string Country { get; set; }
-        public string Rating { get; set; }      // El promedio general? (ej: "4.5")
+        public string Rating { get; set; }      
         public string Description { get; set; }    //Opcional agregar la descripcion o sinopsis de la serie 
+        public string ImdbId { get; set; }
     }
 }

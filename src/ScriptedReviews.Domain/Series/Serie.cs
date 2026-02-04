@@ -36,5 +36,7 @@ namespace ScriptedReviews.Series
 
         public List<Season> Seasons { get; set; }
 
+        public string ImdbId { get; set; } //ID aportado por OMDB
+
     }
 }

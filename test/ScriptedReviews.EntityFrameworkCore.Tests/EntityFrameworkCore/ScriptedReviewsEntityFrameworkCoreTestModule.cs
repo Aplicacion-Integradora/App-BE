@@ -10,13 +10,15 @@ using Volo.Abp.FeatureManagement;
 using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.Uow;
+using Volo.Abp.PermissionManagement.EntityFrameworkCore; 
 
 namespace ScriptedReviews.EntityFrameworkCore;
 
 [DependsOn(
-    typeof(ScriptedReviewsApplicationTestModule),
     typeof(ScriptedReviewsEntityFrameworkCoreModule),
-    typeof(AbpEntityFrameworkCoreSqliteModule)
+    typeof(AbpEntityFrameworkCoreSqliteModule),
+    typeof(ScriptedReviewsTestBaseModule),
+    typeof(AbpPermissionManagementEntityFrameworkCoreModule) 
 )]
 public class ScriptedReviewsEntityFrameworkCoreTestModule : AbpModule
 {
@@ -36,8 +38,10 @@ public class ScriptedReviewsEntityFrameworkCoreTestModule : AbpModule
         });
         context.Services.AddAlwaysDisableUnitOfWorkTransaction();
 
+        var configuration = context.Services.GetConfiguration();
+        configuration["ConnectionStrings:Default"] = "Data Source=:memory:";
+        
         ConfigureInMemorySqlite(context.Services);
-
     }
 
     private void ConfigureInMemorySqlite(IServiceCollection services)

@@ -12,7 +12,7 @@ using System.Text.Json;
 
 namespace ScriptedReviews.Series
 {
-    public class SerieAppService: CrudAppService<Serie, SerieDto, int, PagedAndSortedResultRequestDto, CreateUpdateSerieDto, CreateUpdateSerieDto>, ISerieAppService
+    public class SerieAppService : CrudAppService<Serie, SerieDto, int, PagedAndSortedResultRequestDto, CreateUpdateSerieDto, CreateUpdateSerieDto>, ISerieAppService
     {
         // API Key de OMDB 
         private const string OmdbApiKey = "35900e06";
@@ -24,14 +24,7 @@ namespace ScriptedReviews.Series
         // --- OPERACIÓN 2.2 ---
         public async Task<SerieDto> ImportarSerieAsync(string titulo)
         {
-            // 1. Verificar si ya existe la serie en la BD
-            var existente = await Repository.FirstOrDefaultAsync(x => x.Title.Contains(titulo));
-            if (existente != null)
-            {
-                return ObjectMapper.Map<Serie, SerieDto>(existente);
-            }
-
-            // 2. Conectar con OMDB
+            // 1. Conectar con OMDB (Ahora es el primer paso para obtener el ID único)
             string url = $"http://www.omdbapi.com/?t={titulo}&apikey={OmdbApiKey}";
             OmdbDto datosExternos;
 
@@ -52,10 +45,20 @@ namespace ScriptedReviews.Series
                 throw new UserFriendlyException($"No se encontró la serie: {titulo}");
             }
 
+            // 2. Verificar si ya existe la serie en la BD usando el ID ÚNICO (ImdbId)
+            // Esto evita duplicados si la serie cambia de nombre o si el usuario escribe diferente.
+            var existente = await Repository.FirstOrDefaultAsync(x => x.ImdbId == datosExternos.imdbID);
+
+            if (existente != null)
+            {
+                return ObjectMapper.Map<Serie, SerieDto>(existente);
+            }
+
             // 3. Mapeo Manual: Convertir datos de OMDB a tu Entidad 'Serie'
             var nuevaSerie = new Serie
             {
                 Title = datosExternos.Title ?? "Sin Título",
+                ImdbId = datosExternos.imdbID, // Campo agregado para persistir la identidad única
                 Genre = datosExternos.Genre ?? "Desconocido",
 
                 Director = datosExternos.Director != null && datosExternos.Director != "N/A"
@@ -77,13 +80,14 @@ namespace ScriptedReviews.Series
                 Rating = datosExternos.imdbRating ?? "0",
 
                 Cast = datosExternos.Actors?.Length > 200
-                       ? datosExternos.Actors.Substring(0, 200)
-                       : (datosExternos.Actors ?? "Desconocido"),
+                        ? datosExternos.Actors.Substring(0, 200)
+                        : (datosExternos.Actors ?? "Desconocido"),
 
                 Description = datosExternos.Plot?.Length > 500
                               ? datosExternos.Plot.Substring(0, 500)
                               : (datosExternos.Plot ?? "Sin descripción")
             };
+
             // 4. Guardar en Base de Datos 
             var serieInsertada = await Repository.InsertAsync(nuevaSerie, autoSave: true);
 

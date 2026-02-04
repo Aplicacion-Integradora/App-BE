@@ -15,12 +15,13 @@ namespace ScriptedReviews.Series
         public string Runtime { get; set; } // Duración
         public string Director { get; set; } // Parte del equipo
         public string Actors { get; set; }   // Parte del equipo
-        public string Writer { get; set; }
+        public string Writer { get; set; }  //Parte del equipo
         public string Poster { get; set; }   // Foto Portada
-        public string Country { get; set; }
+        public string Country { get; set; }   //Pais
         public string imdbRating { get; set; } // Calificación IMDB
         public string Plot { get; set; } // Descripción
         public string Response { get; set; } // "True" o "False"
-        public string Language { get; set; }
+        public string Language { get; set; }  //Idioma
+        public string imdbID { get; set; }
     }
 }
