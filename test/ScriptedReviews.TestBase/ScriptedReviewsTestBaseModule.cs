@@ -27,21 +27,21 @@ public class ScriptedReviewsTestBaseModule : AbpModule
         context.Services.AddAlwaysAllowAuthorization();
     }
 
-    //public override void OnApplicationInitialization(ApplicationInitializationContext context)
-    //{
-    //    SeedTestData(context);
-    //}
+  /*  public override void OnApplicationInitialization(ApplicationInitializationContext context)
+    {
+        SeedTestData(context);
+    }
 
-    //private static void SeedTestData(ApplicationInitializationContext context)
-    //{
-    //    AsyncHelper.RunSync(async () =>
-    //    {
-    //        using (var scope = context.ServiceProvider.CreateScope())
-    //        {
-    //            await scope.ServiceProvider
-    //                .GetRequiredService<IDataSeeder>()
-    //               .SeedAsync();
-    //        }
-    //    });
-    //}
+    private static void SeedTestData(ApplicationInitializationContext context)
+    {
+        AsyncHelper.RunSync(async () =>
+        {
+            using (var scope = context.ServiceProvider.CreateScope())
+            {
+                await scope.ServiceProvider
+                    .GetRequiredService<IDataSeeder>()
+                    .SeedAsync();
+            }
+        });
+    } */
 }

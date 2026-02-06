@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using ScriptedReviews.Notifications;
 using ScriptedReviews.Notifications.Dtos;
 using ScriptedReviews.Seasons;
