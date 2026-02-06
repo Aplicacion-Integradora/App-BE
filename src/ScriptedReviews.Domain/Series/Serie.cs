@@ -39,6 +39,7 @@ namespace ScriptedReviews.Series
 
         public Guid UserId { get; set; }
 
+        public string ImdbId { get; set; } //ID aportado por OMDB
 
     }
 }

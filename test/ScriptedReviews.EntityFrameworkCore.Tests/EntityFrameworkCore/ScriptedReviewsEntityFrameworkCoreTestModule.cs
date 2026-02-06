@@ -12,6 +12,7 @@ using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.Uow;
 using Volo.Abp.Autofac;
+using Volo.Abp.PermissionManagement.EntityFrameworkCore; 
 
 namespace ScriptedReviews.EntityFrameworkCore;
 
@@ -20,6 +21,8 @@ namespace ScriptedReviews.EntityFrameworkCore;
     typeof(AbpEntityFrameworkCoreSqliteModule),
     typeof(ScriptedReviewsApplicationModule),
     typeof(AbpAutofacModule)
+    typeof(ScriptedReviewsTestBaseModule),
+    typeof(AbpPermissionManagementEntityFrameworkCoreModule) 
 )]
 public class ScriptedReviewsEntityFrameworkCoreTestModule : AbpModule
 {
@@ -39,10 +42,14 @@ public class ScriptedReviewsEntityFrameworkCoreTestModule : AbpModule
         });
         context.Services.AddAlwaysDisableUnitOfWorkTransaction();
 
+        var configuration = context.Services.GetConfiguration();
+        configuration["ConnectionStrings:Default"] = "Data Source=:memory:";
+        
         ConfigureInMemorySqlite(context.Services);
 
         context.Services.AddTransient<Volo.Abp.Domain.Repositories.IRepository<ScriptedReviews.Ratings.Rating, Guid>,
         Volo.Abp.Domain.Repositories.EntityFrameworkCore.EfCoreRepository<ScriptedReviewsDbContext, ScriptedReviews.Ratings.Rating, Guid>>();
+
     }
 
     private void ConfigureInMemorySqlite(IServiceCollection services)

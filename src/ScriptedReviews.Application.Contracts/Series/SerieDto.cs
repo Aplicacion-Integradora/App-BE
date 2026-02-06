@@ -22,8 +22,6 @@ namespace ScriptedReviews.Series
         public  string Director { get; set; }
         public  string Cast { get; set; }
         public  string Writer { get; set; }
-
-        // public  List<Season> Seasons { get; set; }
-
+        public string ImdbId { get; set; }
     }
 }

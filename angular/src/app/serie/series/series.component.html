@@ -1,0 +1,63 @@
+<div class="container mt-4">
+
+  <div class="d-flex justify-content-between align-items-end mb-4">
+    <div>
+      <h2 *ngIf="!modoBusqueda">📂 Mis Series (Base de Datos)</h2>
+      <h2 *ngIf="modoBusqueda">🌎 Resultados en OMDB (API Externa)</h2>
+    </div>
+    
+    <button *ngIf="modoBusqueda" class="btn btn-outline-secondary btn-sm mb-2" (click)="cargarMisSeriesBD(); serieTitle=''">
+      ❌ Cancelar búsqueda
+    </button>
+  </div>
+
+  <form (ngSubmit)="searchSeries()" class="input-group mb-4 shadow-sm">
+    <input type="text" class="form-control" [(ngModel)]="serieTitle" name="title" 
+           placeholder="Escribe para buscar en OMDB..." required />
+    <button class="btn btn-primary" type="submit">🔍 Buscar en API</button>
+  </form>
+
+  <ngx-datatable *ngIf="series.length" class="bootstrap" [rows]="series" [columnMode]="'force'" 
+                 [headerHeight]="50" [footerHeight]="50" [rowHeight]="'auto'" [limit]="10">
+
+    <ngx-datatable-column name="Título" prop="title">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <strong>{{ row.title || row.Title }}</strong>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Año/Lanzamiento">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.releaseDate || row.year || row.Year }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Poster" [sortable]="false">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <img *ngIf="(row.image || row.poster || row.Poster) && (row.image !== 'N/A' && row.poster !== 'N/A')" 
+             [src]="row.image || row.poster || row.Poster" 
+             alt="Poster" width="60" style="border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" />
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Acción" [sortable]="false">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        
+        <button *ngIf="modoBusqueda" class="btn btn-sm btn-success" (click)="importarSerie(row.title || row.Title)">
+          ⬇️ Importar a BD
+        </button>
+
+        <span *ngIf="!modoBusqueda" class="badge bg-secondary">
+          ✅ En Biblioteca
+        </span>
+
+      </ng-template>
+    </ngx-datatable-column>
+
+  </ngx-datatable>
+
+  <div *ngIf="series.length === 0" class="alert alert-light text-center border mt-3">
+    <p class="mb-0 text-muted">No hay series para mostrar. ¡Busca una nueva arriba!</p>
+  </div>
+
+</div>
