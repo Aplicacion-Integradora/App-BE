@@ -1,76 +1,206 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Shouldly;
-using Xunit;
-using Volo.Abp.Domain.Repositories;
-using Volo.Abp.Security.Claims;
+using Moq;
 using ScriptedReviews.Notifications;
+using ScriptedReviews.Notifications.Dtos;
+using ScriptedReviews.Seasons;
+using ScriptedReviews.Series;
+using ScriptedReviews.Watchlists;
+using ScriptedReviews.Watchlists.Dtos;
+using Shouldly;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
+using Volo.Abp;
+using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Modularity;
+using Volo.Abp.Security.Claims;
+using Volo.Abp.Users;
+using Xunit;
 
-namespace ScriptedReviews.Application.Tests.Notifications
-{
-    public class NotificationAppService_Tests
-        : ScriptedReviewsApplicationTestBase<ScriptedReviewsApplicationTestModule>
+namespace ScriptedReviews.Notifications;
+
+    public abstract class NotificationAppService_Tests<TStartupModule> : ScriptedReviewsApplicationTestBase<TStartupModule>
+        where TStartupModule : IAbpModule
     {
+    // 1. En lugar de Mocks, declaramos las interfaces reales
         private readonly INotificationAppService _notificationAppService;
         private readonly IRepository<Notification, int> _notificationRepository;
+        private readonly IRepository<Watchlist, int> _watchlistRepository;
         private readonly ICurrentPrincipalAccessor _currentPrincipalAccessor;
 
-        public NotificationAppService_Tests()
-        {
-            _notificationAppService = GetRequiredService<INotificationAppService>();
-            _notificationRepository = GetRequiredService<IRepository<Notification, int>>();
-            _currentPrincipalAccessor = GetRequiredService<ICurrentPrincipalAccessor>();
-        }
+    protected NotificationAppService_Tests()
+    {
+        // 2. Le pedimos a ABP que nos dé las instancias listas para usar
+        _notificationAppService = GetRequiredService<INotificationAppService>();
+        _notificationRepository = GetRequiredService<IRepository<Notification, int>>();
+        _watchlistRepository = GetRequiredService<IRepository<Watchlist, int>>();
+        _currentPrincipalAccessor = GetRequiredService<ICurrentPrincipalAccessor>();
+    }
 
-        /// <summary>
-        /// Crea un ClaimsPrincipal falso para simular un usuario autenticado en tests.
-        /// </summary>
-        private ClaimsPrincipal CreatePrincipal(Guid userId)
-        {
-            return new ClaimsPrincipal(
-                new ClaimsIdentity(
-                    new[]
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, userId.ToString())
-                    },
-                    authenticationType: "TestAuth"
-                )
-            );
-        }
+    [Fact]
+    public async Task Should_Generate_Notifications_For_Each_Serie_Inside_Watchlist()
+    {
+        // Arrange
+        var myUserId = Guid.NewGuid();
 
-        [Fact]
-        public async Task Should_Return_Only_Current_User_Notifications()
+        using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
         {
-            // Arrange
-            var currentUserId = Guid.NewGuid();
-            var otherUserId = Guid.NewGuid();
-
-            await _notificationRepository.InsertAsync(new Notification
+            await WithUnitOfWorkAsync(async () =>
             {
-                UserId = currentUserId,
-                Description = "Notificación del usuario actual",
-                WasRead = false
-            });
+                var watchlist = new Watchlist
+                {
+                    Name = "Mis Favoritas",
+                    HasChanges = true,
+                    UserId = myUserId, // El dueño es el usuario creado
+                    Series = new List<Serie>
+                {
+                    new Serie
+                    {
+                        Title = "Breaking Bad",
+                        Description = "Un profesor de química con cáncer...",
+                        Image = "bb.jpg",
+                        Genre = "Drama",
+                        Language = "English",
+                        ReleaseDate = "2008-01-20",
+                        Duration = "45 min",
+                        Rating = "9.5",
+                        Country = "USA",
+                        Director = "Vince Gilligan",
+                        Cast = "Bryan Cranston, Aaron Paul",
+                        Writer = "Vince Gilligan",
+                        UserId = myUserId, // Asignamos el usuario
+                        Seasons = new List<Season>() // Inicializamos la lista vacía para evitar nulls
+                    },
 
+                    new Serie
+                    {
+                        Title = "Game of Thrones",
+                        Description = "Familias nobles luchan por el trono...",
+                        Image = "got.jpg",
+                        Genre = "Fantasy",
+                        Language = "English",
+                        ReleaseDate = "2011-04-17",
+                        Duration = "60 min",
+                        Rating = "9.3",
+                        Country = "USA",
+                        Director = "Alan Taylor",
+                        Cast = "Emilia Clarke, Kit Harington",
+                        Writer = "George R.R. Martin",
+                        UserId = myUserId, // Asignamos el usuario
+                        Seasons = new List<Season>()
+                    }
+                }
+                };
+
+                await _watchlistRepository.InsertAsync(watchlist, autoSave: true);
+            });
+        }
+
+        // Act
+        await _notificationAppService.GenerateNotificationsAsync();
+
+        // Assert
+        var notifications = await _notificationRepository.GetListAsync();
+
+        notifications.Count.ShouldBe(2); // Esperamos dos notificaciones ya que tenemos dos series que han sufrido cambios recientes
+        notifications.ShouldContain(n => n.Description.Contains("Breaking Bad"));
+        notifications.ShouldContain(n => n.Description.Contains("Game of Thrones"));
+    }
+
+    [Fact]
+    public async Task Should_Get_My_Notifications_Ordered_By_Date()
+    {
+        // Arrange
+        var myUserId = Guid.NewGuid();
+        var otherUserId = Guid.NewGuid();
+
+        await WithUnitOfWorkAsync(async () =>
+        {
             await _notificationRepository.InsertAsync(new Notification
             {
                 UserId = otherUserId,
-                Description = "Notificación de otro usuario",
+                Description = "Ajena",
+                Type = "Email",
+                SentTime = DateTime.Now,
                 WasRead = false
             });
 
-            var principal = CreatePrincipal(currentUserId);
-
-            // Act
-            using (_currentPrincipalAccessor.Change(principal))
+            await _notificationRepository.InsertAsync(new Notification
             {
-                var result = await _notificationAppService.GetMyNotificationsAsync();
+                UserId = myUserId,
+                Description = "Mia Vieja",
+                Type = "Email",
+                SentTime = DateTime.Now.AddDays(-2), // Hace 2 días
+                WasRead = false
+            });
 
-                // Assert
-                result.Count.ShouldBe(1);
-                result[0].Description.ShouldBe("Notificación del usuario actual");
-            }
+            await _notificationRepository.InsertAsync(new Notification
+            {
+                UserId = myUserId,
+                Description = "Mia Nueva",
+                Type = "Email",
+                SentTime = DateTime.Now, // Hoy
+                WasRead = false
+            });
+        });
+
+        // Act
+        List<NotificationDto> result = null;
+
+        using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
+        {
+            result = await _notificationAppService.GetMyNotificationsAsync();
         }
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Count.ShouldBe(2);
+        result[0].Description.ShouldBe("Mia Nueva"); // Verifica el orden
+        result[1].Description.ShouldBe("Mia Vieja");
+    }
+
+    [Fact]
+    public async Task Should_Mark_As_Read()
+    {
+        // Arrange
+        var myUserId = Guid.NewGuid();
+        var notifId = 0;
+
+        await WithUnitOfWorkAsync(async () =>
+        {
+            var notif = await _notificationRepository.InsertAsync(new Notification
+            {
+                UserId = myUserId,
+                Description = "Por leer",
+                Type = "Email",
+                SentTime = DateTime.Now,
+                WasRead = false
+            }, true); // true = auto-save para obtener el ID
+
+            notifId = notif.Id;
+        });
+
+        // Act
+        using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
+        {
+            await _notificationAppService.MarkAsReadAsync(notifId);
+        }
+
+        // Assert
+        var dbNotif = await _notificationRepository.GetAsync(notifId);
+        dbNotif.WasRead.ShouldBeTrue();
+    }
+
+    private ClaimsPrincipal GetClaims(Guid userId)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(AbpClaimTypes.UserId, userId.ToString()),
+            new Claim(AbpClaimTypes.UserName, "user_test")
+        };
+        var identity = new ClaimsIdentity(claims, "Test");
+        return new ClaimsPrincipal(identity);
     }
 }
