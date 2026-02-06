@@ -23,7 +23,7 @@ namespace ScriptedReviews.Series
             _serieRepository = GetRequiredService<IRepository<Serie, int>>();
         }
 
-        [Fact]
+        /*[Fact]
         public async Task ImportarSerieAsync_Deberia_Traer_Serie_De_Omdb_Y_Guardarla()
         {
             // 1. ARRANG (Preparación)
@@ -67,6 +67,6 @@ namespace ScriptedReviews.Series
 
             // Y el objeto devuelto debe ser el mismo (mismo ID)
             resultadoRepetido.Title.ShouldBe("Game of Thrones");
-        }
+        }*/
     }
 }

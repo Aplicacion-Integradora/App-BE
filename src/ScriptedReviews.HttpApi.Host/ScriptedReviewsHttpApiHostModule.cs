@@ -255,6 +255,6 @@ public class ScriptedReviewsHttpApiHostModule : AbpModule
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
 
-        await context.AddBackgroundWorkerAsync<NotificationBackgroundWorker>();
+        //await context.AddBackgroundWorkerAsync<NotificationBackgroundWorker>();
     }
 }

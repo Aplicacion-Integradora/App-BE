@@ -12,6 +12,6 @@ namespace ScriptedReviews.Series
     {
         Task<ICollection<SerieDto>> SearchAsync(string? title, string? genre);
         // Método para la Operación 2.2
-        Task<SerieDto> ImportarSerieAsync(string titulo);
+        //Task<SerieDto> ImportarSerieAsync(string titulo);
     }
 }

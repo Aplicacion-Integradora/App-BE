@@ -9,13 +9,16 @@ namespace ScriptedReviews.Series
 {
     public interface ISeriesApiService
     {
-        Task<ICollection<SerieDto>> GetSeriesAsync(string title, string genre);       
+        Task<ICollection<SerieDto>> GetSeriesAsync(string title, string genre);
+
+        Task<SerieDto> ImportarSerieAsync(string imdbId);
+
         // Task<List<SerieDto>> GetListAsync();
-                                                                                       
+
         // Task<SerieDto> CreateAsync(SerieCreateDto input);
-                                                                                       
+
         // Task<SerieDto> UpdateAsync(int id, SerieUpdateDto input);
-                                                                                       
+
         // Task DeleteAsync(string title);
     }
 }

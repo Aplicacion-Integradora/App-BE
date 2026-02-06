@@ -69,7 +69,8 @@ namespace ScriptedReviews.Ratings
                         Director = "Director Test",
                         Cast = "Actor 1, Actor 2",
                         Writer = "Escritor Test",
-                        UserId = fakeUserId
+                        UserId = fakeUserId,
+                        ImdbId = "tt100"
                     };
 
                     await _serieRepository.InsertAsync(serie, true);
@@ -132,7 +133,8 @@ namespace ScriptedReviews.Ratings
                         Country = "Test",
                         Director = "Test",
                         Cast = "Test",
-                        Writer = "Test"
+                        Writer = "Test",
+                        ImdbId = "Test",
                     };
                     await _serieRepository.InsertAsync(serie, true);
 

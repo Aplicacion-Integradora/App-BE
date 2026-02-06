@@ -11,8 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\ScriptedReviews.Application\ScriptedReviews.Application.csproj" />
     <ProjectReference Include="..\ScriptedReviews.Domain.Tests\ScriptedReviews.Domain.Tests.csproj" />
-		
-		<ProjectReference Include="..\ScriptedReviews.EntityFrameworkCore.Tests\ScriptedReviews.EntityFrameworkCore.Tests.csproj" />
 	</ItemGroup>
 	
   <ItemGroup>

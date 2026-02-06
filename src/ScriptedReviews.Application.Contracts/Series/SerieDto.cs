@@ -23,5 +23,6 @@ namespace ScriptedReviews.Series
         public  string Cast { get; set; }
         public  string Writer { get; set; }
         public string ImdbId { get; set; }
+        public string TotalSeasons { get; set; }
     }
 }

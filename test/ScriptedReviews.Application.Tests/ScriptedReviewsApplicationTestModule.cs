@@ -8,8 +8,7 @@ namespace ScriptedReviews;
 
 [DependsOn(
     typeof(ScriptedReviewsApplicationModule),
-    typeof(ScriptedReviewsDomainTestModule),
-    typeof(ScriptedReviewsEntityFrameworkCoreTestModule)
+    typeof(ScriptedReviewsDomainTestModule)
 )]
 public class ScriptedReviewsApplicationTestModule : AbpModule
 {

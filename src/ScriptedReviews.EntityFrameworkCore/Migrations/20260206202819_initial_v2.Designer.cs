@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace ScriptedReviews.Migrations
 {
     [DbContext(typeof(ScriptedReviewsDbContext))]
-    [Migration("20250225190758_AddApiMonitoringLog")]
-    partial class AddApiMonitoringLog
+    [Migration("20260206202819_initial_v2")]
+    partial class initial_v2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,14 +158,15 @@ namespace ScriptedReviews.Migrations
                         .HasColumnName("ExtraProperties");
 
                     b.Property<DateTime?>("SentTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("WasRead")
                         .ValueGeneratedOnAdd()
@@ -179,11 +180,8 @@ namespace ScriptedReviews.Migrations
 
             modelBuilder.Entity("ScriptedReviews.Ratings.Rating", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
                         .IsRequired()
@@ -205,8 +203,8 @@ namespace ScriptedReviews.Migrations
                     b.Property<int>("RatingNumber")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SeriesId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("SeriesId")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -253,8 +251,8 @@ namespace ScriptedReviews.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SerieId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("SerieId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -265,9 +263,11 @@ namespace ScriptedReviews.Migrations
 
             modelBuilder.Entity("ScriptedReviews.Series.Serie", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Cast")
                         .IsRequired()
@@ -306,6 +306,10 @@ namespace ScriptedReviews.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImdbId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -369,6 +373,9 @@ namespace ScriptedReviews.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 

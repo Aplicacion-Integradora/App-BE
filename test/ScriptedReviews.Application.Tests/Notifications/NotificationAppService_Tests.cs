@@ -1,4 +1,5 @@
 using Moq;
+using NSubstitute;
 using ScriptedReviews.Notifications;
 using ScriptedReviews.Notifications.Dtos;
 using ScriptedReviews.Seasons;
@@ -44,6 +45,20 @@ namespace ScriptedReviews.Notifications;
     {
         // Arrange
         var myUserId = Guid.NewGuid();
+        var imdbIdBreakingBad = "tt_bb";
+        var imdbIdGOT = "tt_got";
+
+        var seriesApiServiceMock = GetRequiredService<ISeriesApiService>();
+
+        seriesApiServiceMock.ClearReceivedCalls();
+
+        // Para que cuando busque Breaking Bad diga que tiene 5 temporadas"
+        seriesApiServiceMock.ImportarSerieAsync(imdbIdBreakingBad)
+            .Returns(Task.FromResult(new SerieDto { TotalSeasons = "5" }));
+
+        // Para que cuando busque GOT diga que tiene 8 temporadas"
+        seriesApiServiceMock.ImportarSerieAsync(imdbIdGOT)
+            .Returns(Task.FromResult(new SerieDto { TotalSeasons = "8" }));
 
         using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
         {
@@ -52,13 +67,14 @@ namespace ScriptedReviews.Notifications;
                 var watchlist = new Watchlist
                 {
                     Name = "Mis Favoritas",
+                    UserId = myUserId,
                     HasChanges = true,
-                    UserId = myUserId, // El dueño es el usuario creado
                     Series = new List<Serie>
                 {
                     new Serie
                     {
                         Title = "Breaking Bad",
+                        ImdbId = imdbIdBreakingBad,
                         Description = "Un profesor de química con cáncer...",
                         Image = "bb.jpg",
                         Genre = "Drama",
@@ -70,13 +86,14 @@ namespace ScriptedReviews.Notifications;
                         Director = "Vince Gilligan",
                         Cast = "Bryan Cranston, Aaron Paul",
                         Writer = "Vince Gilligan",
-                        UserId = myUserId, // Asignamos el usuario
-                        Seasons = new List<Season>() // Inicializamos la lista vacía para evitar nulls
+                        UserId = myUserId,
+                        Seasons = new List<Season>()
                     },
 
                     new Serie
                     {
                         Title = "Game of Thrones",
+                        ImdbId = imdbIdGOT,
                         Description = "Familias nobles luchan por el trono...",
                         Image = "got.jpg",
                         Genre = "Fantasy",
@@ -88,7 +105,7 @@ namespace ScriptedReviews.Notifications;
                         Director = "Alan Taylor",
                         Cast = "Emilia Clarke, Kit Harington",
                         Writer = "George R.R. Martin",
-                        UserId = myUserId, // Asignamos el usuario
+                        UserId = myUserId,
                         Seasons = new List<Season>()
                     }
                 }

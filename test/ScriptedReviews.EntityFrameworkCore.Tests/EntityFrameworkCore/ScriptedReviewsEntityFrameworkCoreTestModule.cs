@@ -20,7 +20,7 @@ namespace ScriptedReviews.EntityFrameworkCore;
     typeof(ScriptedReviewsEntityFrameworkCoreModule),
     typeof(AbpEntityFrameworkCoreSqliteModule),
     typeof(ScriptedReviewsApplicationModule),
-    typeof(AbpAutofacModule)
+    typeof(AbpAutofacModule),
     typeof(ScriptedReviewsTestBaseModule),
     typeof(AbpPermissionManagementEntityFrameworkCoreModule) 
 )]
