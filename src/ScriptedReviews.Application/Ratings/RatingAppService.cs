@@ -76,6 +76,7 @@ namespace ScriptedReviews.Ratings
         {
             // Chequeamos que el usuario no sea nulo, y en caso de no serlo, se prosigue con el Task
             if (CurrentUser.Id == null)
+
             {
                 throw new UserFriendlyException("Debes iniciar sesión para editar una calificación.");
             }

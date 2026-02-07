@@ -30,6 +30,6 @@ namespace ScriptedReviews.Series
         {
             return await _seriesApiService.GetSeriesAsync(title, genre);
         }
-
     }
 }
+

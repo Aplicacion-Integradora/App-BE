@@ -44,6 +44,7 @@ export class SerieService {
     { apiName: this.apiName, ...config });
 
   // --- 5. Buscar en OMDB (Operación 1.1 - API) ---
+
   search = (title: string, genre: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, SerieDto[]>({
       method: 'POST',
@@ -72,3 +73,4 @@ export class SerieService {
 
   constructor(private restService: RestService) {}
 }
+
