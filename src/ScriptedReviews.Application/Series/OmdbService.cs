@@ -166,7 +166,9 @@ namespace ScriptedReviews.Series
 
                 Description = datosExternos.Plot?.Length > 500
                               ? datosExternos.Plot.Substring(0, 500)
-                              : (datosExternos.Plot ?? "Sin descripción")
+                              : (datosExternos.Plot ?? "Sin descripción"),
+
+                TotalSeasons = int.TryParse(datosExternos.totalSeasons, out int seasons) ? seasons : 0
             };
 
             // 4. Guardar en Base de Datos 

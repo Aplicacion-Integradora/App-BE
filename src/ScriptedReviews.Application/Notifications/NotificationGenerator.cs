@@ -9,6 +9,8 @@ using Volo.Abp.Domain.Services;
 using Volo.Abp.Emailing;
 using Volo.Abp.Identity;
 using Volo.Abp.SettingManagement;
+using Volo.Abp.Settings;
+using ScriptedReviews.Settings;
 
 namespace ScriptedReviews.Notifications
 {
@@ -16,9 +18,9 @@ namespace ScriptedReviews.Notifications
     {
         private readonly IRepository<Notification, int> _notificationRepository;
         private readonly IWatchlistAppService _watchlistAppService;
-        private readonly EmailNotificationSender _emailSender;
+        private readonly IEmailNotificationSender _emailSender;
         private readonly IIdentityUserRepository _userRepository;
-        private readonly ISettingManager _settingManager;
+        private readonly ISettingProvider _settingProvider;
 
 
 
@@ -26,15 +28,14 @@ namespace ScriptedReviews.Notifications
             IRepository<Notification, int> notificationRepository,
             IWatchlistAppService watchlistAppService,
             IIdentityUserRepository userRepository,
-            ISettingManager settingManager,
-            EmailNotificationSender emailSender)
+            ISettingProvider settingProvider,
+            IEmailNotificationSender emailSender)
         {
             _notificationRepository = notificationRepository;
             _watchlistAppService = watchlistAppService;
             _emailSender = emailSender;
             _userRepository = userRepository;
-            _settingManager = settingManager;
-
+            _settingProvider = settingProvider;
         }
 
         public async Task GenerateAsync()
@@ -55,7 +56,10 @@ namespace ScriptedReviews.Notifications
 
                 var user = await _userRepository.GetAsync(series.UserId);
 
-                if (!string.IsNullOrWhiteSpace(user.Email))
+                // Check if email notifications are enabled for this user
+                var emailEnabled = await _settingProvider.GetAsync<bool>(NotificationSettings.EmailEnabled);
+
+                if (emailEnabled && !string.IsNullOrWhiteSpace(user.Email))
                 {
                     await _emailSender.SendSeriesUpdateAsync(
                         user.Email,

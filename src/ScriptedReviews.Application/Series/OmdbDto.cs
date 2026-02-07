@@ -23,5 +23,6 @@ namespace ScriptedReviews.Series
         public string Response { get; set; } // "True" o "False"
         public string Language { get; set; }  //Idioma
         public string imdbID { get; set; }
+        public string totalSeasons { get; set; } // Cantidad de temporadas
     }
 }

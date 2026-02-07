@@ -8,7 +8,7 @@ using Volo.Abp.Emailing;
 
 namespace ScriptedReviews.Notifications
 {
-    public class EmailNotificationSender : ITransientDependency
+    public class EmailNotificationSender : IEmailNotificationSender, ITransientDependency
     {
         private readonly IEmailSender _emailSender;
 

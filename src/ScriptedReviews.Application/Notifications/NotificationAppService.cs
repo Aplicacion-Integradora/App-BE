@@ -22,7 +22,6 @@ namespace ScriptedReviews.Notifications
         private readonly IRepository<Notification, int> _notificationRepository;
         private readonly IRepository<Serie, int> _serieRepository;
         private readonly IRepository<Watchlist, int> _watchlistRepository;
-        private readonly IWatchlistAppService _watchlistAppService;
         private readonly ISeriesApiService _seriesApiService;
         private readonly ICurrentUser _currentUser;
 
@@ -91,9 +90,9 @@ namespace ScriptedReviews.Notifications
 
                 if (infoApi == null) continue;
 
-                // Comparamos
+                // Comparamos usando el campo TotalSeasons de la entidad
                 int.TryParse(infoApi.TotalSeasons, out int temporadasEnApi);
-                int temporadasLocales = serieLocal.Seasons?.Count ?? 0;
+                int temporadasLocales = serieLocal.TotalSeasons;
 
                 if (temporadasEnApi > temporadasLocales)
                 {
@@ -115,8 +114,9 @@ namespace ScriptedReviews.Notifications
                         });
                     }
 
-                    // IMPORTANTE: Aquí deberías actualizar la serie local para que no notifique siempre.
-                    // Para el test no es estricto, pero para la app real sí.
+                    // Actualizamos la serie local para evitar notificaciones duplicadas
+                    serieLocal.TotalSeasons = temporadasEnApi;
+                    await _serieRepository.UpdateAsync(serieLocal);
                 }
             }
         }

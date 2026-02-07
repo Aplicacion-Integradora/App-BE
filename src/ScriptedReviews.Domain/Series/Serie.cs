@@ -41,5 +41,7 @@ namespace ScriptedReviews.Series
 
         public string ImdbId { get; set; } //ID aportado por OMDB
 
+        public int TotalSeasons { get; set; } // Cantidad de temporadas (para detectar nuevas)
+
     }
 }
