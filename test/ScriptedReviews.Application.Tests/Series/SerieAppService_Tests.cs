@@ -1,72 +1,177 @@
-﻿using Shouldly;
+﻿using NSubstitute;
+using Microsoft.Extensions.Configuration;
+using Shouldly;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 using Xunit;
-using ScriptedReviews;
+using Volo.Abp.Modularity;
+using Volo.Abp.Application.Dtos;
 
 namespace ScriptedReviews.Series
 {
-    // Heredamos de ...ApplicationTestBase para tener acceso a la BD en memoria y servicios
-    public class SerieAppService_Tests : ScriptedReviewsApplicationTestBase<ScriptedReviewsApplicationTestModule>
+    public abstract class SerieAppService_Tests<TStartupModule> : ScriptedReviewsDomainTestBase<TStartupModule>
+        where TStartupModule : IAbpModule
     {
         private readonly ISerieAppService _serieAppService;
         private readonly IRepository<Serie, int> _serieRepository;
 
-        public SerieAppService_Tests()
+        protected SerieAppService_Tests()
         {
-            // Inyectamos el servicio que queremos probar y el repositorio para verificar
             _serieAppService = GetRequiredService<ISerieAppService>();
             _serieRepository = GetRequiredService<IRepository<Serie, int>>();
         }
 
-        /*[Fact]
-        public async Task ImportarSerieAsync_Deberia_Traer_Serie_De_Omdb_Y_Guardarla()
+        [Fact]
+        public async Task Should_Get_Serie_By_Id()
         {
-            // 1. ARRANG (Preparación)
-            var tituloBusqueda = "Breaking Bad";
-
-            // 2. ACT (Acción)
-            // El servicio hace su trabajo, guarda y cierra la conexión.
-            var resultado = await _serieAppService.ImportarSerieAsync(tituloBusqueda);
-
-            // 3. ASSERT (Verificación)
-            resultado.ShouldNotBeNull();
-            resultado.Title.ShouldBe("Breaking Bad");
-            resultado.ImdbId.ShouldNotBeNullOrEmpty();
-
-            // Abrimos un nuevo "UnitOfWork" (conexión) solo para consultar la BD
+            // Arrange - Crear una serie en la base de datos
+            Serie serieCreada = null!;
             await WithUnitOfWorkAsync(async () =>
             {
-                var serieEnDb = await _serieRepository.FirstOrDefaultAsync(x => x.ImdbId == resultado.ImdbId);
-                serieEnDb.ShouldNotBeNull(); // ¡Ahora sí encontrará la caja abierta!
-                serieEnDb.Title.ShouldBe("Breaking Bad");
+                var serie = new Serie
+                {
+                    Title = "Test Serie",
+                    ImdbId = "tt9999999",
+                    Genre = "Drama",
+                    ReleaseDate = "2024",
+                    Description = "Test description",
+                    Language = "English",
+                    Country = "USA",
+                    Director = "Test Director",
+                    Cast = "Test Cast",
+                    Writer = "Test Writer",
+                    Duration = "45 min",
+                    Rating = "8.5",
+                    TotalSeasons = 3,
+                    Image = "https://example.com/test.jpg"
+                };
+                serieCreada = await _serieRepository.InsertAsync(serie, autoSave: true);
             });
+
+            // Act - Obtener la serie por ID
+            var resultado = await _serieAppService.GetAsync(serieCreada.Id);
+
+            // Assert
+            resultado.ShouldNotBeNull();
+            resultado.Id.ShouldBe(serieCreada.Id);
+            resultado.Title.ShouldBe("Test Serie");
+            resultado.ImdbId.ShouldBe("tt9999999");
+            resultado.Genre.ShouldBe("Drama");
         }
 
         [Fact]
-        public async Task ImportarSerieAsync_No_Deberia_Duplicar_Si_Ya_Existe()
+        public async Task Should_Get_List_Of_Series()
         {
-            // 1. Preparación: Insertamos la serie una vez
-            await _serieAppService.ImportarSerieAsync("Game of Thrones");
+            // Arrange - Crear varias series en la base de datos
+            await WithUnitOfWorkAsync(async () =>
+            {
+                await _serieRepository.InsertAsync(new Serie
+                {
+                    Title = "Serie A",
+                    ImdbId = "tt1111111",
+                    Genre = "Comedy",
+                    ReleaseDate = "2020",
+                    Description = "Comedy series",
+                    Language = "English",
+                    Country = "USA",
+                    Director = "Director A",
+                    Cast = "Cast A",
+                    Writer = "Writer A",
+                    Duration = "30 min",
+                    Rating = "7.5",
+                    TotalSeasons = 2,
+                    Image = "https://example.com/serieA.jpg"
+                });
 
-            // Contamos cuántas hay (Debería haber 1)
-            var cantidadInicial = await _serieRepository.GetCountAsync();
+                await _serieRepository.InsertAsync(new Serie
+                {
+                    Title = "Serie B",
+                    ImdbId = "tt2222222",
+                    Genre = "Action",
+                    ReleaseDate = "2021",
+                    Description = "Action series",
+                    Language = "Spanish",
+                    Country = "Spain",
+                    Director = "Director B",
+                    Cast = "Cast B",
+                    Writer = "Writer B",
+                    Duration = "60 min",
+                    Rating = "8.0",
+                    TotalSeasons = 1,
+                    Image = "https://example.com/serieB.jpg"
+                }, autoSave: true);
+            });
 
-            // 2. Acción: Intentamos importarla de nuevo
-            var resultadoRepetido = await _serieAppService.ImportarSerieAsync("Game of Thrones");
+            // Act - Obtener la lista de series
+            var resultado = await _serieAppService.GetListAsync(new PagedAndSortedResultRequestDto());
 
-            // 3. Verificación
-            var cantidadFinal = await _serieRepository.GetCountAsync();
+            // Assert
+            resultado.ShouldNotBeNull();
+            resultado.TotalCount.ShouldBeGreaterThanOrEqualTo(2);
+            resultado.Items.ShouldContain(s => s.Title == "Serie A");
+            resultado.Items.ShouldContain(s => s.Title == "Serie B");
+        }
 
-            // La cantidad debe ser la misma, no debió crear otra fila
-            cantidadFinal.ShouldBe(cantidadInicial);
+        [Fact]
+        public async Task Should_Return_Empty_When_No_Series_Exist()
+        {
+            // Act - Obtener lista cuando no hay series (o solo las creadas por otros tests)
+            var resultado = await _serieAppService.GetListAsync(new PagedAndSortedResultRequestDto 
+            { 
+                MaxResultCount = 1000 
+            });
 
-            // Y el objeto devuelto debe ser el mismo (mismo ID)
-            resultadoRepetido.Title.ShouldBe("Game of Thrones");
-        }*/
+            // Assert
+            resultado.ShouldNotBeNull();
+            resultado.Items.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public async Task Should_Return_Correct_Fields_When_Getting_Serie()
+        {
+            // Arrange - Crear una serie con todos los campos
+            Serie serieCreada = null!;
+            await WithUnitOfWorkAsync(async () =>
+            {
+                var serie = new Serie
+                {
+                    Title = "Complete Serie",
+                    ImdbId = "tt8888888",
+                    Genre = "Sci-Fi",
+                    ReleaseDate = "2023",
+                    Description = "A complete test series",
+                    Language = "English",
+                    Country = "UK",
+                    Director = "Famous Director",
+                    Cast = "Actor 1, Actor 2",
+                    Writer = "Writer 1, Writer 2",
+                    Duration = "50 min",
+                    Rating = "9.0",
+                    TotalSeasons = 5,
+                    Image = "https://example.com/poster.jpg"
+                };
+                serieCreada = await _serieRepository.InsertAsync(serie, autoSave: true);
+            });
+
+            // Act
+            var resultado = await _serieAppService.GetAsync(serieCreada.Id);
+
+            // Assert - Verificar todos los campos importantes
+            resultado.ShouldNotBeNull();
+            resultado.Title.ShouldBe("Complete Serie");
+            resultado.Genre.ShouldBe("Sci-Fi");
+            resultado.ReleaseDate.ShouldBe("2023");
+            resultado.Description.ShouldBe("A complete test series");
+            resultado.Language.ShouldBe("English");
+            resultado.Country.ShouldBe("UK");
+            resultado.Director.ShouldBe("Famous Director");
+            resultado.Cast.ShouldBe("Actor 1, Actor 2");
+            resultado.Writer.ShouldBe("Writer 1, Writer 2");
+            resultado.Duration.ShouldBe("50 min");
+            resultado.Rating.ShouldBe("9.0");
+            resultado.TotalSeasons.ShouldBe(5);
+        }
     }
 }

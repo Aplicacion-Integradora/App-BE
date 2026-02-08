@@ -53,9 +53,7 @@ namespace ScriptedReviews.BackgroundWorkers
                     if (infoApi == null) continue;
 
                     // 4. LÓGICA DE COMPARACIÓN (El corazón de la notificación)
-                    // OMDB devuelve strings a veces, aseguramos el parseo
-                    int temporadasEnApi = 0;
-                    int.TryParse(infoApi.TotalSeasons, out temporadasEnApi);
+                    int temporadasEnApi = infoApi.TotalSeasons;
 
                     // Contamos cuántas temporadas tenemos nosotros guardadas
                     int temporadasLocales = serieLocal.Seasons?.Count ?? 0;

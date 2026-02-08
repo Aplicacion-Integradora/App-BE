@@ -91,7 +91,7 @@ namespace ScriptedReviews.Notifications
                 if (infoApi == null) continue;
 
                 // Comparamos usando el campo TotalSeasons de la entidad
-                int.TryParse(infoApi.TotalSeasons, out int temporadasEnApi);
+                int temporadasEnApi = infoApi.TotalSeasons;
                 int temporadasLocales = serieLocal.TotalSeasons;
 
                 if (temporadasEnApi > temporadasLocales)

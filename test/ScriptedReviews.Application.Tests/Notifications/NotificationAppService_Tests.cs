@@ -54,11 +54,11 @@ namespace ScriptedReviews.Notifications;
 
         // Para que cuando busque Breaking Bad diga que tiene 5 temporadas"
         seriesApiServiceMock.ImportarSerieAsync(imdbIdBreakingBad)
-            .Returns(Task.FromResult(new SerieDto { TotalSeasons = "5" }));
+            .Returns(Task.FromResult(new SerieDto { TotalSeasons = 5 }));
 
         // Para que cuando busque GOT diga que tiene 8 temporadas"
         seriesApiServiceMock.ImportarSerieAsync(imdbIdGOT)
-            .Returns(Task.FromResult(new SerieDto { TotalSeasons = "8" }));
+            .Returns(Task.FromResult(new SerieDto { TotalSeasons = 8 }));
 
         using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
         {
