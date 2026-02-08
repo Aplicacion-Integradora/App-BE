@@ -42,19 +42,9 @@ public class ScriptedReviewsDbContext :
     public DbSet<ScriptedReviews.Watchlists.Watchlist> Watchlists { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<ApiMonitoringLog> ApiMonitoringLogs { get; set; }
+    public DbSet<ErrorLogs.ErrorLog> ErrorLogs { get; set; }
 
     #region Entities from the modules
-
-    /* Notice: We only implemented IIdentityProDbContext 
-     * and replaced them for this DbContext. This allows you to perform JOIN
-     * queries for the entities of these modules over the repositories easily. You
-     * typically don't need that for other modules. But, if you need, you can
-     * implement the DbContext interface of the needed module and use ReplaceDbContext
-     * attribute just like IIdentityProDbContext .
-     *
-     * More info: Replacing a DbContext of a module ensures that the related module
-     * uses this DbContext on runtime. Otherwise, it will use its own DbContext class.
-     */
 
     // Identity
     public DbSet<IdentityUser> Users { get; set; }
@@ -147,6 +137,22 @@ public class ScriptedReviewsDbContext :
             b.Property(a => a.UserAgent).HasMaxLength(512);
             b.Property(a => a.IPAddress).HasMaxLength(45);
             b.Property(a => a.CreatedAt).IsRequired();
+        });
+
+        builder.Entity<ErrorLogs.ErrorLog>(b =>
+        {
+            b.ToTable("ErrorLogs");
+            b.HasKey(x => x.Id);
+            b.Property(x => x.Id).ValueGeneratedOnAdd();
+            b.Property(e => e.Level).IsRequired().HasMaxLength(20);
+            b.Property(e => e.Message).IsRequired().HasMaxLength(4000);
+            b.Property(e => e.Exception).HasMaxLength(8000);
+            b.Property(e => e.Source).HasMaxLength(256);
+            b.Property(e => e.Endpoint).HasMaxLength(256);
+            b.Property(e => e.HttpMethod).HasMaxLength(10);
+            b.Property(e => e.UserId).HasMaxLength(128);
+            b.Property(e => e.IpAddress).HasMaxLength(45);
+            b.Property(e => e.CreatedAt).IsRequired();
         });
 
         builder.ConfigurePermissionManagement();

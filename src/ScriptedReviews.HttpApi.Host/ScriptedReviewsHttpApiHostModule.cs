@@ -243,6 +243,10 @@ public class ScriptedReviewsHttpApiHostModule : AbpModule
         app.UseDynamicClaims();
         app.UseAuthorization();
 
+        // Error logging middleware - captura errores para diagnostico
+        app.UseMiddleware<MonitoringMiddleware.ErrorLoggingMiddleware>();
+        app.UseMiddleware<MonitoringMiddleware.ApiMonitoringMiddleware>();
+
         app.UseSwagger();
         app.UseAbpSwaggerUI(options =>
         {
