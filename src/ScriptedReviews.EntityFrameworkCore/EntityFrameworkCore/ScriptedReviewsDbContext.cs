@@ -39,7 +39,7 @@ public class ScriptedReviewsDbContext :
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<Season> Seasons { get; set; }
     public DbSet<Chapter> Chapters { get; set; }
-    public DbSet<Watchlist> Watchlists { get; set; }
+    public DbSet<ScriptedReviews.Watchlists.Watchlist> Watchlists { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<ApiMonitoringLog> ApiMonitoringLogs { get; set; }
 
@@ -105,11 +105,14 @@ public class ScriptedReviewsDbContext :
             s.ConfigureByConvention();  //auto configure for base class props
         });
 
-        builder.Entity<Watchlist>(s =>
+        builder.Entity<ScriptedReviews.Watchlists.Watchlist>(b =>
         {
-            s.ToTable(ScriptedReviewsConsts.DbTablePrefix + "Watchlists",
+            b.ToTable(ScriptedReviewsConsts.DbTablePrefix + "Watchlists",
                 ScriptedReviewsConsts.DbSchema);
-            s.ConfigureByConvention();  //auto configure for base class props
+            b.ConfigureByConvention();
+            b.HasMany(w => w.Series)
+             .WithMany()
+             .UsingEntity(j => j.ToTable("AppWatchListSeries"));
         });
 
         builder.Entity<Notification>(b =>

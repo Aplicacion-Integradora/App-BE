@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Net.Http;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -26,6 +27,7 @@ namespace ScriptedReviews.Series
             _seriesApiService = seriesApiService;
         }
 
+        [HttpGet("api/app/serie/search")]
         public async Task<ICollection<SerieDto>> SearchAsync(string? title, string? genre)
         {
             return await _seriesApiService.GetSeriesAsync(title, genre);
