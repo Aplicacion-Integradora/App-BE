@@ -104,14 +104,27 @@ namespace ScriptedReviews.Notifications
 
                     foreach (var watchlist in watchlists)
                     {
-                        await _notificationRepository.InsertAsync(new Notification
+                        // Verificar si ya existe una notificación no leída para esta serie
+                        var existingNotification = await _notificationRepository.FirstOrDefaultAsync(
+                            n => n.UserId == watchlist.UserId 
+                                 && n.Description.Contains(serieLocal.Title) 
+                                 && !n.WasRead);
+
+                        if (existingNotification == null)
                         {
-                            UserId = watchlist.UserId,
-                            Description = $"¡Nueva temporada disponible! '{serieLocal.Title}' tiene nueva temporada.",
-                            Type = "NewSeason",
-                            SentTime = DateTime.Now,
-                            WasRead = false
-                        });
+                            await _notificationRepository.InsertAsync(new Notification
+                            {
+                                UserId = watchlist.UserId,
+                                Description = $"¡Nueva temporada disponible! '{serieLocal.Title}' tiene nueva temporada.",
+                                Type = "NewSeason",
+                                SentTime = DateTime.Now,
+                                WasRead = false
+                            });
+                        }
+
+                        // Marcar la watchlist con cambios
+                        watchlist.HasChanges = true;
+                        await _watchlistRepository.UpdateAsync(watchlist);
                     }
 
                     // Actualizamos la serie local para evitar notificaciones duplicadas

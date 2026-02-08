@@ -64,12 +64,12 @@ namespace ScriptedReviews.Notifications;
         {
             await WithUnitOfWorkAsync(async () =>
             {
-                var watchlist = new Watchlist
+                var watchlist = new Watchlist(myUserId)
                 {
                     Name = "Mis Favoritas",
-                    UserId = myUserId,
                     HasChanges = true,
-                    Series = new List<Serie>
+                };
+                watchlist.Series = new List<Serie>
                 {
                     new Serie
                     {
@@ -108,7 +108,6 @@ namespace ScriptedReviews.Notifications;
                         UserId = myUserId,
                         Seasons = new List<Season>()
                     }
-                }
                 };
 
                 await _watchlistRepository.InsertAsync(watchlist, autoSave: true);

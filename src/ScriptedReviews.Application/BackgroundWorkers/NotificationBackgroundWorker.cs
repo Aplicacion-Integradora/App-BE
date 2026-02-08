@@ -55,8 +55,8 @@ namespace ScriptedReviews.BackgroundWorkers
                     // 4. LÓGICA DE COMPARACIÓN (El corazón de la notificación)
                     int temporadasEnApi = infoApi.TotalSeasons;
 
-                    // Contamos cuántas temporadas tenemos nosotros guardadas
-                    int temporadasLocales = serieLocal.Seasons?.Count ?? 0;
+                    // Usamos TotalSeasons como fuente canónica
+                    int temporadasLocales = serieLocal.TotalSeasons;
 
                     // Si la API dice que hay MÁS temporadas de las que tenemos... ¡Noticia!
                     if (temporadasEnApi > temporadasLocales)
@@ -67,33 +67,35 @@ namespace ScriptedReviews.BackgroundWorkers
                             .Where(w => w.Series.Any(s => s.Id == serieLocal.Id))
                             .ToList();
 
-                        // B. Crear notificaciones para esos usuarios
+                        // B. Crear notificaciones para esos usuarios y marcar HasChanges
                         foreach (var watchlist in watchlistsConLaSerie)
                         {
-                            await notificationRepository.InsertAsync(new Notification
+                            // Verificar si ya existe una notificación no leída para esta serie
+                            var existingNotification = await notificationRepository.FirstOrDefaultAsync(
+                                n => n.UserId == watchlist.UserId 
+                                     && n.Description.Contains(serieLocal.Title) 
+                                     && !n.WasRead);
+
+                            if (existingNotification == null)
                             {
-                                UserId = watchlist.UserId,
-                                Description = $"¡Nueva temporada disponible! '{serieLocal.Title}' ahora tiene {temporadasEnApi} temporadas.",
-                                Type = "System",
-                                SentTime = DateTime.Now,
-                                WasRead = false
-                            });
+                                await notificationRepository.InsertAsync(new Notification
+                                {
+                                    UserId = watchlist.UserId,
+                                    Description = $"¡Nueva temporada disponible! '{serieLocal.Title}' ahora tiene {temporadasEnApi} temporadas.",
+                                    Type = "NewSeason",
+                                    SentTime = DateTime.Now,
+                                    WasRead = false
+                                });
+                            }
+
+                            // Marcar la watchlist con cambios
+                            watchlist.HasChanges = true;
+                            await watchlistRepository.UpdateAsync(watchlist);
                         }
 
-                        // C. ACTUALIZACIÓN CRÍTICA (Para no notificar lo mismo mañana)
-                        // Aquí debemos actualizar la serie local con la nueva data.
-                        // Como es complejo mapear todo a mano, un truco rápido es:
-                        // "Marcar" que ya vimos estas temporadas o actualizar el contador si tuvieras uno simple.
-
-                        // Lo ideal: Usar ObjectMapper para actualizar la entidad completa
-                        // ObjectMapper.Map(infoApi, serieLocal); 
-
-                        // Lo mínimo viable por ahora (para que no se repita el bucle):
-                        // Tendrías que agregar las temporadas faltantes a serieLocal.Seasons
-                        // Ojo: Esto requiere que implementes la lógica de agregar los objetos Season.
-
-                        // EJEMPLO DE PARCHE TEMPORAL (Solo para probar la notificación):
-                        // Console.WriteLine("Se detectó nueva temporada, pero falta lógica de guardado.");
+                        // C. Actualizar la serie local para evitar notificaciones duplicadas
+                        serieLocal.TotalSeasons = temporadasEnApi;
+                        await serieRepository.UpdateAsync(serieLocal);
                     }
                 }
                 catch (Exception ex)

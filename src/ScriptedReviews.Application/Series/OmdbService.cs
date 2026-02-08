@@ -103,6 +103,92 @@ namespace ScriptedReviews.Series
             public string Writer { get; set; }
         }
 
+        // DTOs para respuesta de temporadas de OMDB
+        private class OmdbSeasonResponse
+        {
+            public string Title { get; set; }
+            public string Season { get; set; }
+            public string totalSeasons { get; set; }
+            public List<OmdbEpisode> Episodes { get; set; }
+            public string Response { get; set; }
+        }
+
+        private class OmdbEpisode
+        {
+            public string Title { get; set; }
+            public string Released { get; set; }
+            public string Episode { get; set; }
+            public string imdbRating { get; set; }
+            public string imdbID { get; set; }
+        }
+
+        /// <summary>
+        /// Obtiene todas las temporadas de una serie desde OMDB API
+        /// </summary>
+        private async Task<List<ScriptedReviews.Seasons.Season>> FetchSeasonsAsync(string imdbId, int totalSeasons)
+        {
+            var seasons = new List<ScriptedReviews.Seasons.Season>();
+            var apiKey = _configuration["OmdbApiKey"];
+
+            for (int seasonNum = 1; seasonNum <= totalSeasons; seasonNum++)
+            {
+                try
+                {
+                    string url = $"http://www.omdbapi.com/?i={imdbId}&Season={seasonNum}&apikey={apiKey}";
+                    Logger.LogInformation("Fetching season {SeasonNum} from OMDB: {Url}", seasonNum, url);
+
+                    using (var client = new HttpClient())
+                    {
+                        var response = await client.GetAsync(url);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            Logger.LogWarning("Failed to fetch season {SeasonNum}, status: {StatusCode}", seasonNum, response.StatusCode);
+                            continue;
+                        }
+
+                        var jsonResult = await response.Content.ReadAsStringAsync();
+                        var seasonData = JsonSerializer.Deserialize<OmdbSeasonResponse>(jsonResult, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                        if (seasonData == null || seasonData.Response == "False" || seasonData.Episodes == null)
+                        {
+                            Logger.LogWarning("No episode data for season {SeasonNum}", seasonNum);
+                            continue;
+                        }
+
+                        // Crear descripción a partir de los títulos de los episodios
+                        var episodeTitles = seasonData.Episodes.Select(e => e.Title).ToList();
+                        var description = string.Join(", ", episodeTitles.Take(5)); // Primeros 5 títulos
+                        if (episodeTitles.Count > 5)
+                        {
+                            description += $"... y {episodeTitles.Count - 5} más";
+                        }
+
+                        // Obtener fecha de lanzamiento del primer episodio
+                        var firstEpisode = seasonData.Episodes.FirstOrDefault();
+                        var releaseDate = firstEpisode?.Released ?? "N/A";
+
+                        var season = new ScriptedReviews.Seasons.Season
+                        {
+                            Number = seasonNum,
+                            Description = description,
+                            ReleaseDate = releaseDate,
+                            Chapters = seasonData.Episodes.Count.ToString()
+                        };
+
+                        seasons.Add(season);
+                        Logger.LogInformation("Season {SeasonNum} fetched: {Chapters} episodes", seasonNum, season.Chapters);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Error fetching season {SeasonNum}", seasonNum);
+                    // Continuar con la siguiente temporada
+                }
+            }
+
+            return seasons;
+        }
+
         public async Task<SerieDto> ImportarSerieAsync(string titulo)
         {
             Logger.LogInformation("=== ImportarSerieAsync STARTED for titulo: {Titulo} ===", titulo);
@@ -198,7 +284,20 @@ namespace ScriptedReviews.Series
 
                 Logger.LogInformation("Created Serie entity: Title={Title}, ImdbId={ImdbId}", nuevaSerie.Title, nuevaSerie.ImdbId);
 
-                // 4. Guardar en Base de Datos 
+                // 4. Obtener información de temporadas desde OMDB
+                if (nuevaSerie.TotalSeasons > 0)
+                {
+                    Logger.LogInformation("Fetching {TotalSeasons} seasons from OMDB...", nuevaSerie.TotalSeasons);
+                    var fetchedSeasons = await FetchSeasonsAsync(nuevaSerie.ImdbId, nuevaSerie.TotalSeasons);
+                    nuevaSerie.Seasons = fetchedSeasons;
+                    Logger.LogInformation("Fetched {Count} seasons successfully", fetchedSeasons.Count);
+                }
+                else
+                {
+                    nuevaSerie.Seasons = new List<ScriptedReviews.Seasons.Season>();
+                }
+
+                // 5. Guardar en Base de Datos 
                 Logger.LogInformation("Inserting serie into database...");
                 var serieInsertada = await _serieRepository.InsertAsync(nuevaSerie, autoSave: true);
                 Logger.LogInformation("Serie inserted with Id: {Id}", serieInsertada?.Id ?? -1);

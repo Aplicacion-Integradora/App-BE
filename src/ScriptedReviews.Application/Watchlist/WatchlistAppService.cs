@@ -20,24 +20,24 @@ using System.Linq.Expressions;
 namespace ScriptedReviews.Watchlists
 {
     // Heredamos de ApplicationService e implementamos la interfaz
-    public class WatchListAppService : ApplicationService, IWatchListAppService
+    public class WatchlistAppService : ApplicationService, IWatchlistAppService
 
     {
         // Usamos IRepository<Watchlist, int> para asegurar que compile si no tienes la interfaz personalizada
-        private readonly IRepository<ScriptedReviews.Watchlists.Watchlist, int> _watchListRepository;
+        private readonly IRepository<ScriptedReviews.Watchlists.Watchlist, int> _watchlistRepository;
         private readonly IRepository<Serie, int> _serieRepository;
         private readonly ICurrentUser _currentUser;
         private readonly IMapper _mapper;
-        private readonly ILogger<WatchListAppService> _logger;
+        private readonly ILogger<WatchlistAppService> _logger;
 
-        public WatchListAppService(
-            ILogger<WatchListAppService> logger,
-            IRepository<ScriptedReviews.Watchlists.Watchlist, int> watchListRepository, // Ajustado a genérico para seguridad
+        public WatchlistAppService(
+            ILogger<WatchlistAppService> logger,
+            IRepository<ScriptedReviews.Watchlists.Watchlist, int> watchlistRepository, // Ajustado a genérico para seguridad
             IRepository<Serie, int> serieRepository,
             IMapper mapper,
             ICurrentUser currentUser)
         {
-            _watchListRepository = watchListRepository;
+            _watchlistRepository = watchlistRepository;
             _serieRepository = serieRepository;
             _currentUser = currentUser;
             _mapper = mapper;
@@ -65,7 +65,7 @@ namespace ScriptedReviews.Watchlists
         {
             try
             {
-                var query = await _watchListRepository.GetQueryableAsync();
+                var query = await _watchlistRepository.GetQueryableAsync();
 
                 var watchlist = await query
                     .Include(w => w.Series) // Carga la lista List<Serie>
@@ -97,7 +97,7 @@ namespace ScriptedReviews.Watchlists
             }
 
             // 2. Obtener la watchlist del usuario actual
-            var query = await _watchListRepository.GetQueryableAsync();
+            var query = await _watchlistRepository.GetQueryableAsync();
             var watchlist = await query
                 .Include(w => w.Series)
                 .FirstOrDefaultAsync(w => w.UserId == CurrentUserId);
@@ -105,15 +105,18 @@ namespace ScriptedReviews.Watchlists
             // 3. Si no tiene lista, se la creamos
             if (watchlist == null)
             {
-                watchlist = new ScriptedReviews.Watchlists.Watchlist(CurrentUserId);
-                await _watchListRepository.InsertAsync(watchlist);
+                watchlist = new ScriptedReviews.Watchlists.Watchlist(CurrentUserId)
+                {
+                    Name = "Mi Lista" // Nombre por defecto
+                };
+                await _watchlistRepository.InsertAsync(watchlist);
             }
 
             // 4. Agregamos la serie si no está duplicada
             if (!watchlist.Series.Any(s => s.Id == serieId))
             {
                 watchlist.Series.Add(serie);
-                await _watchListRepository.UpdateAsync(watchlist);
+                await _watchlistRepository.UpdateAsync(watchlist);
                 _logger.LogInformation($"Serie {serieId} agregada a la lista del usuario {CurrentUserId}");
             }
             else
@@ -125,7 +128,7 @@ namespace ScriptedReviews.Watchlists
         // TAREA 3.4: Eliminar series de la lista de seguimiento
         public async Task RemoveSerieAsync(int serieId)
         {
-            var query = await _watchListRepository.GetQueryableAsync();
+            var query = await _watchlistRepository.GetQueryableAsync();
             var watchlist = await query
                 .Include(w => w.Series)
                 .FirstOrDefaultAsync(w => w.UserId == CurrentUserId);
@@ -137,17 +140,10 @@ namespace ScriptedReviews.Watchlists
                 if (serieToRemove != null)
                 {
                     watchlist.Series.Remove(serieToRemove);
-                    await _watchListRepository.UpdateAsync(watchlist);
+                    await _watchlistRepository.UpdateAsync(watchlist);
                     _logger.LogInformation($"Serie {serieId} eliminada de la lista del usuario {CurrentUserId}");
                 }
             }
-        }
-
-        private readonly IRepository<Watchlist, int> _watchlistRepository;
-
-        public WatchlistAppService(IRepository<Watchlist, int> watchlistRepository)
-        {
-            _watchlistRepository = watchlistRepository;
         }
 
         // Método para obtener series con cambios
@@ -160,6 +156,20 @@ namespace ScriptedReviews.Watchlists
 
             return ObjectMapper.Map<List<Watchlist>, List<WatchlistDto>>(seriesWithChanges);
             //return ObjectMapper.Map<List<WatchlistDto>>(seriesWithChanges);
+        }
+
+        // Método para limpiar el flag HasChanges del usuario actual
+        public async Task ClearChangesAsync()
+        {
+            var query = await _watchlistRepository.GetQueryableAsync();
+            var watchlist = await query.FirstOrDefaultAsync(w => w.UserId == CurrentUserId);
+
+            if (watchlist != null && watchlist.HasChanges)
+            {
+                watchlist.HasChanges = false;
+                await _watchlistRepository.UpdateAsync(watchlist);
+                _logger.LogInformation($"HasChanges limpiado para el usuario {CurrentUserId}");
+            }
         }
     }
 }
