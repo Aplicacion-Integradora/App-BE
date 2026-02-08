@@ -14,6 +14,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{04DBDB01-70F4-4E06-B468-8F87850B22BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptedReviews.Application.Tests", "test\ScriptedReviews.Application.Tests\ScriptedReviews.Application.Tests.csproj", "{50B2631D-129C-47B3-A587-029CCD6099BC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1FE30EB9-74A9-47F5-A9F6-7B1FAB672D81} = {1FE30EB9-74A9-47F5-A9F6-7B1FAB672D81}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptedReviews.Domain.Shared", "src\ScriptedReviews.Domain.Shared\ScriptedReviews.Domain.Shared.csproj", "{42F719ED-8413-4895-B5B4-5AB56079BC66}"
 EndProject

@@ -1,4 +1,8 @@
-﻿using Volo.Abp.Modularity;
+using Volo.Abp;
+using Volo.Abp.Modularity;
+using Volo.Abp.Testing;
+using Volo.Abp.Modularity;
+using ScriptedReviews.EntityFrameworkCore;
 
 namespace ScriptedReviews;
 
@@ -8,5 +12,4 @@ namespace ScriptedReviews;
 )]
 public class ScriptedReviewsApplicationTestModule : AbpModule
 {
-
 }

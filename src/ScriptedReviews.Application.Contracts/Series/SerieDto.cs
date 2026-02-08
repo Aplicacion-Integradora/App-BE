@@ -9,6 +9,7 @@ namespace ScriptedReviews.Series
 {
     public class SerieDto: EntityDto<int>
     {
+        public int Id { get; set; }
         public  string Title { get; set; }
         public  string Description { get; set; }
         public  string Image { get; set; }
@@ -21,8 +22,8 @@ namespace ScriptedReviews.Series
         public  string Director { get; set; }
         public  string Cast { get; set; }
         public  string Writer { get; set; }
-
-        // public  List<Season> Seasons { get; set; }
+        public string ImdbId { get; set; }
+        public int TotalSeasons { get; set; }
 
     }
 }

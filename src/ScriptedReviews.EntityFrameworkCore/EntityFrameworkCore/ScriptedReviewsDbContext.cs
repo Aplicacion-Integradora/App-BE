@@ -1,4 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using ScriptedReviews.Chapters;
+using ScriptedReviews.Ratings;
+using ScriptedReviews.Seasons;
+using ScriptedReviews.Series;
+using ScriptedReviews.Watchlists;
+using ScriptedReviews.Notifications;
+using ScriptedReviews.MonitoringLogs;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
@@ -9,15 +17,11 @@ using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
+using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
-using ScriptedReviews.Series;
-using ScriptedReviews.Chapters;
-using ScriptedReviews.Seasons;
-using ScriptedReviews.Watchlists;
 
 
 namespace ScriptedReviews.EntityFrameworkCore;
@@ -32,10 +36,12 @@ public class ScriptedReviewsDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Serie> Series { get; set; }
+    public DbSet<Rating> Ratings { get; set; }
     public DbSet<Season> Seasons { get; set; }
     public DbSet<Chapter> Chapters { get; set; }
     public DbSet<ScriptedReviews.Watchlists.Watchlist> Watchlists { get; set; }
-
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<ApiMonitoringLog> ApiMonitoringLogs { get; set; }
 
     #region Entities from the modules
 
@@ -107,6 +113,40 @@ public class ScriptedReviewsDbContext :
             b.HasMany(w => w.Series)
              .WithMany()
              .UsingEntity(j => j.ToTable("AppWatchListSeries"));
+        });
+
+        builder.Entity<Notification>(b =>
+        {
+            b.ToTable("Notifications");
+            b.Property(n => n.Description).IsRequired().HasMaxLength(1024);
+            b.Property(n => n.Type).IsRequired().HasMaxLength(128);
+            b.Property(n => n.WasRead).HasDefaultValue(false);
+        });
+
+        builder.Entity<Rating>(b =>
+        {
+            b.ToTable("Ratings");
+            b.Property(r => r.RatingNumber).IsRequired();
+            b.Property(r => r.Comment).HasMaxLength(1000);
+            b.HasOne(r => r.Serie)
+                .WithMany()
+                .HasForeignKey(r => r.SeriesId)
+                .OnDelete(DeleteBehavior.Cascade);
+            b.ConfigureByConvention();
+        });
+
+        builder.Entity<ApiMonitoringLog>(b =>
+        {
+            b.ToTable("ApiMonitoringLogs");
+            b.HasKey(x => x.Id);
+            b.Property(x => x.Id).ValueGeneratedOnAdd(); //  Esto permite que SQL Server genere automáticamente el ID
+            b.Property(a => a.Endpoint).IsRequired().HasMaxLength(256);
+            b.Property(a => a.HttpMethod).IsRequired().HasMaxLength(10);
+            b.Property(a => a.ResponseTime).IsRequired();
+            b.Property(a => a.HttpStatusCode).IsRequired();
+            b.Property(a => a.UserAgent).HasMaxLength(512);
+            b.Property(a => a.IPAddress).HasMaxLength(45);
+            b.Property(a => a.CreatedAt).IsRequired();
         });
 
         builder.ConfigurePermissionManagement();

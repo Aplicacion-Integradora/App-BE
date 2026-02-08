@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore; // Necesario para .Include()
 using Microsoft.Extensions.Logging;
 using ScriptedReviews.Series;
+using ScriptedReviews.Watchlists.Dtos;
 using ScriptedReviews.Watchlists;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,15 @@ using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Users;
+using Volo.Abp.Application.Dtos;
+using System.Linq.Expressions;
 
-namespace ScriptedReviews.Watchlist
+
+namespace ScriptedReviews.Watchlists
 {
     // Heredamos de ApplicationService e implementamos la interfaz
     public class WatchListAppService : ApplicationService, IWatchListAppService
+
     {
         // Usamos IRepository<Watchlist, int> para asegurar que compile si no tienes la interfaz personalizada
         private readonly IRepository<ScriptedReviews.Watchlists.Watchlist, int> _watchListRepository;
@@ -136,6 +141,25 @@ namespace ScriptedReviews.Watchlist
                     _logger.LogInformation($"Serie {serieId} eliminada de la lista del usuario {CurrentUserId}");
                 }
             }
+        }
+
+        private readonly IRepository<Watchlist, int> _watchlistRepository;
+
+        public WatchlistAppService(IRepository<Watchlist, int> watchlistRepository)
+        {
+            _watchlistRepository = watchlistRepository;
+        }
+
+        // Método para obtener series con cambios
+        public async Task<List<WatchlistDto>> GetSeriesWithChangesAsync()
+        {
+            var queryableSeries = await _watchlistRepository.GetQueryableAsync();
+            var seriesWithChanges = queryableSeries
+                .Where(s => s.HasChanges)
+                .ToList();
+
+            return ObjectMapper.Map<List<Watchlist>, List<WatchlistDto>>(seriesWithChanges);
+            //return ObjectMapper.Map<List<WatchlistDto>>(seriesWithChanges);
         }
     }
 }

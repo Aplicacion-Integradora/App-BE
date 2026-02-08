@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using NSubstitute;
+using ScriptedReviews.Series;
 using Volo.Abp;
 using Volo.Abp.Authorization;
 using Volo.Abp.Autofac;
@@ -25,9 +28,13 @@ public class ScriptedReviewsTestBaseModule : AbpModule
         });
 
         context.Services.AddAlwaysAllowAuthorization();
+
+        var seriesApiMock = Substitute.For<ISeriesApiService>();
+
+        context.Services.Replace(ServiceDescriptor.Singleton<ISeriesApiService>(seriesApiMock));
     }
 
-    public override void OnApplicationInitialization(ApplicationInitializationContext context)
+  /*  public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         SeedTestData(context);
     }
@@ -43,5 +50,5 @@ public class ScriptedReviewsTestBaseModule : AbpModule
                     .SeedAsync();
             }
         });
-    }
+    } */
 }

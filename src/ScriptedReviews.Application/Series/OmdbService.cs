@@ -1,0 +1,225 @@
+﻿using AutoMapper.Internal.Mappers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using ScriptedReviews.Series;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using Volo.Abp;
+using Volo.Abp.Application.Services;
+using Volo.Abp.Domain.Repositories;
+
+
+namespace ScriptedReviews.Series
+{
+    public class OmdbService : ApplicationService, ISeriesApiService
+    {
+        private static readonly string apiKey = "a6754de0"; 
+        private static readonly string baseUrl = "http://www.omdbapi.com/";
+
+        private readonly IConfiguration _configuration;
+        private readonly IRepository<Serie, int> _serieRepository; // Para arreglar el error de 'Repository'
+        private readonly System.Net.Http.HttpClient _httpClient; // Asumo que usas esto
+
+        public OmdbService(
+            IConfiguration configuration,
+            IRepository<Serie, int> serieRepository)
+        {
+            _configuration = configuration;
+            _serieRepository = serieRepository;
+            _httpClient = new System.Net.Http.HttpClient(); // O inyectar IHttpClientFactory idealmente
+        }
+
+        public async Task<ICollection<SerieDto>> GetSeriesAsync(string title, string genre)
+        {
+            using HttpClient client = new HttpClient();
+
+            List<SerieDto> series = new List<SerieDto>();
+
+            string url = $"{baseUrl}?s={title}&apikey={apiKey}&type=series";
+
+            try
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                var searchResponse = JsonSerializer.Deserialize<SearchResponse>(jsonResponse);
+
+                var seriesOmdb = searchResponse?.Search ?? new List<SerieOmdb>();
+
+                foreach (var serieOmdb in seriesOmdb)
+                {
+                    series.Add(new SerieDto { 
+                        Title = serieOmdb.Title,
+                        Image = serieOmdb.Image,
+                        Genre = serieOmdb.Genre,
+                        ReleaseDate = serieOmdb.ReleaseDate,
+                        Duration = serieOmdb.Duration,
+                        Country = serieOmdb.Country,
+                        Director = serieOmdb.Director,
+                        Cast = serieOmdb.Cast,
+                        Writer = serieOmdb.Writer
+                    });
+                }
+
+                return series;
+            }
+            catch (HttpRequestException e)
+            {
+                throw new Exception("Se ha producido un error en la búsqueda de la serie", e);
+            }
+        }
+
+        private class SearchResponse
+        {
+            [JsonPropertyName("Search")]
+            public List<SerieOmdb> Search { get; set; }
+        }
+        private class SerieOmdb
+        {
+            public string Title { get; set; }
+
+            public string Image { get; set; }
+
+            public string Genre { get; set; }
+
+            public string ReleaseDate { get; set; }
+
+            public string Duration { get; set; }
+
+            public string Country { get; set; }
+
+            public string Director { get; set; }
+
+            public string Cast { get; set; }
+
+            public string Writer { get; set; }
+        }
+
+        public async Task<SerieDto> ImportarSerieAsync(string titulo)
+        {
+            Logger.LogInformation("=== ImportarSerieAsync STARTED for titulo: {Titulo} ===", titulo);
+            
+            try
+            {
+                var apiKey = _configuration["OmdbApiKey"];
+                Logger.LogInformation("API Key from config: {ApiKey}", string.IsNullOrEmpty(apiKey) ? "NULL/EMPTY" : apiKey.Substring(0, Math.Min(4, apiKey.Length)) + "...");
+                
+                // 1. Conectar con OMDB (Ahora es el primer paso para obtener el ID único)
+                string url = $"http://www.omdbapi.com/?t={titulo}&apikey={apiKey}";
+                Logger.LogInformation("OMDB URL: {Url}", url);
+                
+                OmdbDto datosExternos;
+
+                using (var client = new HttpClient())
+                {
+                    Logger.LogInformation("Sending HTTP request to OMDB...");
+                    var response = await client.GetAsync(url);
+                    Logger.LogInformation("HTTP Response Status: {StatusCode}", response.StatusCode);
+                    
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        Logger.LogError("HTTP request failed with status: {StatusCode}", response.StatusCode);
+                        throw new UserFriendlyException("Error al conectar con el servidor de películas.");
+                    }
+
+                    var jsonResult = await response.Content.ReadAsStringAsync();
+                    Logger.LogInformation("OMDB JSON Response (first 200 chars): {Json}", jsonResult.Substring(0, Math.Min(200, jsonResult.Length)));
+                    
+                    datosExternos = JsonSerializer.Deserialize<OmdbDto>(jsonResult, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    Logger.LogInformation("Deserialized OmdbDto - Title: {Title}, Response: {Response}, imdbID: {ImdbId}", 
+                        datosExternos?.Title ?? "NULL", 
+                        datosExternos?.Response ?? "NULL",
+                        datosExternos?.imdbID ?? "NULL");
+                }
+
+                if (datosExternos == null || datosExternos.Response == "False")
+                {
+                    Logger.LogWarning("Serie not found in OMDB: {Titulo}", titulo);
+                    throw new UserFriendlyException($"No se encontró la serie: {titulo}");
+                }
+
+                // 2. Verificar si ya existe la serie en la BD usando el ID ÚNICO (ImdbId)
+                Logger.LogInformation("Checking if serie exists in DB with ImdbId: {ImdbId}", datosExternos.imdbID);
+                var existente = await _serieRepository.FirstOrDefaultAsync(x => x.ImdbId == datosExternos.imdbID);
+
+                if (existente != null)
+                {
+                    Logger.LogInformation("Serie already exists in DB with Id: {Id}, mapping to DTO...", existente.Id);
+                    var existingDto = ObjectMapper.Map<Serie, SerieDto>(existente);
+                    Logger.LogInformation("Mapped existing serie to DTO: {DtoNull}", existingDto == null ? "NULL" : "OK");
+                    return existingDto;
+                }
+
+                Logger.LogInformation("Serie not in DB, creating new entity...");
+                
+                // 3. Mapeo Manual: Convertir datos de OMDB a tu Entidad 'Serie'
+                var nuevaSerie = new Serie
+                {
+                    Title = datosExternos.Title ?? "Sin Título",
+                    ImdbId = datosExternos.imdbID,
+                    Genre = datosExternos.Genre ?? "Desconocido",
+
+                    Director = datosExternos.Director != null && datosExternos.Director != "N/A"
+                               ? datosExternos.Director
+                               : "Desconocido",
+
+                    Writer = datosExternos.Writer != null && datosExternos.Writer != "N/A"
+                               ? datosExternos.Writer
+                               : "Desconocido",
+
+                    Language = datosExternos.Language != null && datosExternos.Language != "N/A"
+                               ? datosExternos.Language
+                               : "Original",
+
+                    ReleaseDate = datosExternos.Year ?? "N/A",
+                    Duration = datosExternos.Runtime ?? "N/A",
+                    Image = datosExternos.Poster != "N/A" ? datosExternos.Poster : null,
+                    Country = datosExternos.Country ?? "Desconocido",
+                    Rating = datosExternos.imdbRating ?? "0",
+
+                    Cast = datosExternos.Actors?.Length > 200
+                            ? datosExternos.Actors.Substring(0, 200)
+                            : (datosExternos.Actors ?? "Desconocido"),
+
+                    Description = datosExternos.Plot?.Length > 500
+                                  ? datosExternos.Plot.Substring(0, 500)
+                                  : (datosExternos.Plot ?? "Sin descripción"),
+
+                    TotalSeasons = int.TryParse(datosExternos.totalSeasons, out int seasons) ? seasons : 0
+                };
+
+                Logger.LogInformation("Created Serie entity: Title={Title}, ImdbId={ImdbId}", nuevaSerie.Title, nuevaSerie.ImdbId);
+
+                // 4. Guardar en Base de Datos 
+                Logger.LogInformation("Inserting serie into database...");
+                var serieInsertada = await _serieRepository.InsertAsync(nuevaSerie, autoSave: true);
+                Logger.LogInformation("Serie inserted with Id: {Id}", serieInsertada?.Id ?? -1);
+
+                Logger.LogInformation("Mapping inserted serie to DTO...");
+                var resultDto = ObjectMapper.Map<Serie, SerieDto>(serieInsertada);
+                Logger.LogInformation("ObjectMapper.Map result: {Result}", resultDto == null ? "NULL" : $"OK (Id={resultDto.Id}, Title={resultDto.Title})");
+                
+                Logger.LogInformation("=== ImportarSerieAsync COMPLETED successfully ===");
+                return resultDto;
+            }
+            catch (UserFriendlyException ex)
+            {
+                Logger.LogWarning("UserFriendlyException in ImportarSerieAsync: {Message}", ex.Message);
+                throw; // Re-throw to let ABP handle it
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "UNEXPECTED Exception in ImportarSerieAsync: {Message}", ex.Message);
+                throw; // Re-throw
+            }
+        }
+    }
+}

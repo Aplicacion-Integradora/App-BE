@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Net.Http;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using System.Text.Json;
 
 namespace ScriptedReviews.Series
 {
@@ -15,6 +18,10 @@ namespace ScriptedReviews.Series
     {
 
         private readonly ISeriesApiService _seriesApiService;
+
+        // API Key de OMDB 
+        private const string OmdbApiKey = "35900e06";
+
         public SerieAppService(IRepository<Serie, int> repository, ISeriesApiService seriesApiService) : base(repository)
         { 
             _seriesApiService = seriesApiService;
@@ -27,6 +34,4 @@ namespace ScriptedReviews.Series
         }
     }
 }
-        
-
 

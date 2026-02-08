@@ -1,10 +1,11 @@
+using ScriptedReviews.EntityFrameworkCore;
 using ScriptedReviews.Samples;
 using Xunit;
 
-namespace ScriptedReviews.EntityFrameworkCore.Applications;
+namespace ScriptedReviews.MonitoringLogs;
 
 [Collection(ScriptedReviewsTestConsts.CollectionDefinitionName)]
-public class EfCoreSampleAppServiceTests : SampleAppServiceTests<ScriptedReviewsEntityFrameworkCoreTestModule>
+public class EfCoreApiMonitoringAppServiceTests : ApiMonitoringAppService_Tests<ScriptedReviewsEntityFrameworkCoreTestModule>
 {
 
 }

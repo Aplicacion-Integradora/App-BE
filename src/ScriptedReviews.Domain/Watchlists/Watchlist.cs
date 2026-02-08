@@ -9,7 +9,8 @@ namespace ScriptedReviews.Watchlists
     {
        
         public Guid UserId { get; set; }
-
+        public string Name { get; set; }
+        public bool HasChanges { get; set; }
         public List<Serie> Series { get; set; }
 
         protected Watchlist() { }
@@ -20,5 +21,7 @@ namespace ScriptedReviews.Watchlists
             UserId = userId;
             Series = new List<Serie>();
         }
+
+        
     }
 }
