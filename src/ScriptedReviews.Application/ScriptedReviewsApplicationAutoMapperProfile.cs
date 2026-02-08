@@ -34,5 +34,8 @@ public class ScriptedReviewsApplicationAutoMapperProfile : Profile
 
         //Mapa para Dto de ApiMonitoringLog
         CreateMap<ApiMonitoringLog, ApiMonitoringLogDto>();
+
+        //Mapa para Dto de ErrorLog
+        CreateMap<ErrorLogs.ErrorLog, ErrorLogs.ErrorLogDto>();
     }
 }
