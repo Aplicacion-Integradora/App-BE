@@ -1,7 +1,10 @@
-using ScriptedReviews.ErrorLogs;
+using ScriptedReviews.EntityFrameworkCore;
+using Xunit;
 
-namespace ScriptedReviews.EntityFrameworkCore.Applications.ErrorLogs;
+namespace ScriptedReviews.ErrorLogs;
 
+[Collection(ScriptedReviewsTestConsts.CollectionDefinitionName)]
 public class EfCoreErrorLogAppService_Tests : ErrorLogAppService_Tests<ScriptedReviewsEntityFrameworkCoreTestModule>
 {
+
 }

@@ -1,13 +1,11 @@
 using ScriptedReviews.EntityFrameworkCore;
 using Xunit;
 
-namespace ScriptedReviews.Series
+namespace ScriptedReviews.Series;
+
+[Collection(ScriptedReviewsTestConsts.CollectionDefinitionName)]
+public class EfCoreOmdbServiceImport_Tests : OmdbServiceImport_Tests<ScriptedReviewsEntityFrameworkCoreTestModule>
 {
-    /// <summary>
-    /// EF Core implementation of OmdbServiceImport_Tests for database integration testing
-    /// </summary>
-    [Collection(ScriptedReviewsTestConsts.CollectionDefinitionName)]
-    public class EfCoreOmdbServiceImport_Tests : OmdbServiceImport_Tests<ScriptedReviewsEntityFrameworkCoreTestModule>
-    {
-    }
+
 }
+
