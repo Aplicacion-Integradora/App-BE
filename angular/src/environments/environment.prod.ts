@@ -20,7 +20,7 @@ export const environment = {
   oAuthConfig,
   apis: {
     default: {
-      url: 'http://localhost:44310',
+      url: 'http://localhost:44320',
       rootNamespace: 'ScriptedReviews',
     },
     AbpAccountPublic: {

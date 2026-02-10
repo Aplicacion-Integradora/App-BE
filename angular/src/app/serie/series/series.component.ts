@@ -11,12 +11,12 @@ import { SerieDto, SerieService } from '@proxy/series';
 export class SeriesComponent implements OnInit {
 
   // Esta lista almacenará tanto resultados de BD como de OMDB
-  series: any[] = []; 
+  series: any[] = [];
 
   serieTitle: string = "";
   modoBusqueda: boolean = false; // Para saber si estamos viendo BD o API
 
-  constructor(private serieService: SerieService) {}
+  constructor(private serieService: SerieService) { }
 
   // AL INICIAR: Carga la Operación 2.1 (Base de Datos)
   ngOnInit(): void {
@@ -26,7 +26,7 @@ export class SeriesComponent implements OnInit {
   // OPERACIÓN 2.1: Traer de la Base de Datos interna
   cargarMisSeriesBD() {
     const input = { maxResultCount: 100 } as PagedAndSortedResultRequestDto;
-    
+
     this.serieService.getList(input).subscribe((response) => {
       this.series = response.items;
       this.modoBusqueda = false; // Estamos en modo "Mi Biblioteca"
@@ -38,8 +38,8 @@ export class SeriesComponent implements OnInit {
     if (this.serieTitle.trim()) {
       this.serieService.search(this.serieTitle.trim(), "")
         .subscribe(response => {
-           this.series = response || [];
-           this.modoBusqueda = true; // Estamos en modo "Buscando fuera"
+          this.series = response || [];
+          this.modoBusqueda = true; // Estamos en modo "Buscando fuera"
         });
     } else {
       // Si el usuario limpia el buscador, volvemos a mostrar la BD
@@ -48,13 +48,13 @@ export class SeriesComponent implements OnInit {
   }
 
   // OPERACIÓN 2.2: Guardar (Importar de API a BD)
-  public importarSerie(titulo: string) {
-    this.serieService.importarSerie(titulo).subscribe(() => {
-        // Opcional: Mostrar una notificación de éxito aquí
-        alert(`¡${titulo} guardada en tu colección!`);
-        // Opcional: Limpiar búsqueda y volver a la lista
-        this.serieTitle = "";
-        this.cargarMisSeriesBD();
+  public importarSerie(imdbId: string, title: string) {
+    this.serieService.importarSerie(imdbId).subscribe(() => {
+      // Opcional: Mostrar una notificación de éxito aquí
+      alert(`¡${title} guardada en tu colección!`);
+      // Opcional: Limpiar búsqueda y volver a la lista
+      this.serieTitle = "";
+      this.cargarMisSeriesBD();
     });
   }
 }

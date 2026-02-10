@@ -20,7 +20,7 @@ namespace ScriptedReviews.Series
         private readonly ISeriesApiService _seriesApiService;
 
         // API Key de OMDB 
-        private const string OmdbApiKey = "35900e06";
+        private const string OmdbApiKey = "c3034380";
 
         public SerieAppService(IRepository<Serie, int> repository, ISeriesApiService seriesApiService) : base(repository)
         { 
@@ -31,6 +31,12 @@ namespace ScriptedReviews.Series
         public async Task<ICollection<SerieDto>> SearchAsync(string? title, string? genre)
         {
             return await _seriesApiService.GetSeriesAsync(title, genre);
+        }
+
+        [HttpPost("api/app/serie/importar-serie")]
+        public async Task<SerieDto> ImportarSerieAsync(string imdbId)
+        {
+            return await _seriesApiService.ImportarSerieAsync(imdbId);
         }
     }
 }

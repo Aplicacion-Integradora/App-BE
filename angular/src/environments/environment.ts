@@ -3,7 +3,7 @@ import { Environment } from '@abp/ng.core';
 const baseUrl = 'http://localhost:4200';
 
 const oAuthConfig = {
-  issuer: 'http://localhost:44310/',
+  issuer: 'https://localhost:44320/',
   redirectUri: baseUrl,
   clientId: 'ScriptedReviews_App',
   responseType: 'code',
@@ -20,7 +20,7 @@ export const environment = {
   oAuthConfig,
   apis: {
     default: {
-      url: 'http://localhost:44310',
+      url: 'https://localhost:44320',
       rootNamespace: 'ScriptedReviews',
     },
     AbpAccountPublic: {

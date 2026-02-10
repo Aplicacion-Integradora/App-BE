@@ -19,7 +19,7 @@ namespace ScriptedReviews.Series
 {
     public class OmdbService : ApplicationService, ISeriesApiService
     {
-        private static readonly string apiKey = "a6754de0"; 
+        private static readonly string apiKey = "c3034380"; 
         private static readonly string baseUrl = "http://www.omdbapi.com/";
 
         private readonly IConfiguration _configuration;
@@ -58,6 +58,7 @@ namespace ScriptedReviews.Series
                 {
                     series.Add(new SerieDto { 
                         Title = serieOmdb.Title,
+                        ImdbId = serieOmdb.imdbID, // Mapped
                         Image = serieOmdb.Image,
                         Genre = serieOmdb.Genre,
                         ReleaseDate = serieOmdb.ReleaseDate,
@@ -85,6 +86,8 @@ namespace ScriptedReviews.Series
         private class SerieOmdb
         {
             public string Title { get; set; }
+            
+            public string imdbID { get; set; }
 
             public string Image { get; set; }
 
@@ -128,7 +131,7 @@ namespace ScriptedReviews.Series
         private async Task<List<ScriptedReviews.Seasons.Season>> FetchSeasonsAsync(string imdbId, int totalSeasons)
         {
             var seasons = new List<ScriptedReviews.Seasons.Season>();
-            var apiKey = _configuration["OmdbApiKey"];
+            var apiKey = _configuration["OMDB:ApiKey"];
 
             for (int seasonNum = 1; seasonNum <= totalSeasons; seasonNum++)
             {
@@ -189,17 +192,17 @@ namespace ScriptedReviews.Series
             return seasons;
         }
 
-        public async Task<SerieDto> ImportarSerieAsync(string titulo)
+        public async Task<SerieDto> ImportarSerieAsync(string imdbId)
         {
-            Logger.LogInformation("=== ImportarSerieAsync STARTED for titulo: {Titulo} ===", titulo);
+            Logger.LogInformation("=== ImportarSerieAsync STARTED for imdbId: {ImdbId} ===", imdbId);
             
             try
             {
-                var apiKey = _configuration["OmdbApiKey"];
+                var apiKey = _configuration["OMDB:ApiKey"];
                 Logger.LogInformation("API Key from config: {ApiKey}", string.IsNullOrEmpty(apiKey) ? "NULL/EMPTY" : apiKey.Substring(0, Math.Min(4, apiKey.Length)) + "...");
                 
-                // 1. Conectar con OMDB (Ahora es el primer paso para obtener el ID único)
-                string url = $"http://www.omdbapi.com/?t={titulo}&apikey={apiKey}";
+                // 1. Conectar con OMDB usando ID (Más preciso)
+                string url = $"http://www.omdbapi.com/?i={imdbId}&apikey={apiKey}";
                 Logger.LogInformation("OMDB URL: {Url}", url);
                 
                 OmdbDto datosExternos;
@@ -213,7 +216,7 @@ namespace ScriptedReviews.Series
                     if (!response.IsSuccessStatusCode)
                     {
                         Logger.LogError("HTTP request failed with status: {StatusCode}", response.StatusCode);
-                        throw new UserFriendlyException("Error al conectar con el servidor de películas.");
+                        throw new UserFriendlyException("Error al conectar con el servidor de series.");
                     }
 
                     var jsonResult = await response.Content.ReadAsStringAsync();
@@ -228,8 +231,8 @@ namespace ScriptedReviews.Series
 
                 if (datosExternos == null || datosExternos.Response == "False")
                 {
-                    Logger.LogWarning("Serie not found in OMDB: {Titulo}", titulo);
-                    throw new UserFriendlyException($"No se encontró la serie: {titulo}");
+                    Logger.LogWarning("Serie not found in OMDB: {ImdbId}", imdbId);
+                    throw new UserFriendlyException($"No se encontró la serie con ID: {imdbId}");
                 }
 
                 // 2. Verificar si ya existe la serie en la BD usando el ID ÚNICO (ImdbId)
