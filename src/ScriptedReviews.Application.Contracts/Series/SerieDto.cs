@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
+using ScriptedReviews.Seasons;
 
 namespace ScriptedReviews.Series
 {
@@ -24,6 +25,8 @@ namespace ScriptedReviews.Series
         public  string Writer { get; set; }
         public string ImdbId { get; set; }
         public int TotalSeasons { get; set; }
+
+        public List<SeasonDto> Seasons { get; set; }
 
     }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 // Importamos PagedAndSortedResultRequestDto para poder pedir la lista a ABP
 import { PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import { SerieDto, SerieService } from '@proxy/series';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-series',
@@ -16,7 +17,7 @@ export class SeriesComponent implements OnInit {
   serieTitle: string = "";
   modoBusqueda: boolean = false; // Para saber si estamos viendo BD o API
 
-  constructor(private serieService: SerieService) { }
+  constructor(private serieService: SerieService, private modalService: NgbModal) { }
 
   // AL INICIAR: Carga la Operación 2.1 (Base de Datos)
   ngOnInit(): void {
@@ -55,6 +56,16 @@ export class SeriesComponent implements OnInit {
       // Opcional: Limpiar búsqueda y volver a la lista
       this.serieTitle = "";
       this.cargarMisSeriesBD();
+    });
+  }
+
+  // OPERACIÓN: Ver Detalles
+  selectedSerie: SerieDto = {} as SerieDto;
+
+  openDetails(content: any, serieId: number) {
+    this.serieService.get(serieId).subscribe(serie => {
+      this.selectedSerie = serie;
+      this.modalService.open(content, { size: 'lg', scrollable: true });
     });
   }
 }

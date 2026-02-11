@@ -47,6 +47,10 @@
           ⬇️ Importar a BD
         </button>
 
+        <button *ngIf="!modoBusqueda" class="btn btn-sm btn-info me-2" (click)="openDetails(detailsModal, row.id)">
+          👀 Ver Detalles
+        </button>
+
         <span *ngIf="!modoBusqueda" class="badge bg-secondary">
           ✅ En Biblioteca
         </span>
@@ -61,3 +65,45 @@
   </div>
 
 </div>
+
+<!-- Modal de Detalles -->
+<ng-template #detailsModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ selectedSerie.title }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-4 text-center">
+        <img *ngIf="selectedSerie.image && selectedSerie.image !== 'N/A'" [src]="selectedSerie.image" alt="Poster"
+          class="img-fluid rounded shadow" />
+      </div>
+      <div class="col-md-8">
+        <p><strong>Descripción:</strong> {{ selectedSerie.description }}</p>
+        <p><strong>Género:</strong> {{ selectedSerie.genre }}</p>
+        <p><strong>Año:</strong> {{ selectedSerie.releaseDate }}</p>
+        <p><strong>Rating:</strong> {{ selectedSerie.rating }}</p>
+        <p><strong>Actores:</strong> {{ selectedSerie.cast }}</p>
+        <p><strong>País:</strong> {{ selectedSerie.country }}</p>
+        <p><strong>Director:</strong> {{ selectedSerie.director }}</p>
+        <p><strong>Escritor:</strong> {{ selectedSerie.writer }}</p>
+      </div>
+    </div>
+
+    <hr />
+    <h5>Temporadas ({{ selectedSerie.seasons?.length || 0 }})</h5>
+
+    <div *ngFor="let season of selectedSerie.seasons" class="card mb-2">
+      <div class="card-body">
+        <h6 class="card-title">Temporada {{ season.number }}</h6>
+        <p class="card-text text-muted">{{ season.description }}</p>
+        <p class="small">Lanzamiento: {{ season.releaseDate }}</p>
+        <p><strong>Capítulos:</strong> {{ season.chapters }}</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Cerrar</button>
+  </div>
+</ng-template>

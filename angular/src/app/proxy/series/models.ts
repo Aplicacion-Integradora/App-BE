@@ -9,6 +9,13 @@ export interface CreateUpdateSerieDto {
   director?: string;
 }
 
+export interface SeasonDto extends EntityDto<number> {
+  number?: number;
+  description?: string;
+  releaseDate?: string;
+  chapters?: string;
+}
+
 export interface SerieDto extends EntityDto<number> {
   title?: string;
   description?: string;
@@ -24,4 +31,5 @@ export interface SerieDto extends EntityDto<number> {
   writer?: string;
   imdbId?: string;
   totalSeasons?: number;
+  seasons?: SeasonDto[];
 }

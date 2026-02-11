@@ -1,0 +1,14 @@
+  Determinando los proyectos que se van a restaurar...
+  Todos los proyectos están actualizados para la restauración.
+  ScriptedReviews.Domain.Shared -> C:\Users\pablo\OneDrive\Escritorio\ScriptedReviews\App-BE\src\ScriptedReviews.Domain.Shared\bin\Debug\net8.0\ScriptedReviews.Domain.Shared.dll
+C:\Users\pablo\OneDrive\Escritorio\ScriptedReviews\App-BE\src\ScriptedReviews.Application.Contracts\Seasons\SeasonDto.cs(9,30): error CS0246: El nombre del tipo o del espacio de nombres 'EntityDto<>' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [C:\Users\pablo\OneDrive\Escritorio\ScriptedReviews\App-BE\src\ScriptedReviews.Application.Contracts\ScriptedReviews.Application.Contracts.csproj]
+C:\Users\pablo\OneDrive\Escritorio\ScriptedReviews\App-BE\src\ScriptedReviews.Application.Contracts\Series\SerieDto.cs(13,20): warning CS0108: 'SerieDto.Id' oculta el miembro heredado 'EntityDto<int>.Id'. Use la palabra clave new si su intención era ocultarlo. [C:\Users\pablo\OneDrive\Escritorio\ScriptedReviews\App-BE\src\ScriptedReviews.Application.Contracts\ScriptedReviews.Application.Contracts.csproj]
+
+ERROR al compilar.
+
+C:\Users\pablo\OneDrive\Escritorio\ScriptedReviews\App-BE\src\ScriptedReviews.Application.Contracts\Series\SerieDto.cs(13,20): warning CS0108: 'SerieDto.Id' oculta el miembro heredado 'EntityDto<int>.Id'. Use la palabra clave new si su intención era ocultarlo. [C:\Users\pablo\OneDrive\Escritorio\ScriptedReviews\App-BE\src\ScriptedReviews.Application.Contracts\ScriptedReviews.Application.Contracts.csproj]
+C:\Users\pablo\OneDrive\Escritorio\ScriptedReviews\App-BE\src\ScriptedReviews.Application.Contracts\Seasons\SeasonDto.cs(9,30): error CS0246: El nombre del tipo o del espacio de nombres 'EntityDto<>' no se encontró (¿falta una directiva using o una referencia de ensamblado?) [C:\Users\pablo\OneDrive\Escritorio\ScriptedReviews\App-BE\src\ScriptedReviews.Application.Contracts\ScriptedReviews.Application.Contracts.csproj]
+    1 Advertencia(s)
+    1 Errores
+
+Tiempo transcurrido 00:00:13.38

@@ -241,10 +241,8 @@ namespace ScriptedReviews.Series
 
                 if (existente != null)
                 {
-                    Logger.LogInformation("Serie already exists in DB with Id: {Id}, mapping to DTO...", existente.Id);
-                    var existingDto = ObjectMapper.Map<Serie, SerieDto>(existente);
-                    Logger.LogInformation("Mapped existing serie to DTO: {DtoNull}", existingDto == null ? "NULL" : "OK");
-                    return existingDto;
+                    Logger.LogInformation("Serie already exists in DB with Id: {Id}", existente.Id);
+                    throw new UserFriendlyException("La serie ya está almacenada en la base de datos");
                 }
 
                 Logger.LogInformation("Serie not in DB, creating new entity...");
