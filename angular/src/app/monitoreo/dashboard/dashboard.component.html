@@ -1,0 +1,47 @@
+<div class="card">
+  <div class="card-header">
+    <h3>📊 Panel de Monitoreo </h3>
+  </div>
+  <div class="card-body">
+    
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="p-3 bg-primary text-white rounded text-center">
+          <h2>{{ stats.totalPeticiones }}</h2>
+          <small>Peticiones API</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 bg-success text-white rounded text-center">
+          <h2>{{ stats.tiempoPromedio }} ms</h2>
+          <small>Tiempo Respuesta Promedio</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 bg-danger text-white rounded text-center">
+          <h2>{{ stats.totalErrores }}</h2>
+          <small>Errores Totales</small>
+        </div>
+      </div>
+    </div>
+
+    <h4>Últimos Errores</h4>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Mensaje</th>
+          <th>Código</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let error of errorLogs">
+          <td>{{ error.createdAt | date:'short' }}</td>
+          <td>{{ error.message }}</td>
+          <td><span class="badge bg-danger">{{ error.httpStatusCode }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
