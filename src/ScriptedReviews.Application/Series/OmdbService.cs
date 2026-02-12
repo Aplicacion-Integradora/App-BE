@@ -54,20 +54,65 @@ namespace ScriptedReviews.Series
 
                 var seriesOmdb = searchResponse?.Search ?? new List<SerieOmdb>();
 
-                foreach (var serieOmdb in seriesOmdb)
+                // Si hay filtro de GÉNERO, necesitamos obtener los detalles de cada serie
+                // porque la búsqueda básica no devuelve el género.
+                if (!string.IsNullOrEmpty(genre))
                 {
-                    series.Add(new SerieDto { 
-                        Title = serieOmdb.Title,
-                        ImdbId = serieOmdb.imdbID, // Mapped
-                        Image = serieOmdb.Image,
-                        Genre = serieOmdb.Genre,
-                        ReleaseDate = serieOmdb.ReleaseDate,
-                        Duration = serieOmdb.Duration,
-                        Country = serieOmdb.Country,
-                        Director = serieOmdb.Director,
-                        Cast = serieOmdb.Cast,
-                        Writer = serieOmdb.Writer
-                    });
+                    // Limitamos a 10 para no saturar de peticiones
+                    var topSeries = seriesOmdb.Take(10).ToList();
+                    
+                    foreach (var item in topSeries)
+                    {
+                        // Buscamos detalles por ID
+                        string detailUrl = $"{baseUrl}?i={item.imdbID}&apikey={apiKey}";
+                        var detailResponse = await client.GetAsync(detailUrl);
+                        if (detailResponse.IsSuccessStatusCode)
+                        {
+                            var detailJson = await detailResponse.Content.ReadAsStringAsync();
+                            var details = JsonSerializer.Deserialize<OmdbDto>(detailJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                            if (details != null && details.Genre != null && 
+                                details.Genre.Contains(genre, StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Coincide el género, agregamos con datos COMPLETOS
+                                series.Add(new SerieDto
+                                {
+                                    Title = details.Title,
+                                    ImdbId = details.imdbID,
+                                    Image = details.Poster != "N/A" ? details.Poster : null,
+                                    Genre = details.Genre,
+                                    ReleaseDate = details.Year, // OmdbDto usa Year
+                                    Duration = details.Runtime,
+                                    Country = details.Country,
+                                    Director = details.Director,
+                                    Cast = details.Actors,
+                                    Writer = details.Writer,
+                                    Description = details.Plot, 
+                                    Rating = details.imdbRating
+                                });
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Mapeo normal sin filtro de género (datos básicos)
+                    foreach (var serieOmdb in seriesOmdb)
+                    {
+                        series.Add(new SerieDto
+                        {
+                            Title = serieOmdb.Title,
+                            ImdbId = serieOmdb.imdbID,
+                            Image = serieOmdb.Image != "N/A" ? serieOmdb.Image : null,
+                            Genre = serieOmdb.Genre, // Probablemente null
+                            ReleaseDate = serieOmdb.ReleaseDate,
+                            Duration = serieOmdb.Duration,
+                            Country = serieOmdb.Country,
+                            Director = serieOmdb.Director,
+                            Cast = serieOmdb.Cast,
+                            Writer = serieOmdb.Writer
+                        });
+                    }
                 }
 
                 return series;
@@ -89,10 +134,12 @@ namespace ScriptedReviews.Series
             
             public string imdbID { get; set; }
 
+            [JsonPropertyName("Poster")]
             public string Image { get; set; }
 
             public string Genre { get; set; }
 
+            [JsonPropertyName("Year")]
             public string ReleaseDate { get; set; }
 
             public string Duration { get; set; }

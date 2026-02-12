@@ -15,6 +15,12 @@ export class SeriesComponent implements OnInit {
   series: any[] = [];
 
   serieTitle: string = "";
+  selectedGenre: string = "";
+
+  genres: string[] = [
+    "Action", "Comedy", "Drama", "Fantasy", "Horror", "Mystery", "Romance", "Thriller", "Western", "Sci-Fi", "Crime", "Animation", "Adventure"
+  ];
+
   modoBusqueda: boolean = false; // Para saber si estamos viendo BD o API
 
   constructor(private serieService: SerieService, private modalService: NgbModal) { }
@@ -37,7 +43,7 @@ export class SeriesComponent implements OnInit {
   // OPERACIÓN 1.1: Buscar en API Externa
   public searchSeries() {
     if (this.serieTitle.trim()) {
-      this.serieService.search(this.serieTitle.trim(), "")
+      this.serieService.search(this.serieTitle.trim(), this.selectedGenre)
         .subscribe(response => {
           this.series = response || [];
           this.modoBusqueda = true; // Estamos en modo "Buscando fuera"

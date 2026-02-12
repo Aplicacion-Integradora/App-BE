@@ -15,6 +15,12 @@
   <form (ngSubmit)="searchSeries()" class="input-group mb-4 shadow-sm">
     <input type="text" class="form-control" [(ngModel)]="serieTitle" name="title"
       placeholder="Escribe para buscar en OMDB..." required />
+
+    <select class="form-select" [(ngModel)]="selectedGenre" name="genre" style="max-width: 150px;">
+      <option value="">Todos</option>
+      <option *ngFor="let g of genres" [value]="g">{{ g }}</option>
+    </select>
+
     <button class="btn btn-primary" type="submit">🔍 Buscar en API</button>
   </form>
 
