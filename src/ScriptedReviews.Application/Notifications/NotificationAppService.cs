@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using ScriptedReviews.Notifications.Dtos;
 using ScriptedReviews.Series;
+using ScriptedReviews.Settings;
 using ScriptedReviews.Watchlists;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,13 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Emailing;
+using Volo.Abp.Identity;
 using Volo.Abp.Security.Claims;
+using Volo.Abp.SettingManagement;
+using Volo.Abp.Settings;
 using Volo.Abp.Users;
+using static Volo.Abp.UI.Navigation.DefaultMenuNames.Application;
 
 namespace ScriptedReviews.Notifications
 {
@@ -24,19 +30,28 @@ namespace ScriptedReviews.Notifications
         private readonly IRepository<Watchlist, int> _watchlistRepository;
         private readonly ISeriesApiService _seriesApiService;
         private readonly ICurrentUser _currentUser;
+        private readonly IIdentityUserRepository _userRepository;
+        private readonly ISettingManager _settingManager;
+        private readonly IEmailNotificationSender _emailNotificationSender;
 
         public NotificationAppService(
             IRepository<Notification, int> notificationRepository,
             IRepository<Serie, int> serieRepository,
             IRepository<Watchlist, int> watchlistRepository,
             ISeriesApiService seriesApiService,
-            ICurrentUser currentUser)
+            ICurrentUser currentUser,
+            IIdentityUserRepository userRepository,
+            ISettingManager settingManager,
+            IEmailNotificationSender emailNotificationSender)
         {
             _notificationRepository = notificationRepository;
             _serieRepository = serieRepository;
             _watchlistRepository = watchlistRepository;
             _seriesApiService = seriesApiService;
             _currentUser = currentUser;
+            _userRepository = userRepository;
+            _settingManager = settingManager;
+            _emailNotificationSender = emailNotificationSender;
         }
 
         [Authorize]
@@ -125,6 +140,35 @@ namespace ScriptedReviews.Notifications
                         // Marcar la watchlist con cambios
                         watchlist.HasChanges = true;
                         await _watchlistRepository.UpdateAsync(watchlist);
+
+                        // mailing 1: Verificar si el usuario tiene email
+                        var user = await _userRepository.FindAsync(watchlist.UserId);
+
+                        if (user == null || string.IsNullOrWhiteSpace(user.Email))
+                        {
+                            continue;
+                        }
+
+                        // 2️⃣ Leer setting DEL USUARIO A NOTIFICAR
+                        var emailEnabledString = await _settingManager.GetOrNullAsync(
+                            NotificationSettings.EmailEnabled,
+                            UserSettingValueProvider.ProviderName,
+                            watchlist.UserId.ToString()
+                        );
+
+                        var emailEnabled = emailEnabledString == "true";
+
+                        if (!emailEnabled)
+                        {
+                            continue;
+                        }
+
+                        // 3️. Enviar mail vía sender
+                        await _emailNotificationSender.SendSeriesUpdateAsync(
+                            user.Email,
+                            serieLocal.Title
+                        );
+
                     }
 
                     // Actualizamos la serie local para evitar notificaciones duplicadas

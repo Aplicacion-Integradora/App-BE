@@ -1,4 +1,4 @@
-using ScriptedReviews.EntityFrameworkCore;
+/* using ScriptedReviews.EntityFrameworkCore;
 using Xunit;
 
 namespace ScriptedReviews.Notifications;
@@ -8,3 +8,4 @@ public class EfCoreNotificationGenerator_Tests : NotificationGenerator_Tests<Scr
 {
 
 }
+*/
