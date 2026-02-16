@@ -32,6 +32,7 @@ public class ScriptedReviewsApplicationModule : AbpModule
             options.AddMaps<ScriptedReviewsApplicationModule>();
         });
 
+        context.Services.AddHttpClient();
         context.Services.AddTransient<ISeriesApiService, OmdbService>();
 
 

@@ -24,20 +24,21 @@ namespace ScriptedReviews.Series
 
         private readonly IConfiguration _configuration;
         private readonly IRepository<Serie, int> _serieRepository; 
-        private readonly System.Net.Http.HttpClient _httpClient; 
+        private readonly IHttpClientFactory _httpClientFactory; 
 
         public OmdbService(
             IConfiguration configuration,
-            IRepository<Serie, int> serieRepository)
+            IRepository<Serie, int> serieRepository,
+            IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
             _serieRepository = serieRepository;
-            _httpClient = new System.Net.Http.HttpClient(); 
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<ICollection<SerieDto>> GetSeriesAsync(string title, string genre)
         {
-            using HttpClient client = new HttpClient();
+            var client = _httpClientFactory.CreateClient();
 
             List<SerieDto> series = new List<SerieDto>();
 
@@ -182,7 +183,7 @@ namespace ScriptedReviews.Series
                     string url = $"http://www.omdbapi.com/?i={imdbId}&Season={seasonNum}&apikey={apiKey}";
                     Logger.LogInformation("Fetching season {SeasonNum} from OMDB: {Url}", seasonNum, url);
 
-                    using (var client = new HttpClient())
+                    using (var client = _httpClientFactory.CreateClient())
                     {
                         var response = await client.GetAsync(url);
                         if (!response.IsSuccessStatusCode)
@@ -240,6 +241,10 @@ namespace ScriptedReviews.Series
             try
             {
                 var apiKey = _configuration["OMDB:ApiKey"];
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    apiKey = "c3034380";
+                }
                 Logger.LogInformation("API Key from config: {ApiKey}", string.IsNullOrEmpty(apiKey) ? "NULL/EMPTY" : apiKey.Substring(0, Math.Min(4, apiKey.Length)) + "...");
                 
                 // Conecta con OMDB usando ImdbId
@@ -248,7 +253,7 @@ namespace ScriptedReviews.Series
                 
                 OmdbDto datosExternos;
 
-                using (var client = new HttpClient())
+                using (var client = _httpClientFactory.CreateClient())
                 {
                     Logger.LogInformation("Sending HTTP request to OMDB...");
                     var response = await client.GetAsync(url);
@@ -283,7 +288,7 @@ namespace ScriptedReviews.Series
                 if (existente != null)
                 {
                     Logger.LogInformation("Serie already exists in DB with Id: {Id}", existente.Id);
-                    throw new UserFriendlyException("La serie ya está almacenada en la base de datos");
+                    return ObjectMapper.Map<Serie, SerieDto>(existente);
                 }
 
                 Logger.LogInformation("Serie not in DB, creating new entity...");

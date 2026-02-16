@@ -141,7 +141,8 @@ namespace ScriptedReviews.Notifications
                         watchlist.HasChanges = true;
                         await _watchlistRepository.UpdateAsync(watchlist);
 
-                        // mailing 1: Verificar si el usuario tiene email
+                        // Mailing
+                        // Verifica si el usuario tiene email
                         var user = await _userRepository.FindAsync(watchlist.UserId);
 
                         if (user == null || string.IsNullOrWhiteSpace(user.Email))
@@ -149,7 +150,7 @@ namespace ScriptedReviews.Notifications
                             continue;
                         }
 
-                        // 2️⃣ Leer setting DEL USUARIO A NOTIFICAR
+                        // Lee setting del usuario a notificar
                         var emailEnabledString = await _settingManager.GetOrNullAsync(
                             NotificationSettings.EmailEnabled,
                             UserSettingValueProvider.ProviderName,
@@ -163,7 +164,7 @@ namespace ScriptedReviews.Notifications
                             continue;
                         }
 
-                        // 3️. Enviar mail vía sender
+                        // Envía mail vía sender
                         await _emailNotificationSender.SendSeriesUpdateAsync(
                             user.Email,
                             serieLocal.Title

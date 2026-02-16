@@ -9,6 +9,7 @@ using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Data;
 using Volo.Abp.Modularity;
 using Volo.Abp.Threading;
+using Volo.Abp.Emailing;
 
 namespace ScriptedReviews;
 
@@ -28,13 +29,20 @@ public class ScriptedReviewsTestBaseModule : AbpModule
         });
 
         context.Services.AddAlwaysAllowAuthorization();
+        context.Services.AddSingleton<IEmailSender, NullEmailSender>();
+
+        // Register custom message handler for mocking HttpClient
+        context.Services.AddSingleton<FakeHttpMessageHandler>();
+
+        context.Services.AddHttpClient(string.Empty)
+            .ConfigurePrimaryHttpMessageHandler(sp => sp.GetRequiredService<FakeHttpMessageHandler>());
 
         var seriesApiMock = Substitute.For<ISeriesApiService>();
 
         context.Services.Replace(ServiceDescriptor.Singleton<ISeriesApiService>(seriesApiMock));
     }
 
-  /*  public override void OnApplicationInitialization(ApplicationInitializationContext context)
+    public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         SeedTestData(context);
     }
@@ -50,5 +58,5 @@ public class ScriptedReviewsTestBaseModule : AbpModule
                     .SeedAsync();
             }
         });
-    } */
+    }
 }
