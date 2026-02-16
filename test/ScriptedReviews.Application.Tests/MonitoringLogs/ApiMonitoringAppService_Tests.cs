@@ -24,7 +24,7 @@ public abstract class ApiMonitoringAppService_Tests<TStartupModule> : ScriptedRe
     [Fact]
     public async Task Should_Save_ApiMonitoringLog()
     {
-        // Arrange: Crear un log de prueba
+        // Arrange
         var log = new ApiMonitoringLog(
             endpoint: "/api/test",
             httpMethod: "GET",
@@ -34,10 +34,10 @@ public abstract class ApiMonitoringAppService_Tests<TStartupModule> : ScriptedRe
             ipAddress: "127.0.0.1"
         );
 
-        // Act: Guardar el log en la base de datos
+        // Act
         await _apiMonitoringRepository.InsertAsync(log);
 
-        // Assert: Verificar que el log se ha guardado correctamente
+        // Assert
         var logs = await _apiMonitoringRepository.GetListAsync();
         logs.ShouldContain(l => l.Endpoint == "/api/test");
     }
@@ -45,7 +45,7 @@ public abstract class ApiMonitoringAppService_Tests<TStartupModule> : ScriptedRe
     [Fact]
     public async Task Should_Return_ApiLogs()
     {
-        // Arrange: Insertar un log de prueba en la base de datos
+        // Arrange
         var log = new ApiMonitoringLog(
             endpoint: "/api/test",
             httpMethod: "GET",
@@ -57,13 +57,10 @@ public abstract class ApiMonitoringAppService_Tests<TStartupModule> : ScriptedRe
 
         await _apiMonitoringRepository.InsertAsync(log);
 
-        // Asegurar que se guardan los cambios
-        //await _apiMonitoringRepository.GetDbContextAsync().Result.SaveChangesAsync();
-
-        // Act: Obtener la lista de logs desde la API
+        // Act
         var result = await _apiMonitoringAppService.GetApiLogsAsync();
 
-        // Assert: Verificar que devuelve al menos un registro
+        // Assert
         result.ShouldNotBeNull();
         result.Count.ShouldBeGreaterThan(0);
     }

@@ -29,14 +29,13 @@ namespace ScriptedReviews.BackgroundWorkers
 
         protected override async Task DoWorkAsync(PeriodicBackgroundWorkerContext workerContext)
         {
-            // 1. Resolver dependencias (Como es Singleton, las pedimos al contexto)
+            // Resuelve dependencias
             var serieRepository = workerContext.ServiceProvider.GetRequiredService<IRepository<Serie, int>>();
             var watchlistRepository = workerContext.ServiceProvider.GetRequiredService<IRepository<Watchlist, int>>();
             var notificationRepository = workerContext.ServiceProvider.GetRequiredService<IRepository<Notification, int>>();
             var seriesApiService = workerContext.ServiceProvider.GetRequiredService<ISeriesApiService>();
 
-            // 2. Obtener todas las series locales
-            // (Nota: Si tienes miles, usa Paginación. Para empezar, esto sirve.)
+            // Obtiene todas las series locales
             var seriesLocales = await serieRepository.GetListAsync(includeDetails: true);
 
             foreach (var serieLocal in seriesLocales)
@@ -46,31 +45,28 @@ namespace ScriptedReviews.BackgroundWorkers
 
                 try
                 {
-                    // 3. Consultar a OMDB la información FRESCA
-                    // Usamos el método que acabas de arreglar
+                    // Consulta a OMDB la información nueva
                     var infoApi = await seriesApiService.ImportarSerieAsync(serieLocal.ImdbId);
 
                     if (infoApi == null) continue;
 
-                    // 4. LÓGICA DE COMPARACIÓN (El corazón de la notificación)
+                    // Lógica de comparación
                     int temporadasEnApi = infoApi.TotalSeasons;
-
-                    // Usamos TotalSeasons como fuente canónica
                     int temporadasLocales = serieLocal.TotalSeasons;
 
-                    // Si la API dice que hay MÁS temporadas de las que tenemos... ¡Noticia!
+                    // Si la API dice que hay más temporadas de las que tenemos, prosigue para notificar
                     if (temporadasEnApi > temporadasLocales)
                     {
-                        // A. Buscar usuarios interesados (que tienen la serie en su Watchlist)
+                        // Busca usuarios interesados (que tienen la serie en su Watchlist)
                         var queryable = await watchlistRepository.WithDetailsAsync(x => x.Series);
                         var watchlistsConLaSerie = queryable
                             .Where(w => w.Series.Any(s => s.Id == serieLocal.Id))
                             .ToList();
 
-                        // B. Crear notificaciones para esos usuarios y marcar HasChanges
+                        // Crea notificaciones para esos usuarios y marca HasChanges = true
                         foreach (var watchlist in watchlistsConLaSerie)
                         {
-                            // Verificar si ya existe una notificación no leída para esta serie
+                            // Verifica si ya existe una notificación no leída para esta serie
                             var existingNotification = await notificationRepository.FirstOrDefaultAsync(
                                 n => n.UserId == watchlist.UserId 
                                      && n.Description.Contains(serieLocal.Title) 
@@ -88,19 +84,19 @@ namespace ScriptedReviews.BackgroundWorkers
                                 });
                             }
 
-                            // Marcar la watchlist con cambios
+                            // Marca la watchlist con cambios (HasChanges = true)
                             watchlist.HasChanges = true;
                             await watchlistRepository.UpdateAsync(watchlist);
                         }
 
-                        // C. Actualizar la serie local para evitar notificaciones duplicadas
+                        // Actualiza la serie local para evitar notificaciones duplicadas
                         serieLocal.TotalSeasons = temporadasEnApi;
                         await serieRepository.UpdateAsync(serieLocal);
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Importante: Que un error en una serie no detenga todo el proceso
+                    // Para que un error en una serie no detenga todo el proceso
                     Console.WriteLine($"Error procesando serie {serieLocal.Title}: {ex.Message}");
                 }
             }

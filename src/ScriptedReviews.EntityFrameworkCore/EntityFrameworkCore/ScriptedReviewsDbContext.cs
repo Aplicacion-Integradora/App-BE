@@ -129,7 +129,7 @@ public class ScriptedReviewsDbContext :
         {
             b.ToTable("ApiMonitoringLogs");
             b.HasKey(x => x.Id);
-            b.Property(x => x.Id).ValueGeneratedOnAdd(); //  Esto permite que SQL Server genere automáticamente el ID
+            b.Property(x => x.Id).ValueGeneratedOnAdd();
             b.Property(a => a.Endpoint).IsRequired().HasMaxLength(256);
             b.Property(a => a.HttpMethod).IsRequired().HasMaxLength(10);
             b.Property(a => a.ResponseTime).IsRequired();

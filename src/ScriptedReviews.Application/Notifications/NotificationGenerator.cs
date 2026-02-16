@@ -56,7 +56,7 @@ namespace ScriptedReviews.Notifications
 
                 var user = await _userRepository.GetAsync(series.UserId);
 
-                // Check if email notifications are enabled for this user
+                // Chequea si el usuario tiene activadas las notificaciones por email
                 var emailEnabled = await _settingProvider.GetAsync<bool>(NotificationSettings.EmailEnabled);
 
                 if (emailEnabled && !string.IsNullOrWhiteSpace(user.Email))

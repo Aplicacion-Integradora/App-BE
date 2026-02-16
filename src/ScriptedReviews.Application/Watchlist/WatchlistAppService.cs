@@ -19,11 +19,9 @@ using System.Linq.Expressions;
 
 namespace ScriptedReviews.Watchlists
 {
-    // Heredamos de ApplicationService e implementamos la interfaz
     public class WatchlistAppService : ApplicationService, IWatchlistAppService
 
     {
-        // Usamos IRepository<Watchlist, int> para asegurar que compile si no tienes la interfaz personalizada
         private readonly IRepository<ScriptedReviews.Watchlists.Watchlist, int> _watchlistRepository;
         private readonly IRepository<Serie, int> _serieRepository;
         private readonly ICurrentUser _currentUser;
@@ -32,7 +30,7 @@ namespace ScriptedReviews.Watchlists
 
         public WatchlistAppService(
             ILogger<WatchlistAppService> logger,
-            IRepository<ScriptedReviews.Watchlists.Watchlist, int> watchlistRepository, // Ajustado a genérico para seguridad
+            IRepository<ScriptedReviews.Watchlists.Watchlist, int> watchlistRepository,
             IRepository<Serie, int> serieRepository,
             IMapper mapper,
             ICurrentUser currentUser)
@@ -85,20 +83,20 @@ namespace ScriptedReviews.Watchlists
         // TAREA 3.2: Agregar series a la lista de seguimiento
         public async Task AddSerieAsync(int serieId)
         {
-            // 1. Validar que la serie exista (persistencia interna)
+            // Valida que la serie exista (persistencia interna)
             var serie = await _serieRepository.FindAsync(serieId);
             if (serie == null)
             {
                 throw new UserFriendlyException("La serie no existe en la base de datos.");
             }
 
-            // 2. Obtener la watchlist del usuario actual
+            // Obtiene la watchlist del usuario actual
             var query = await _watchlistRepository.GetQueryableAsync();
             var watchlist = await query
                 .Include(w => w.Series)
                 .FirstOrDefaultAsync(w => w.UserId == CurrentUserId);
 
-            // 3. Si no tiene lista, se la creamos
+            // Si no tiene lista, se la crea
             if (watchlist == null)
             {
                 watchlist = new ScriptedReviews.Watchlists.Watchlist(CurrentUserId)
@@ -108,7 +106,7 @@ namespace ScriptedReviews.Watchlists
                 await _watchlistRepository.InsertAsync(watchlist);
             }
 
-            // 4. Agregamos la serie si no está duplicada
+            // Agrega la serie si no está duplicada
             if (!watchlist.Series.Any(s => s.Id == serieId))
             {
                 watchlist.Series.Add(serie);

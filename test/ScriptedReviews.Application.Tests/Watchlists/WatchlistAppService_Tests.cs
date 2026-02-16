@@ -56,7 +56,6 @@ public abstract class WatchlistAppService_Tests<TStartupModule> : ScriptedReview
         var myUserId = Guid.NewGuid();
         var serieId = 0;
 
-        // Create a serie and a watchlist with that serie
         await WithUnitOfWorkAsync(async () =>
         {
             var serie = await _serieRepository.InsertAsync(new Serie
@@ -109,7 +108,6 @@ public abstract class WatchlistAppService_Tests<TStartupModule> : ScriptedReview
         var myUserId = Guid.NewGuid();
         var serieId = 0;
 
-        // Create a serie without adding to watchlist
         await WithUnitOfWorkAsync(async () =>
         {
             var serie = await _serieRepository.InsertAsync(new Serie
@@ -140,7 +138,7 @@ public abstract class WatchlistAppService_Tests<TStartupModule> : ScriptedReview
             await _watchlistAppService.AddSerieAsync(serieId);
         }
 
-        // Assert - verify the serie is now in the watchlist
+        // Assert
         List<SerieDto> result;
         using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
         {
@@ -190,7 +188,7 @@ public abstract class WatchlistAppService_Tests<TStartupModule> : ScriptedReview
             await _watchlistRepository.InsertAsync(watchlist, autoSave: true);
         });
 
-        // Act & Assert - should throw when trying to add duplicate
+        // Act & Assert
         using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
         {
             var exception = await Assert.ThrowsAsync<UserFriendlyException>(async () =>
@@ -240,7 +238,6 @@ public abstract class WatchlistAppService_Tests<TStartupModule> : ScriptedReview
             await _watchlistRepository.InsertAsync(watchlist, autoSave: true);
         });
 
-        // Verify setup - serie should be in watchlist initially
         List<SerieDto> beforeRemove;
         using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
         {
@@ -248,13 +245,13 @@ public abstract class WatchlistAppService_Tests<TStartupModule> : ScriptedReview
         }
         beforeRemove.Count.ShouldBe(1);
 
-        // Act - remove the serie
+        // Act
         using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
         {
             await _watchlistAppService.RemoveSerieAsync(serieId);
         }
 
-        // Assert - watchlist should be empty now
+        // Assert
         List<SerieDto> afterRemove;
         using (_currentPrincipalAccessor.Change(GetClaims(myUserId)))
         {
@@ -274,7 +271,7 @@ public abstract class WatchlistAppService_Tests<TStartupModule> : ScriptedReview
 
         await WithUnitOfWorkAsync(async () =>
         {
-            // Create series for user 1
+            // Crea serie para usuario 1
             var serie1 = await _serieRepository.InsertAsync(new Serie
             {
                 Title = "User1 Serie",
@@ -298,7 +295,7 @@ public abstract class WatchlistAppService_Tests<TStartupModule> : ScriptedReview
             watchlist1.Series = new List<Serie> { serie1 };
             await _watchlistRepository.InsertAsync(watchlist1, autoSave: true);
 
-            // Create series for user 2
+            // Crea serie para usuario 2
             var serie2 = await _serieRepository.InsertAsync(new Serie
             {
                 Title = "User2 Serie",
@@ -323,11 +320,11 @@ public abstract class WatchlistAppService_Tests<TStartupModule> : ScriptedReview
             await _watchlistRepository.InsertAsync(watchlist2, autoSave: true);
         });
 
-        // Act - user 1 should only see their own series
+        // Act
         List<SerieDto> user1Result;
         using (_currentPrincipalAccessor.Change(GetClaims(user1Id)))
         {
-            user1Result = await _watchlistAppService.GetMyWatchlistAsync();
+            user1Result = await _watchlistAppService.GetMyWatchlistAsync(); // El usuario 1 debería ver únicamente su watchlist
         }
 
         // Assert

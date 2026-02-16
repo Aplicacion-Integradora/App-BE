@@ -11,7 +11,6 @@ namespace ScriptedReviews.Series
     public interface ISerieAppService : ICrudAppService<SerieDto, int, PagedAndSortedResultRequestDto, CreateUpdateSerieDto, CreateUpdateSerieDto>
     {
         Task<ICollection<SerieDto>> SearchAsync(string? title, string? genre);
-        // Método para la Operación 2.2
         Task<SerieDto> ImportarSerieAsync(string imdbId);
     }
 }

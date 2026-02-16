@@ -26,7 +26,7 @@ namespace ScriptedReviews.Series
         [Fact]
         public async Task Should_Get_Serie_By_Id()
         {
-            // Arrange - Crear una serie en la base de datos
+            // Arrange
             Serie serieCreada = null!;
             await WithUnitOfWorkAsync(async () =>
             {
@@ -50,7 +50,7 @@ namespace ScriptedReviews.Series
                 serieCreada = await _serieRepository.InsertAsync(serie, autoSave: true);
             });
 
-            // Act - Obtener la serie por ID
+            // Act
             var resultado = await _serieAppService.GetAsync(serieCreada.Id);
 
             // Assert
@@ -64,7 +64,7 @@ namespace ScriptedReviews.Series
         [Fact]
         public async Task Should_Get_List_Of_Series()
         {
-            // Arrange - Crear varias series en la base de datos
+            // Arrange
             await WithUnitOfWorkAsync(async () =>
             {
                 await _serieRepository.InsertAsync(new Serie
@@ -104,7 +104,7 @@ namespace ScriptedReviews.Series
                 }, autoSave: true);
             });
 
-            // Act - Obtener la lista de series
+            // Act
             var resultado = await _serieAppService.GetListAsync(new PagedAndSortedResultRequestDto());
 
             // Assert
@@ -117,7 +117,7 @@ namespace ScriptedReviews.Series
         [Fact]
         public async Task Should_Return_Empty_When_No_Series_Exist()
         {
-            // Act - Obtener lista cuando no hay series (o solo las creadas por otros tests)
+            // Act
             var resultado = await _serieAppService.GetListAsync(new PagedAndSortedResultRequestDto 
             { 
                 MaxResultCount = 1000 
@@ -131,7 +131,7 @@ namespace ScriptedReviews.Series
         [Fact]
         public async Task Should_Return_Correct_Fields_When_Getting_Serie()
         {
-            // Arrange - Crear una serie con todos los campos
+            // Arrange
             Serie serieCreada = null!;
             await WithUnitOfWorkAsync(async () =>
             {
@@ -158,7 +158,7 @@ namespace ScriptedReviews.Series
             // Act
             var resultado = await _serieAppService.GetAsync(serieCreada.Id);
 
-            // Assert - Verificar todos los campos importantes
+            // Assert
             resultado.ShouldNotBeNull();
             resultado.Title.ShouldBe("Complete Serie");
             resultado.Genre.ShouldBe("Sci-Fi");

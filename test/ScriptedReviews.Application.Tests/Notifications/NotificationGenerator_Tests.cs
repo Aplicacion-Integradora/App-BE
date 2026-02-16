@@ -15,10 +15,6 @@ using Xunit;
 
 namespace ScriptedReviews.Notifications;
 
-/// <summary>
-/// Unit tests for NotificationGenerator. 
-/// Uses mocks for dependencies to test the EmailEnabled check logic.
-/// </summary>
 public abstract class NotificationGenerator_Tests<TStartupModule> : ScriptedReviewsApplicationTestBase<TStartupModule>
     where TStartupModule : IAbpModule
 {
@@ -31,12 +27,8 @@ public abstract class NotificationGenerator_Tests<TStartupModule> : ScriptedRevi
 
     [Fact]
     public async Task Should_Check_EmailEnabled_Before_Sending_Email()
-    {
-        // This test verifies that the NotificationGenerator code compiles 
-        // and the EmailEnabled check is in place.
-        // Full integration testing requires Identity user setup which is complex.
-        
-        // Arrange - set up mocks
+    {        
+        // Arrange
         var watchlistServiceMock = Substitute.For<IWatchlistAppService>();
         var emailSenderMock = Substitute.For<IEmailNotificationSender>();
         var userRepoMock = Substitute.For<IIdentityUserRepository>();
@@ -57,10 +49,9 @@ public abstract class NotificationGenerator_Tests<TStartupModule> : ScriptedRevi
         // Act
         await generator.GenerateAsync();
 
-        // Assert - verify no emails were sent (no series with changes)
+        // Assert
         await emailSenderMock.DidNotReceive().SendSeriesUpdateAsync(Arg.Any<string>(), Arg.Any<string>());
         
-        // Verify the mock was called correctly
         await watchlistServiceMock.Received(1).GetSeriesWithChangesAsync();
     }
 }

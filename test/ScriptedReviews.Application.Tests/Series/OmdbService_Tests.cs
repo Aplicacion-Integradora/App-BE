@@ -20,15 +20,10 @@ namespace ScriptedReviews.Series
 
             protected OmdbService_Tests()
             {
-            // 1. Creamos el Mock de la Configuración (simulamos el appsettings)
             var configuration = Substitute.For<IConfiguration>();
-            // Le decimos: "Cuando te pidan la API Key, devuelve '12345'"
             configuration["OmdbApiKey"].Returns("12345_clave_falsa");
-
-            // 2. Creamos el Mock del Repositorio (simulamos la base de datos)
             var serieRepository = Substitute.For<IRepository<Serie, int>>();
 
-            // 3. AHORA SÍ: Instanciamos el servicio pasándole los mocks
             _service = new OmdbService(configuration, serieRepository);
         }
 

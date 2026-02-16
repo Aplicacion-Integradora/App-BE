@@ -23,8 +23,8 @@ namespace ScriptedReviews.Series
         private static readonly string baseUrl = "http://www.omdbapi.com/";
 
         private readonly IConfiguration _configuration;
-        private readonly IRepository<Serie, int> _serieRepository; // Para arreglar el error de 'Repository'
-        private readonly System.Net.Http.HttpClient _httpClient; // Asumo que usas esto
+        private readonly IRepository<Serie, int> _serieRepository; 
+        private readonly System.Net.Http.HttpClient _httpClient; 
 
         public OmdbService(
             IConfiguration configuration,
@@ -32,7 +32,7 @@ namespace ScriptedReviews.Series
         {
             _configuration = configuration;
             _serieRepository = serieRepository;
-            _httpClient = new System.Net.Http.HttpClient(); // O inyectar IHttpClientFactory idealmente
+            _httpClient = new System.Net.Http.HttpClient(); 
         }
 
         public async Task<ICollection<SerieDto>> GetSeriesAsync(string title, string genre)
@@ -54,16 +54,14 @@ namespace ScriptedReviews.Series
 
                 var seriesOmdb = searchResponse?.Search ?? new List<SerieOmdb>();
 
-                // Si hay filtro de GÉNERO, necesitamos obtener los detalles de cada serie
-                // porque la búsqueda básica no devuelve el género.
                 if (!string.IsNullOrEmpty(genre))
                 {
-                    // Limitamos a 10 para no saturar de peticiones
+                    // Se limita a 10 peticiones para que no se sature
                     var topSeries = seriesOmdb.Take(10).ToList();
                     
                     foreach (var item in topSeries)
                     {
-                        // Buscamos detalles por ID
+                        // Busca detalles por ID
                         string detailUrl = $"{baseUrl}?i={item.imdbID}&apikey={apiKey}";
                         var detailResponse = await client.GetAsync(detailUrl);
                         if (detailResponse.IsSuccessStatusCode)
@@ -74,14 +72,14 @@ namespace ScriptedReviews.Series
                             if (details != null && details.Genre != null && 
                                 details.Genre.Contains(genre, StringComparison.OrdinalIgnoreCase))
                             {
-                                // Coincide el género, agregamos con datos COMPLETOS
+                                // Coincide el género, agregamos con datos completos
                                 series.Add(new SerieDto
                                 {
                                     Title = details.Title,
                                     ImdbId = details.imdbID,
                                     Image = details.Poster != "N/A" ? details.Poster : null,
                                     Genre = details.Genre,
-                                    ReleaseDate = details.Year, // OmdbDto usa Year
+                                    ReleaseDate = details.Year,
                                     Duration = details.Runtime,
                                     Country = details.Country,
                                     Director = details.Director,
@@ -96,7 +94,6 @@ namespace ScriptedReviews.Series
                 }
                 else
                 {
-                    // Mapeo normal sin filtro de género (datos básicos)
                     foreach (var serieOmdb in seriesOmdb)
                     {
                         series.Add(new SerieDto
@@ -104,7 +101,7 @@ namespace ScriptedReviews.Series
                             Title = serieOmdb.Title,
                             ImdbId = serieOmdb.imdbID,
                             Image = serieOmdb.Image != "N/A" ? serieOmdb.Image : null,
-                            Genre = serieOmdb.Genre, // Probablemente null
+                            Genre = serieOmdb.Genre,
                             ReleaseDate = serieOmdb.ReleaseDate,
                             Duration = serieOmdb.Duration,
                             Country = serieOmdb.Country,
@@ -172,9 +169,7 @@ namespace ScriptedReviews.Series
             public string imdbID { get; set; }
         }
 
-        /// <summary>
-        /// Obtiene todas las temporadas de una serie desde OMDB API
-        /// </summary>
+        // Obtiene todas las temporadas de una serie desde OMDB API
         private async Task<List<ScriptedReviews.Seasons.Season>> FetchSeasonsAsync(string imdbId, int totalSeasons)
         {
             var seasons = new List<ScriptedReviews.Seasons.Season>();
@@ -205,15 +200,15 @@ namespace ScriptedReviews.Series
                             continue;
                         }
 
-                        // Crear descripción a partir de los títulos de los episodios
+                        // Crea descripción a partir de los títulos de los episodios
                         var episodeTitles = seasonData.Episodes.Select(e => e.Title).ToList();
-                        var description = string.Join(", ", episodeTitles.Take(5)); // Primeros 5 títulos
+                        var description = string.Join(", ", episodeTitles.Take(5));
                         if (episodeTitles.Count > 5)
                         {
                             description += $"... y {episodeTitles.Count - 5} más";
                         }
 
-                        // Obtener fecha de lanzamiento del primer episodio
+                        // Obtiene fecha de lanzamiento del primer episodio
                         var firstEpisode = seasonData.Episodes.FirstOrDefault();
                         var releaseDate = firstEpisode?.Released ?? "N/A";
 
@@ -232,7 +227,6 @@ namespace ScriptedReviews.Series
                 catch (Exception ex)
                 {
                     Logger.LogError(ex, "Error fetching season {SeasonNum}", seasonNum);
-                    // Continuar con la siguiente temporada
                 }
             }
 
@@ -248,7 +242,7 @@ namespace ScriptedReviews.Series
                 var apiKey = _configuration["OMDB:ApiKey"];
                 Logger.LogInformation("API Key from config: {ApiKey}", string.IsNullOrEmpty(apiKey) ? "NULL/EMPTY" : apiKey.Substring(0, Math.Min(4, apiKey.Length)) + "...");
                 
-                // 1. Conectar con OMDB usando ID (Más preciso)
+                // Conecta con OMDB usando ImdbId
                 string url = $"http://www.omdbapi.com/?i={imdbId}&apikey={apiKey}";
                 Logger.LogInformation("OMDB URL: {Url}", url);
                 
@@ -282,7 +276,7 @@ namespace ScriptedReviews.Series
                     throw new UserFriendlyException($"No se encontró la serie con ID: {imdbId}");
                 }
 
-                // 2. Verificar si ya existe la serie en la BD usando el ID ÚNICO (ImdbId)
+                // Verifica si ya existe la serie en la BDD usando el ImdbId
                 Logger.LogInformation("Checking if serie exists in DB with ImdbId: {ImdbId}", datosExternos.imdbID);
                 var existente = await _serieRepository.FirstOrDefaultAsync(x => x.ImdbId == datosExternos.imdbID);
 
@@ -294,7 +288,7 @@ namespace ScriptedReviews.Series
 
                 Logger.LogInformation("Serie not in DB, creating new entity...");
                 
-                // 3. Mapeo Manual: Convertir datos de OMDB a tu Entidad 'Serie'
+                // Mapeo Manual: Convierte datos de OMDB a la Entidad Serie
                 var nuevaSerie = new Serie
                 {
                     Title = datosExternos.Title ?? "Sin Título",
@@ -332,7 +326,7 @@ namespace ScriptedReviews.Series
 
                 Logger.LogInformation("Created Serie entity: Title={Title}, ImdbId={ImdbId}", nuevaSerie.Title, nuevaSerie.ImdbId);
 
-                // 4. Obtener información de temporadas desde OMDB
+                // Obtiene información de temporadas desde OMDB
                 if (nuevaSerie.TotalSeasons > 0)
                 {
                     Logger.LogInformation("Fetching {TotalSeasons} seasons from OMDB...", nuevaSerie.TotalSeasons);
@@ -345,7 +339,7 @@ namespace ScriptedReviews.Series
                     nuevaSerie.Seasons = new List<ScriptedReviews.Seasons.Season>();
                 }
 
-                // 5. Guardar en Base de Datos 
+                // Guarda en la BDD
                 Logger.LogInformation("Inserting serie into database...");
                 var serieInsertada = await _serieRepository.InsertAsync(nuevaSerie, autoSave: true);
                 Logger.LogInformation("Serie inserted with Id: {Id}", serieInsertada?.Id ?? -1);
@@ -360,12 +354,12 @@ namespace ScriptedReviews.Series
             catch (UserFriendlyException ex)
             {
                 Logger.LogWarning("UserFriendlyException in ImportarSerieAsync: {Message}", ex.Message);
-                throw; // Re-throw to let ABP handle it
+                throw; 
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "UNEXPECTED Exception in ImportarSerieAsync: {Message}", ex.Message);
-                throw; // Re-throw
+                throw; 
             }
         }
     }

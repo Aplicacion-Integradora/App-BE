@@ -20,7 +20,7 @@ namespace ScriptedReviews.Series
 
         private readonly ISeriesApiService _seriesApiService;
 
-        // API Key de OMDB 
+        // API Key de OMDB
         private const string OmdbApiKey = "c3034380";
 
         public SerieAppService(IRepository<Serie, int> repository, ISeriesApiService seriesApiService) : base(repository)
@@ -30,7 +30,7 @@ namespace ScriptedReviews.Series
 
         public override async Task<SerieDto> GetAsync(int id)
         {
-            //Obtenemos la serie con las temporadas
+            // Obtiene la serie con las temporadas
             var query = await Repository.WithDetailsAsync(x => x.Seasons);
 
             var serie = await AsyncExecuter.FirstOrDefaultAsync(query, x => x.Id == id);

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
-
-// Usamos los proxys generados para obtener los servicios de API Monitoring y Error Logs
 import { ApiMonitoringService } from '@proxy/monitoring-logs';
 import { ErrorLogService } from '@proxy/error-logs';
 
@@ -25,7 +23,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private apiService: ApiMonitoringService, // Inyectamos el servicio automático
     private errorLogService: ErrorLogService  // Inyectamos el servicio automático
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.cargarDatos();

@@ -11,18 +11,18 @@ namespace ScriptedReviews.Series
     {
         public string Title { get; set; }
         public string Genre { get; set; }
-        public string Year { get; set; }  // Fecha Lanzamiento
-        public string Runtime { get; set; } // Duración
-        public string Director { get; set; } // Parte del equipo
-        public string Actors { get; set; }   // Parte del equipo
-        public string Writer { get; set; }  //Parte del equipo
-        public string Poster { get; set; }   // Foto Portada
-        public string Country { get; set; }   //Pais
-        public string imdbRating { get; set; } // Calificación IMDB
-        public string Plot { get; set; } // Descripción
-        public string Response { get; set; } // "True" o "False"
-        public string Language { get; set; }  //Idioma
+        public string Year { get; set; }
+        public string Runtime { get; set; }
+        public string Director { get; set; }
+        public string Actors { get; set; }
+        public string Writer { get; set; }
+        public string Poster { get; set; }
+        public string Country { get; set; }
+        public string imdbRating { get; set; }
+        public string Plot { get; set; }
+        public string Response { get; set; }
+        public string Language { get; set; }
         public string imdbID { get; set; }
-        public string totalSeasons { get; set; } // Cantidad de temporadas
+        public string totalSeasons { get; set; }
     }
 }

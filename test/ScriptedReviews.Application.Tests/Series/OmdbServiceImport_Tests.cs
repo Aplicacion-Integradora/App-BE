@@ -48,7 +48,7 @@ namespace ScriptedReviews.Series
             resultado.Title.ShouldBe("Breaking Bad");
             resultado.ImdbId.ShouldNotBeNullOrEmpty();
 
-            // Verificar que se guardó en la base de datos  
+            // Verifica que se guardó en la base de datos  
             await WithUnitOfWorkAsync(async () =>
             {
                 var serieEnDb = await _serieRepository.FirstOrDefaultAsync(x => x.ImdbId == resultado.ImdbId);
@@ -132,7 +132,7 @@ namespace ScriptedReviews.Series
             resultado.Title.ShouldNotBeNullOrEmpty();
             resultado.ImdbId.ShouldNotBeNullOrEmpty();
 
-            // Verificar en la base de datos
+            // Verifica en la base de datos
             await WithUnitOfWorkAsync(async () =>
             {
                 var serieEnDb = await _serieRepository.FirstOrDefaultAsync(x => x.ImdbId == resultado.ImdbId);

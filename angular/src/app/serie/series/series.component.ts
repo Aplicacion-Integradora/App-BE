@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import { SerieDto, SerieService } from '@proxy/series';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-// 👇 1. IMPORTANTE: Importamos SweetAlert2
 import Swal from 'sweetalert2';
 
 @Component({
@@ -13,12 +12,12 @@ import Swal from 'sweetalert2';
 export class SeriesComponent implements OnInit {
 
   series: any[] = [];
-  savedImdbIds: Set<string> = new Set(); 
+  savedImdbIds: Set<string> = new Set();
   serieTitle: string = "";
   selectedGenre: string = "";
-  haBuscado: boolean = false; 
+  haBuscado: boolean = false;
   modoBusqueda: boolean = false;
-  
+
   genres: string[] = ["Action", "Comedy", "Drama", "Fantasy", "Horror", "Mystery", "Romance", "Thriller", "Sci-Fi"];
   selectedSerie: SerieDto = {} as SerieDto;
 
@@ -37,7 +36,7 @@ export class SeriesComponent implements OnInit {
 
       this.savedImdbIds.clear();
       this.series.forEach(s => {
-        // Validación extra por si imdbId viene null de la BD antigua
+        // Validación extra por si imdbId viene null de la BDD antigua
         const id = s.imdbID || s.imdbId;
         if (id) this.savedImdbIds.add(id);
       });
@@ -46,7 +45,7 @@ export class SeriesComponent implements OnInit {
 
   public searchSeries() {
     if (!this.serieTitle.trim()) {
-      if(this.modoBusqueda) this.cargarMisSeriesBD();
+      if (this.modoBusqueda) this.cargarMisSeriesBD();
       return;
     }
     this.haBuscado = true;
@@ -62,16 +61,14 @@ export class SeriesComponent implements OnInit {
     return this.savedImdbIds.has(imdbId);
   }
 
-  // 👇 2. AQUÍ ESTÁ LA MAGIA VISUAL
   public importarSerie(imdbId: string, title: string) {
-    
-    // Validación silenciosa (para no molestar al usuario si hay un error técnico)
+
     if (!imdbId) {
       console.error("Error: ID inválido");
       return;
     }
 
-    // Si ya existe, mostramos un aviso lindo
+    // Si ya existe, mostramos un aviso
     if (this.isAlreadySaved(imdbId)) {
       Swal.fire({
         title: '¡Ya la tienes!',
@@ -89,7 +86,7 @@ export class SeriesComponent implements OnInit {
     this.serieService.importarSerie(imdbId).subscribe({
       next: () => {
         this.savedImdbIds.add(imdbId);
-        
+
         // ✅ ÉXITO: Cartel Estético
         Swal.fire({
           title: '¡Agregada!',
@@ -119,25 +116,27 @@ export class SeriesComponent implements OnInit {
   }
 
   openDetails(content: any, item: any) {
-    
-    // CASO 1: Estamos buscando en la API (OMDB)
+
+    // Búsqueda en la API
     if (this.modoBusqueda) {
       // Mapeamos los datos básicos de OMDB al objeto que usa el modal
       this.selectedSerie = {
         title: item.Title,
         releaseDate: item.Year,
         image: item.Poster !== 'N/A' ? item.Poster : null,
-        description: 'Descripción completa disponible tras agregar a la biblioteca.', // Placeholder
+        description: 'Descripción completa disponible tras agregar a la biblioteca.',
         rating: 'N/A',
-        genre: 'Desconocido', // La búsqueda simple no trae género
-        seasons: [] 
+        /*genre: 'Desconocido',
+        cast: item.Actors || 'N/A',
+        writer: item.Writer || 'N/A',
+        country: item.Country || 'N/A',
+        seasons: []*/
       } as any;
 
-      // Abrimos el modal directamente
       this.modalService.open(content, { size: 'lg', scrollable: true, windowClass: 'dark-modal' });
-    } 
-    
-    // CASO 2: Es una serie guardada en BD (Traemos todo el detalle)
+    }
+
+    // Serie ya guardada en la BDD
     else {
       this.serieService.get(item.id).subscribe(serie => {
         this.selectedSerie = serie;

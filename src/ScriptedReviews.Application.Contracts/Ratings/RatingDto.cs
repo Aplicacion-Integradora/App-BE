@@ -28,7 +28,7 @@ namespace ScriptedReviews.Ratings
     public class UpdateRatingDto
     {
         [Required]
-        public int RatingNumber { get; set; } // La nueva puntuación 
+        public int RatingNumber { get; set; } // La nueva puntuaciÃ³n 
 
         public string Comment { get; set; } // El nuevo comentario
     }

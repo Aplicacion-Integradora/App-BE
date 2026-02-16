@@ -54,7 +54,7 @@ namespace ScriptedReviews.Notifications
 
             var query = queryable
                 .Where(n => n.UserId == currentUserId)
-                .OrderByDescending(n => n.SentTime); // Asumiendo que heredas de AuditedAggregateRoot
+                .OrderByDescending(n => n.SentTime);
 
             var notifications = await AsyncExecuter.ToListAsync(query);
 
@@ -68,7 +68,7 @@ namespace ScriptedReviews.Notifications
 
             if (notification.UserId != _currentUser.Id)
             {
-                // Lanzamos un error genérico (o 404) para no dar pistas
+                // Lanza un error genérico (o 404)
                 throw new UserFriendlyException("No tienes permiso para modificar esta notificación.");
             }
 
@@ -78,25 +78,25 @@ namespace ScriptedReviews.Notifications
         
         public async Task GenerateNotificationsAsync()
         {
-            // Traemos las series locales
+            // Trae las series locales
             var seriesLocales = await _serieRepository.GetListAsync(includeDetails: true);
 
             foreach (var serieLocal in seriesLocales)
             {
                 if (string.IsNullOrEmpty(serieLocal.ImdbId)) continue;
 
-                // Consultamos la API
+                // Consulta a la API
                 var infoApi = await _seriesApiService.ImportarSerieAsync(serieLocal.ImdbId);
 
                 if (infoApi == null) continue;
 
-                // Comparamos usando el campo TotalSeasons de la entidad
+                // Compara usando el campo TotalSeasons de la entidad
                 int temporadasEnApi = infoApi.TotalSeasons;
                 int temporadasLocales = serieLocal.TotalSeasons;
 
                 if (temporadasEnApi > temporadasLocales)
                 {
-                    // Buscamos los usuarios para notificarlos
+                    // Busca los usuarios para notificarlos
                     var queryable = await _watchlistRepository.WithDetailsAsync(x => x.Series);
                     var watchlists = queryable
                         .Where(w => w.Series.Any(s => s.Id == serieLocal.Id))
@@ -104,7 +104,7 @@ namespace ScriptedReviews.Notifications
 
                     foreach (var watchlist in watchlists)
                     {
-                        // Verificar si ya existe una notificación no leída para esta serie
+                        // Verifica si ya existe una notificación no leída para esta serie
                         var existingNotification = await _notificationRepository.FirstOrDefaultAsync(
                             n => n.UserId == watchlist.UserId 
                                  && n.Description.Contains(serieLocal.Title) 
@@ -122,12 +122,12 @@ namespace ScriptedReviews.Notifications
                             });
                         }
 
-                        // Marcar la watchlist con cambios
+                        // Marca la watchlist con cambios
                         watchlist.HasChanges = true;
                         await _watchlistRepository.UpdateAsync(watchlist);
                     }
 
-                    // Actualizamos la serie local para evitar notificaciones duplicadas
+                    // Actualiza la serie local para evitar notificaciones duplicadas
                     serieLocal.TotalSeasons = temporadasEnApi;
                     await _serieRepository.UpdateAsync(serieLocal);
                 }
