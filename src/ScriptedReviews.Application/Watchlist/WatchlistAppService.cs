@@ -1,6 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore; // Necesario para .Include()
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ScriptedReviews.Series;
 using ScriptedReviews.Watchlists.Dtos;
@@ -49,9 +49,6 @@ namespace ScriptedReviews.Watchlists
         {
             get
             {
-                // Como el PDF dice que "no se requiere sistema de seguridad activo",
-                // esto podría ser null si probamos sin login.
-                // Aquí lanzamos un error amigable si intentan usarlo sin estar logueados.
                 if (!_currentUser.Id.HasValue)
                 {
                     throw new UserFriendlyException("Debes estar logueado (o simular un usuario) para ver tu lista.");
@@ -76,7 +73,6 @@ namespace ScriptedReviews.Watchlists
                     return new List<SerieDto>();
                 }
 
-                // Usamos el _mapper explícito como tus compañeros
                 return _mapper.Map<List<Serie>, List<SerieDto>>(watchlist.Series);
             }
             catch (Exception ex)
@@ -155,7 +151,6 @@ namespace ScriptedReviews.Watchlists
                 .ToList();
 
             return ObjectMapper.Map<List<Watchlist>, List<WatchlistDto>>(seriesWithChanges);
-            //return ObjectMapper.Map<List<WatchlistDto>>(seriesWithChanges);
         }
 
         // Método para limpiar el flag HasChanges del usuario actual
