@@ -36,12 +36,12 @@
       </thead>
       <tbody>
         <tr *ngFor="let error of errorLogs">
-          <td>{{ error.createdAt | date:'short' }}</td>
+          <td>{{ error.createdAt | date:'dd/MM/yyyy HH:mm:ss':'-0300' }}</td>
+          
           <td>{{ error.message }}</td>
           <td><span class="badge bg-danger">{{ error.httpStatusCode }}</span></td>
         </tr>
       </tbody>
     </table>
-
   </div>
 </div>

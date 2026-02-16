@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 
-// 👇 USAMOS TUS PROXIES GENERADOS (Lo que se ve en tu imagen)
+// Usamos los proxys generados para obtener los servicios de API Monitoring y Error Logs
 import { ApiMonitoringService } from '@proxy/monitoring-logs';
 import { ErrorLogService } from '@proxy/error-logs';
-// Nota: Si VS Code se queja de los nombres, verifica dentro de los archivos .ts en la carpeta proxy cómo se llaman las clases exportadas.
 
 @Component({
   selector: 'app-dashboard',

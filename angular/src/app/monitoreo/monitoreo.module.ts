@@ -7,7 +7,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
   declarations: [DashboardComponent],
   imports: [
     CommonModule,
-    MonitoreoRoutingModule // 👈 Importante: Esto conecta las rutas
+    MonitoreoRoutingModule // Conexion de rutas
   ]
 })
 export class MonitoreoModule { }

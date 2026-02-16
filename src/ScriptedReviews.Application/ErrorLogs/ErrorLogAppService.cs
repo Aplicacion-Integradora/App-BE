@@ -19,7 +19,13 @@ public class ErrorLogAppService : ApplicationService, IErrorLogAppService
     {
         var logs = await _errorLogRepository.GetListAsync();
         var orderedLogs = logs.OrderByDescending(l => l.CreatedAt).ToList();
-        return ObjectMapper.Map<List<ErrorLog>, List<ErrorLogDto>>(orderedLogs);
+        var dtos = ObjectMapper.Map<List<ErrorLog>, List<ErrorLogDto>>(orderedLogs);
+        // Descuenta 3 horas de UTC para dar la hora local en Argentina
+        foreach (var item in dtos)
+        {
+            item.CreatedAt = item.CreatedAt.AddHours(-3);
+        }
+        return dtos;
     }
 
     public async Task<List<ErrorLogDto>> GetErrorLogsByLevelAsync(string level)
@@ -29,6 +35,11 @@ public class ErrorLogAppService : ApplicationService, IErrorLogAppService
             .Where(l => l.Level == level)
             .OrderByDescending(l => l.CreatedAt)
             .ToList();
-        return ObjectMapper.Map<List<ErrorLog>, List<ErrorLogDto>>(logs);
+        var dtos = ObjectMapper.Map<List<ErrorLog>, List<ErrorLogDto>>(logs);
+        foreach (var item in dtos)
+        {
+            item.CreatedAt = item.CreatedAt.AddHours(-3);
+        }
+        return dtos;
     }
 }
