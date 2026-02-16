@@ -19,7 +19,7 @@
     "@abp/ng.oauth": "~8.3.3",
     "@abp/ng.setting-management": "~8.3.3",
     "@abp/ng.tenant-management": "~8.3.3",
-    "@abp/ng.theme.lepton-x": "~3.3.3",
+    "@abp/ng.theme.lepton-x": "~3.2.3",
     "@abp/ng.theme.shared": "~8.3.3",
     "@angular/animations": "~18.1.0",
     "@angular/common": "~18.1.0",
@@ -33,6 +33,7 @@
     "@ng-bootstrap/ng-bootstrap": "^17.0.1",
     "@swimlane/ngx-datatable": "^20.1.0",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.26.18",
     "tslib": "^2.0.0",
     "zone.js": "~0.14.0"
   },

@@ -156,10 +156,29 @@ public class ScriptedReviewsHttpApiHostModule : AbpModule
         {
             Configure<AbpVirtualFileSystemOptions>(options =>
             {
-                options.FileSets.ReplaceEmbeddedByPhysical<ScriptedReviewsDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}ScriptedReviews.Domain.Shared"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ScriptedReviewsDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}ScriptedReviews.Domain"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ScriptedReviewsApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}ScriptedReviews.Application.Contracts"));
-                options.FileSets.ReplaceEmbeddedByPhysical<ScriptedReviewsApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}ScriptedReviews.Application"));
+                var sharedPath = Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}ScriptedReviews.Domain.Shared");
+                if (Directory.Exists(sharedPath))
+                {
+                    options.FileSets.ReplaceEmbeddedByPhysical<ScriptedReviewsDomainSharedModule>(sharedPath);
+                }
+
+                var domainPath = Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}ScriptedReviews.Domain");
+                if (Directory.Exists(domainPath))
+                {
+                    options.FileSets.ReplaceEmbeddedByPhysical<ScriptedReviewsDomainModule>(domainPath);
+                }
+
+                var contractsPath = Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}ScriptedReviews.Application.Contracts");
+                if (Directory.Exists(contractsPath))
+                {
+                    options.FileSets.ReplaceEmbeddedByPhysical<ScriptedReviewsApplicationContractsModule>(contractsPath);
+                }
+
+                var appPath = Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}ScriptedReviews.Application");
+                if (Directory.Exists(appPath))
+                {
+                    options.FileSets.ReplaceEmbeddedByPhysical<ScriptedReviewsApplicationModule>(appPath);
+                }
             });
         }
     }

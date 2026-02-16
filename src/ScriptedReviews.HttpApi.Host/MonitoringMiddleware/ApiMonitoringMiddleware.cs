@@ -21,7 +21,26 @@ namespace ScriptedReviews.MonitoringMiddleware;
 
         public async Task Invoke(HttpContext context, IRepository<ApiMonitoringLog, int> _apiMonitoringRepository)
         {
-            var stopwatch = Stopwatch.StartNew();
+        var path = context.Request.Path.Value?.ToLower();
+        var method = context.Request.Method.ToUpper();
+
+        // --- FILTRO DE RUIDO (EXCLUSIONES) ---
+        if (path != null && (
+            // 1. AUTO-MONITOREO (Para no contar cuando miras el panel)
+            path.Contains("api-monitoring") ||
+            path.Contains("error-log") ||
+            path.Contains("application-configuration") || // Configuración
+            path.Contains("api-definition") ||            // Definición de API 
+            path.Contains("_configuration") ||            // Configuración de Auth 
+            path.Contains("swagger") ||
+            path.Contains("favicon") ||
+            method == "OPTIONS"
+        ))
+        {
+            await _next(context);
+            return;
+        }
+        var stopwatch = Stopwatch.StartNew();
 
             try
             {

@@ -4,6 +4,7 @@ using ScriptedReviews.Notifications;
 using ScriptedReviews.Notifications.Dtos;
 using ScriptedReviews.Ratings;
 using ScriptedReviews.Series;
+using ScriptedReviews.Seasons;
 using ScriptedReviews.Watchlists;
 using ScriptedReviews.Watchlists.Dtos;
 
@@ -18,9 +19,9 @@ public class ScriptedReviewsApplicationAutoMapperProfile : Profile
          * into multiple profile classes for a better organization. */
         
         
-        //Mapa para Dto de Serie
         CreateMap<Serie, SerieDto>();
         CreateMap<CreateUpdateSerieDto, Serie>();
+        CreateMap<Season, SeasonDto>();
         
         //Mapa para Dto de Watchlist
         CreateMap<Watchlist, WatchlistDto>();

@@ -10,9 +10,6 @@ namespace ScriptedReviews.Notifications
 {
     public interface INotificationAppService : IApplicationService
     {
-        /// <summary>
-        /// Método para generar notificaciones basado en cambios en la lista de seguimiento.
-        /// </summary>
         Task<List<NotificationDto>> GetMyNotificationsAsync();
         Task MarkAsReadAsync(int id);
         Task GenerateNotificationsAsync();

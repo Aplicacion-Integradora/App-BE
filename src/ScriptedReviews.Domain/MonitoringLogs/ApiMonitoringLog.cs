@@ -17,10 +17,10 @@ public class ApiMonitoringLog : AggregateRoot<int>
     public string IPAddress { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
-    // 🔹 Constructor vacío requerido por Entity Framework
+    // Constructor vacío requerido por Entity Framework
     private ApiMonitoringLog() { }
 
-    // 🔹 Constructor con parámetros para asegurar integridad de datos
+    // Constructor con parámetros para asegurar integridad de datos
     public ApiMonitoringLog(string endpoint, string httpMethod, long responseTime, int httpStatusCode, string userAgent, string ipAddress)
     {
         Endpoint = endpoint;

@@ -10,27 +10,19 @@ namespace ScriptedReviews.Series
     public class CreateUpdateSerieDto
     {
         [Required]
-        public string Title { get; set; } // Título
+        public string Title { get; set; }
 
         [Required]
-        public string Genre { get; set; } // Género
+        public string Genre { get; set; }
 
-        public string ReleaseDate { get; set; } // Fecha de lanzamiento
-
-        public string Duration { get; set; } // Duración
-
-        // Equipo (Director, Escritor, Elenco) 
+        public string ReleaseDate { get; set; }
+        public string Duration { get; set; }
         public string Director { get; set; }
         public string Writer { get; set; }
         public string Cast { get; set; }
-
-        public string Image { get; set; } // Foto de portada
-
-        public string Country { get; set; } // País de origen
-
-        public string Rating { get; set; } // Calificación en IMDB
-
-        // Campo extra -- Opcional
+        public string Image { get; set; }
+        public string Country { get; set; }
+        public string Rating { get; set; }
         public string Description { get; set; }
     }
 }

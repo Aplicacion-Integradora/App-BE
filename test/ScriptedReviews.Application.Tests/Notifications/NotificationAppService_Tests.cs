@@ -25,7 +25,6 @@ namespace ScriptedReviews.Notifications;
     public abstract class NotificationAppService_Tests<TStartupModule> : ScriptedReviewsApplicationTestBase<TStartupModule>
         where TStartupModule : IAbpModule
     {
-    // 1. En lugar de Mocks, declaramos las interfaces reales
         private readonly INotificationAppService _notificationAppService;
         private readonly IRepository<Notification, int> _notificationRepository;
         private readonly IRepository<Watchlist, int> _watchlistRepository;
@@ -33,7 +32,6 @@ namespace ScriptedReviews.Notifications;
 
     protected NotificationAppService_Tests()
     {
-        // 2. Le pedimos a ABP que nos dé las instancias listas para usar
         _notificationAppService = GetRequiredService<INotificationAppService>();
         _notificationRepository = GetRequiredService<IRepository<Notification, int>>();
         _watchlistRepository = GetRequiredService<IRepository<Watchlist, int>>();
@@ -52,11 +50,11 @@ namespace ScriptedReviews.Notifications;
 
         seriesApiServiceMock.ClearReceivedCalls();
 
-        // Para que cuando busque Breaking Bad diga que tiene 5 temporadas"
+        // Para que cuando busque Breaking Bad diga que tiene 5 temporadas
         seriesApiServiceMock.ImportarSerieAsync(imdbIdBreakingBad)
             .Returns(Task.FromResult(new SerieDto { TotalSeasons = 5 }));
 
-        // Para que cuando busque GOT diga que tiene 8 temporadas"
+        // Para que cuando busque GOT diga que tiene 8 temporadas
         seriesApiServiceMock.ImportarSerieAsync(imdbIdGOT)
             .Returns(Task.FromResult(new SerieDto { TotalSeasons = 8 }));
 
@@ -193,7 +191,7 @@ namespace ScriptedReviews.Notifications;
                 Type = "Email",
                 SentTime = DateTime.Now,
                 WasRead = false
-            }, true); // true = auto-save para obtener el ID
+            }, true);
 
             notifId = notif.Id;
         });

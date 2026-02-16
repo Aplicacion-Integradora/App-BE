@@ -18,6 +18,13 @@ public class ApiMonitoringAppService : ApplicationService, IApiMonitoringAppServ
     public async Task<List<ApiMonitoringLogDto>> GetApiLogsAsync()
     {
         var logs = await _apiMonitoringRepository.GetListAsync();
-        return ObjectMapper.Map<List<ApiMonitoringLog>, List<ApiMonitoringLogDto>>(logs);
+        var dtos = ObjectMapper.Map<List<ApiMonitoringLog>, List<ApiMonitoringLogDto>>(logs);
+
+        // Descuenta 3 horas de UTC para dar la hora local en Argentina
+        foreach (var item in dtos)
+        {
+            item.CreatedAt = item.CreatedAt.AddHours(-3);
+        }
+        return dtos;
     }
 }

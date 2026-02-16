@@ -31,6 +31,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./serie/serie.module').then(m => m.SerieModule)
   },
+  {
+    path: 'monitoreo',
+    loadChildren: () => import('./monitoreo/monitoreo.module').then(m => m.MonitoreoModule),
+  },
 ];
 
 @NgModule({

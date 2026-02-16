@@ -30,7 +30,7 @@ namespace ScriptedReviews.Series
         public async Task Should_Import_Serie_From_Omdb_And_Save_To_Database()
         {
             // Arrange
-            var titulo = "Breaking Bad";
+            var imdbId = "tt0903747"; // Breaking Bad
             
             var apiKey = _configuration["OmdbApiKey"];
             apiKey.ShouldNotBeNullOrEmpty("OmdbApiKey should be configured in appsettings.json");
@@ -40,7 +40,7 @@ namespace ScriptedReviews.Series
             // Act
             await WithUnitOfWorkAsync(async () =>
             {
-                resultado = await _omdbService.ImportarSerieAsync(titulo);
+                resultado = await _omdbService.ImportarSerieAsync(imdbId);
             });
 
             // Assert
@@ -48,7 +48,7 @@ namespace ScriptedReviews.Series
             resultado.Title.ShouldBe("Breaking Bad");
             resultado.ImdbId.ShouldNotBeNullOrEmpty();
 
-            // Verificar que se guardó en la base de datos  
+            // Verifica que se guardó en la base de datos  
             await WithUnitOfWorkAsync(async () =>
             {
                 var serieEnDb = await _serieRepository.FirstOrDefaultAsync(x => x.ImdbId == resultado.ImdbId);
@@ -61,7 +61,7 @@ namespace ScriptedReviews.Series
         public async Task Should_Not_Duplicate_If_Already_Exists()
         {
             // Arrange
-            var titulo = "Game of Thrones";
+            var imdbId = "tt0944947"; // Game of Thrones
             SerieDto? primeraImportacion = null;
             SerieDto? segundaImportacion = null;
             long cantidadInicial = 0;
@@ -71,7 +71,7 @@ namespace ScriptedReviews.Series
             // Primer import
             await WithUnitOfWorkAsync(async () =>
             {
-                primeraImportacion = await _omdbService.ImportarSerieAsync(titulo);
+                primeraImportacion = await _omdbService.ImportarSerieAsync(imdbId);
             });
             
             primeraImportacion.ShouldNotBeNull("First import returned null");
@@ -84,7 +84,7 @@ namespace ScriptedReviews.Series
             // Segundo import (deberia devolver la serie existente)
             await WithUnitOfWorkAsync(async () =>
             {
-                segundaImportacion = await _omdbService.ImportarSerieAsync(titulo);
+                segundaImportacion = await _omdbService.ImportarSerieAsync(imdbId);
             });
 
             await WithUnitOfWorkAsync(async () =>
@@ -102,14 +102,14 @@ namespace ScriptedReviews.Series
         public async Task Should_Throw_When_Serie_Not_Found()
         {
             // Arrange
-            var tituloInexistente = "xyzabc123nonexistent_series_title_9999";
+            var idInexistente = "tt000000000";
 
             // Act & Assert - debería lanzar UserFriendlyException
             await Assert.ThrowsAsync<Volo.Abp.UserFriendlyException>(async () =>
             {
                 await WithUnitOfWorkAsync(async () =>
                 {
-                    await _omdbService.ImportarSerieAsync(tituloInexistente);
+                    await _omdbService.ImportarSerieAsync(idInexistente);
                 });
             });
         }
@@ -118,13 +118,13 @@ namespace ScriptedReviews.Series
         public async Task Should_Store_All_Required_Fields()
         {
             // Arrange
-            var titulo = "The Office";
+            var imdbId = "tt0386676"; // The Office
             SerieDto? resultado = null;
 
             // Act
             await WithUnitOfWorkAsync(async () =>
             {
-                resultado = await _omdbService.ImportarSerieAsync(titulo);
+                resultado = await _omdbService.ImportarSerieAsync(imdbId);
             });
 
             // Assert
@@ -132,7 +132,7 @@ namespace ScriptedReviews.Series
             resultado.Title.ShouldNotBeNullOrEmpty();
             resultado.ImdbId.ShouldNotBeNullOrEmpty();
 
-            // Verificar en la base de datos
+            // Verifica en la base de datos
             await WithUnitOfWorkAsync(async () =>
             {
                 var serieEnDb = await _serieRepository.FirstOrDefaultAsync(x => x.ImdbId == resultado.ImdbId);
