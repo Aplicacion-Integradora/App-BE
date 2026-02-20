@@ -3,7 +3,7 @@ import type { SerieDto } from '../../series/models';
 
 export interface WatchlistDto extends EntityDto<number> {
   series: SerieDto[];
-  id: number;
   name?: string;
+  userId?: string;
   hasChanges: boolean;
 }

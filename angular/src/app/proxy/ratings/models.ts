@@ -1,15 +1,20 @@
 
 export interface CreateRatingDto {
-  seriesId?: string;
-  rating: number;
+  seriesId: number;
+  ratingNumber: number;
   comment?: string;
 }
 
 export interface RatingDto {
   userId?: string;
   id?: string;
-  seriesId?: string;
-  rating: number;
+  seriesId: number;
+  ratingNumber: number;
   comment?: string;
   creationTime?: string;
+}
+
+export interface UpdateRatingDto {
+  ratingNumber?: number;
+  comment?: string;
 }

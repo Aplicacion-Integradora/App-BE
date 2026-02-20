@@ -18,11 +18,10 @@ export class OmdbService {
     { apiName: this.apiName,...config });
   
 
-  importarSerie = (titulo: string, config?: Partial<Rest.Config>) =>
+  importarSerie = (imdbId: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, SerieDto>({
       method: 'POST',
-      url: '/api/app/omdb/importar-serie',
-      params: { titulo },
+      url: `/api/app/omdb/importar-serie/${imdbId}`,
     },
     { apiName: this.apiName,...config });
 

@@ -1,22 +1,22 @@
 import type { EntityDto } from '@abp/ng.core';
+import type { SeasonDto } from '../seasons/models';
 
 export interface CreateUpdateSerieDto {
-  title?: string;
-  genre?: string;
+  title: string;
+  genre: string;
   releaseDate?: string;
-  image?: string;
-  rating?: string;
+  duration?: string;
   director?: string;
-}
-
-export interface SeasonDto extends EntityDto<number> {
-  number?: number;
+  writer?: string;
+  cast?: string;
+  image?: string;
+  country?: string;
+  rating?: string;
   description?: string;
-  releaseDate?: string;
-  chapters?: string;
 }
 
 export interface SerieDto extends EntityDto<number> {
+  id: number;
   title?: string;
   description?: string;
   image?: string;
@@ -30,6 +30,6 @@ export interface SerieDto extends EntityDto<number> {
   cast?: string;
   writer?: string;
   imdbId?: string;
-  totalSeasons?: number;
-  seasons?: SeasonDto[];
+  totalSeasons: number;
+  seasons: SeasonDto[];
 }

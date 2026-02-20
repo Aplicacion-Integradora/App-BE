@@ -11,6 +11,8 @@ namespace ScriptedReviews.Ratings
     public class CreateRatingDto
     {
         public int SeriesId { get; set; }
+        
+        [Range(1, 5, ErrorMessage = "La calificación debe estar entre 1 y 5.")] 
         public int RatingNumber { get; set; }
         public string Comment { get; set; }
     }
@@ -27,8 +29,8 @@ namespace ScriptedReviews.Ratings
 
     public class UpdateRatingDto
     {
-        [Required]
-        public int RatingNumber { get; set; } // La nueva puntuación 
+        [Range(1, 5, ErrorMessage = "La calificación debe estar entre 1 y 5.")]
+        public int? RatingNumber { get; set; } // La nueva puntuación 
 
         public string Comment { get; set; } // El nuevo comentario
     }

@@ -37,6 +37,12 @@ namespace ScriptedReviews.Ratings
         [Authorize]
         public async Task<RatingDto> RateAsync(CreateRatingDto input)
         {
+            // Chequeo de calificacion entre 1 y 5
+            if (input.RatingNumber < 1 || input.RatingNumber > 5)
+            {
+                throw new UserFriendlyException("La calificación debe estar estrictamente entre 1 y 5.");
+            }
+            
             // Verifica que la serie pertenece al usuario
             var series = await _serieRepository.GetAsync(s => s.Id == input.SeriesId);
             if (series == null)
@@ -75,6 +81,12 @@ namespace ScriptedReviews.Ratings
             {
                 throw new UserFriendlyException("Debes iniciar sesión para editar una calificación.");
             }
+
+            if (input.RatingNumber.HasValue && (input.RatingNumber.Value < 1 || input.RatingNumber.Value > 5))
+            {
+                throw new UserFriendlyException("La calificación debe estar estrictamente entre 1 y 5.");
+            }
+
             var currentUserId = CurrentUser.Id.Value;
 
             // Busca la calificación existente en la BD
@@ -86,9 +98,17 @@ namespace ScriptedReviews.Ratings
                 throw new UserFriendlyException("No has calificado esta serie, por lo que no puedes editarla.");
             }
 
-            // Actualiza los datos 
-            rating.RatingNumber = input.RatingNumber;
-            rating.Comment = input.Comment;
+            // Si enviaron una nueva nota, se actualiza
+            if (input.RatingNumber.HasValue)
+            {
+                rating.RatingNumber = input.RatingNumber.Value;
+            }
+
+            // Si enviaron un nuevo comentario, se actualiza
+            if (input.Comment != null)
+            {
+                rating.Comment = input.Comment;
+            }
 
             // Guarda los cambios
             await _ratingRepository.UpdateAsync(rating);

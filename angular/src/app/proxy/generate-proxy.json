@@ -873,6 +873,168 @@
       "rootPath": "app",
       "remoteServiceName": "Default",
       "controllers": {
+        "ScriptedReviews.Controllers.ApiMonitoringController": {
+          "controllerName": "ApiMonitoring",
+          "controllerGroupName": null,
+          "isRemoteService": false,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ScriptedReviews.Controllers.ApiMonitoringController",
+          "interfaces": [],
+          "actions": {
+            "GetLogs": {
+              "uniqueName": "GetLogs",
+              "name": "GetLogs",
+              "httpMethod": "GET",
+              "url": "api/monitoring",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ScriptedReviews.MonitoringLogs.ApiMonitoringLogDto>",
+                "typeSimple": "[ScriptedReviews.MonitoringLogs.ApiMonitoringLogDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.Controllers.ApiMonitoringController"
+            }
+          }
+        },
+        "ScriptedReviews.ErrorLogs.ErrorLogAppService": {
+          "controllerName": "ErrorLog",
+          "controllerGroupName": "ErrorLog",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ScriptedReviews.ErrorLogs.ErrorLogAppService",
+          "interfaces": [
+            {
+              "type": "ScriptedReviews.ErrorLogs.IErrorLogAppService",
+              "name": "IErrorLogAppService",
+              "methods": [
+                {
+                  "name": "GetErrorLogsAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ScriptedReviews.ErrorLogs.ErrorLogDto>",
+                    "typeSimple": "[ScriptedReviews.ErrorLogs.ErrorLogDto]"
+                  }
+                },
+                {
+                  "name": "GetErrorLogsByLevelAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "level",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ScriptedReviews.ErrorLogs.ErrorLogDto>",
+                    "typeSimple": "[ScriptedReviews.ErrorLogs.ErrorLogDto]"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetErrorLogsAsync": {
+              "uniqueName": "GetErrorLogsAsync",
+              "name": "GetErrorLogsAsync",
+              "httpMethod": "GET",
+              "url": "api/app/error-log/error-logs",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ScriptedReviews.ErrorLogs.ErrorLogDto>",
+                "typeSimple": "[ScriptedReviews.ErrorLogs.ErrorLogDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.ErrorLogs.IErrorLogAppService"
+            },
+            "GetErrorLogsByLevelAsyncByLevel": {
+              "uniqueName": "GetErrorLogsByLevelAsyncByLevel",
+              "name": "GetErrorLogsByLevelAsync",
+              "httpMethod": "GET",
+              "url": "api/app/error-log/error-logs-by-level",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "level",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "level",
+                  "name": "level",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ScriptedReviews.ErrorLogs.ErrorLogDto>",
+                "typeSimple": "[ScriptedReviews.ErrorLogs.ErrorLogDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.ErrorLogs.IErrorLogAppService"
+            }
+          }
+        },
+        "ScriptedReviews.MonitoringLogs.ApiMonitoringAppService": {
+          "controllerName": "ApiMonitoring",
+          "controllerGroupName": "ApiMonitoring",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ScriptedReviews.MonitoringLogs.ApiMonitoringAppService",
+          "interfaces": [
+            {
+              "type": "ScriptedReviews.MonitoringLogs.IApiMonitoringAppService",
+              "name": "IApiMonitoringAppService",
+              "methods": [
+                {
+                  "name": "GetApiLogsAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ScriptedReviews.MonitoringLogs.ApiMonitoringLogDto>",
+                    "typeSimple": "[ScriptedReviews.MonitoringLogs.ApiMonitoringLogDto]"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetApiLogsAsync": {
+              "uniqueName": "GetApiLogsAsync",
+              "name": "GetApiLogsAsync",
+              "httpMethod": "GET",
+              "url": "api/app/api-monitoring/api-logs",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ScriptedReviews.MonitoringLogs.ApiMonitoringLogDto>",
+                "typeSimple": "[ScriptedReviews.MonitoringLogs.ApiMonitoringLogDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.MonitoringLogs.IApiMonitoringAppService"
+            }
+          }
+        },
         "ScriptedReviews.Notifications.NotificationAppService": {
           "controllerName": "Notification",
           "controllerGroupName": "Notification",
@@ -886,6 +1048,31 @@
               "name": "INotificationAppService",
               "methods": [
                 {
+                  "name": "GetMyNotificationsAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ScriptedReviews.Notifications.Dtos.NotificationDto>",
+                    "typeSimple": "[ScriptedReviews.Notifications.Dtos.NotificationDto]"
+                  }
+                },
+                {
+                  "name": "MarkAsReadAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Int32, System.Private.CoreLib",
+                      "type": "System.Int32",
+                      "typeSimple": "number",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
                   "name": "GenerateNotificationsAsync",
                   "parametersOnMethod": [],
                   "returnValue": {
@@ -897,6 +1084,58 @@
             }
           ],
           "actions": {
+            "GetMyNotificationsAsync": {
+              "uniqueName": "GetMyNotificationsAsync",
+              "name": "GetMyNotificationsAsync",
+              "httpMethod": "GET",
+              "url": "api/app/notification/my-notifications",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ScriptedReviews.Notifications.Dtos.NotificationDto>",
+                "typeSimple": "[ScriptedReviews.Notifications.Dtos.NotificationDto]"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ScriptedReviews.Notifications.INotificationAppService"
+            },
+            "MarkAsReadAsyncById": {
+              "uniqueName": "MarkAsReadAsyncById",
+              "name": "MarkAsReadAsync",
+              "httpMethod": "POST",
+              "url": "api/app/notification/{id}/mark-as-read",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Int32, System.Private.CoreLib",
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ScriptedReviews.Notifications.INotificationAppService"
+            },
             "GenerateNotificationsAsync": {
               "uniqueName": "GenerateNotificationsAsync",
               "name": "GenerateNotificationsAsync",
@@ -914,6 +1153,69 @@
             }
           }
         },
+        "ScriptedReviews.Notifications.NotificationSettingsAppService": {
+          "controllerName": "NotificationSettings",
+          "controllerGroupName": "NotificationSettings",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ScriptedReviews.Notifications.NotificationSettingsAppService",
+          "interfaces": [],
+          "actions": {
+            "GetEmailEnabledAsync": {
+              "uniqueName": "GetEmailEnabledAsync",
+              "name": "GetEmailEnabledAsync",
+              "httpMethod": "GET",
+              "url": "api/app/notification-settings/email-enabled",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Boolean",
+                "typeSimple": "boolean"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.Notifications.NotificationSettingsAppService"
+            },
+            "SetEmailEnabledAsyncByEnabled": {
+              "uniqueName": "SetEmailEnabledAsyncByEnabled",
+              "name": "SetEmailEnabledAsync",
+              "httpMethod": "POST",
+              "url": "api/app/notification-settings/set-email-enabled",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "enabled",
+                  "typeAsString": "System.Boolean, System.Private.CoreLib",
+                  "type": "System.Boolean",
+                  "typeSimple": "boolean",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "enabled",
+                  "name": "enabled",
+                  "jsonName": null,
+                  "type": "System.Boolean",
+                  "typeSimple": "boolean",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.Notifications.NotificationSettingsAppService"
+            }
+          }
+        },
         "ScriptedReviews.Ratings.RatingAppService": {
           "controllerName": "Rating",
           "controllerGroupName": "Rating",
@@ -927,7 +1229,32 @@
               "name": "IRatingAppService",
               "methods": [
                 {
-                  "name": "RateSeriesAsync",
+                  "name": "UpdateRatingAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "seriesId",
+                      "typeAsString": "System.Int32, System.Private.CoreLib",
+                      "type": "System.Int32",
+                      "typeSimple": "number",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "ScriptedReviews.Ratings.UpdateRatingDto, ScriptedReviews.Application.Contracts",
+                      "type": "ScriptedReviews.Ratings.UpdateRatingDto",
+                      "typeSimple": "ScriptedReviews.Ratings.UpdateRatingDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ScriptedReviews.Ratings.RatingDto",
+                    "typeSimple": "ScriptedReviews.Ratings.RatingDto"
+                  }
+                },
+                {
+                  "name": "RateAsync",
                   "parametersOnMethod": [
                     {
                       "name": "input",
@@ -942,16 +1269,24 @@
                     "type": "ScriptedReviews.Ratings.RatingDto",
                     "typeSimple": "ScriptedReviews.Ratings.RatingDto"
                   }
+                },
+                {
+                  "name": "GetListAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ScriptedReviews.Ratings.RatingDto>",
+                    "typeSimple": "[ScriptedReviews.Ratings.RatingDto]"
+                  }
                 }
               ]
             }
           ],
           "actions": {
-            "RateSeriesAsyncByInput": {
-              "uniqueName": "RateSeriesAsyncByInput",
-              "name": "RateSeriesAsync",
+            "RateAsyncByInput": {
+              "uniqueName": "RateAsyncByInput",
+              "name": "RateAsync",
               "httpMethod": "POST",
-              "url": "api/app/rating/rate-series",
+              "url": "api/app/rating/rate",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -981,8 +1316,234 @@
                 "type": "ScriptedReviews.Ratings.RatingDto",
                 "typeSimple": "ScriptedReviews.Ratings.RatingDto"
               },
-              "allowAnonymous": null,
+              "allowAnonymous": false,
               "implementFrom": "ScriptedReviews.Ratings.IRatingAppService"
+            },
+            "GetListAsync": {
+              "uniqueName": "GetListAsync",
+              "name": "GetListAsync",
+              "httpMethod": "GET",
+              "url": "api/app/rating",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ScriptedReviews.Ratings.RatingDto>",
+                "typeSimple": "[ScriptedReviews.Ratings.RatingDto]"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ScriptedReviews.Ratings.IRatingAppService"
+            },
+            "UpdateRatingAsyncBySeriesIdAndInput": {
+              "uniqueName": "UpdateRatingAsyncBySeriesIdAndInput",
+              "name": "UpdateRatingAsync",
+              "httpMethod": "PUT",
+              "url": "api/app/rating/rating/{seriesId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "seriesId",
+                  "typeAsString": "System.Int32, System.Private.CoreLib",
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "ScriptedReviews.Ratings.UpdateRatingDto, ScriptedReviews.Application.Contracts",
+                  "type": "ScriptedReviews.Ratings.UpdateRatingDto",
+                  "typeSimple": "ScriptedReviews.Ratings.UpdateRatingDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "seriesId",
+                  "name": "seriesId",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "ScriptedReviews.Ratings.UpdateRatingDto",
+                  "typeSimple": "ScriptedReviews.Ratings.UpdateRatingDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ScriptedReviews.Ratings.RatingDto",
+                "typeSimple": "ScriptedReviews.Ratings.RatingDto"
+              },
+              "allowAnonymous": false,
+              "implementFrom": "ScriptedReviews.Ratings.IRatingAppService"
+            }
+          }
+        },
+        "ScriptedReviews.Series.OmdbService": {
+          "controllerName": "Omdb",
+          "controllerGroupName": "Omdb",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "ScriptedReviews.Series.OmdbService",
+          "interfaces": [
+            {
+              "type": "ScriptedReviews.Series.ISeriesApiService",
+              "name": "ISeriesApiService",
+              "methods": [
+                {
+                  "name": "GetSeriesAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "title",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "genre",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.ICollection<ScriptedReviews.Series.SerieDto>",
+                    "typeSimple": "[ScriptedReviews.Series.SerieDto]"
+                  }
+                },
+                {
+                  "name": "ImportarSerieAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "imdbId",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ScriptedReviews.Series.SerieDto",
+                    "typeSimple": "ScriptedReviews.Series.SerieDto"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetSeriesAsyncByTitleAndGenre": {
+              "uniqueName": "GetSeriesAsyncByTitleAndGenre",
+              "name": "GetSeriesAsync",
+              "httpMethod": "GET",
+              "url": "api/app/omdb/series",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "title",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "genre",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "title",
+                  "name": "title",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "genre",
+                  "name": "genre",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.ICollection<ScriptedReviews.Series.SerieDto>",
+                "typeSimple": "[ScriptedReviews.Series.SerieDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.Series.ISeriesApiService"
+            },
+            "ImportarSerieAsyncByImdbId": {
+              "uniqueName": "ImportarSerieAsyncByImdbId",
+              "name": "ImportarSerieAsync",
+              "httpMethod": "POST",
+              "url": "api/app/omdb/importar-serie/{imdbId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "imdbId",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "imdbId",
+                  "name": "imdbId",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ScriptedReviews.Series.SerieDto",
+                "typeSimple": "ScriptedReviews.Series.SerieDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.Series.ISeriesApiService"
             }
           }
         },
@@ -1021,6 +1582,23 @@
                   "returnValue": {
                     "type": "System.Collections.Generic.ICollection<ScriptedReviews.Series.SerieDto>",
                     "typeSimple": "[ScriptedReviews.Series.SerieDto]"
+                  }
+                },
+                {
+                  "name": "ImportarSerieAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "imdbId",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "ScriptedReviews.Series.SerieDto",
+                    "typeSimple": "ScriptedReviews.Series.SerieDto"
                   }
                 },
                 {
@@ -1120,10 +1698,47 @@
             }
           ],
           "actions": {
+            "GetAsyncById": {
+              "uniqueName": "GetAsyncById",
+              "name": "GetAsync",
+              "httpMethod": "GET",
+              "url": "api/app/serie/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Int32, System.Private.CoreLib",
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ScriptedReviews.Series.SerieDto",
+                "typeSimple": "ScriptedReviews.Series.SerieDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<ScriptedReviews.Series.SerieDto,ScriptedReviews.Series.SerieDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
+            },
             "SearchAsyncByTitleAndGenre": {
               "uniqueName": "SearchAsyncByTitleAndGenre",
               "name": "SearchAsync",
-              "httpMethod": "POST",
+              "httpMethod": "GET",
               "url": "api/app/serie/search",
               "supportedVersions": [],
               "parametersOnMethod": [
@@ -1173,6 +1788,43 @@
               "returnValue": {
                 "type": "System.Collections.Generic.ICollection<ScriptedReviews.Series.SerieDto>",
                 "typeSimple": "[ScriptedReviews.Series.SerieDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.Series.ISerieAppService"
+            },
+            "ImportarSerieAsyncByImdbId": {
+              "uniqueName": "ImportarSerieAsyncByImdbId",
+              "name": "ImportarSerieAsync",
+              "httpMethod": "POST",
+              "url": "api/app/serie/importar-serie",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "imdbId",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "imdbId",
+                  "name": "imdbId",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "ScriptedReviews.Series.SerieDto",
+                "typeSimple": "ScriptedReviews.Series.SerieDto"
               },
               "allowAnonymous": null,
               "implementFrom": "ScriptedReviews.Series.ISerieAppService"
@@ -1308,43 +1960,6 @@
               "allowAnonymous": null,
               "implementFrom": "Volo.Abp.Application.Services.IDeleteAppService<System.Int32>"
             },
-            "GetAsyncById": {
-              "uniqueName": "GetAsyncById",
-              "name": "GetAsync",
-              "httpMethod": "GET",
-              "url": "api/app/serie/{id}",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Int32, System.Private.CoreLib",
-                  "type": "System.Int32",
-                  "typeSimple": "number",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Int32",
-                  "typeSimple": "number",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "ScriptedReviews.Series.SerieDto",
-                "typeSimple": "ScriptedReviews.Series.SerieDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "Volo.Abp.Application.Services.IReadOnlyAppService<ScriptedReviews.Series.SerieDto,ScriptedReviews.Series.SerieDto,System.Int32,Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto>"
-            },
             "GetListAsyncByInput": {
               "uniqueName": "GetListAsyncByInput",
               "name": "GetListAsync",
@@ -1417,11 +2032,36 @@
           "type": "ScriptedReviews.Watchlists.WatchlistAppService",
           "interfaces": [
             {
-              "type": "ScriptedReviews.Watchlists.iWatchlistAppService",
-              "name": "iWatchlistAppService",
+              "type": "ScriptedReviews.Watchlists.IWatchlistAppService",
+              "name": "IWatchlistAppService",
               "methods": [
                 {
+                  "name": "GetMyWatchlistAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<ScriptedReviews.Series.SerieDto>",
+                    "typeSimple": "[ScriptedReviews.Series.SerieDto]"
+                  }
+                },
+                {
                   "name": "AddSerieAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "serieId",
+                      "typeAsString": "System.Int32, System.Private.CoreLib",
+                      "type": "System.Int32",
+                      "typeSimple": "number",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "RemoveSerieAsync",
                   "parametersOnMethod": [
                     {
                       "name": "serieId",
@@ -1444,11 +2084,34 @@
                     "type": "System.Collections.Generic.List<ScriptedReviews.Watchlists.Dtos.WatchlistDto>",
                     "typeSimple": "[ScriptedReviews.Watchlists.Dtos.WatchlistDto]"
                   }
+                },
+                {
+                  "name": "ClearChangesAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
                 }
               ]
             }
           ],
           "actions": {
+            "GetMyWatchlistAsync": {
+              "uniqueName": "GetMyWatchlistAsync",
+              "name": "GetMyWatchlistAsync",
+              "httpMethod": "GET",
+              "url": "api/app/watchlist/my-watchlist",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<ScriptedReviews.Series.SerieDto>",
+                "typeSimple": "[ScriptedReviews.Series.SerieDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.Watchlists.IWatchlistAppService"
+            },
             "AddSerieAsyncBySerieId": {
               "uniqueName": "AddSerieAsyncBySerieId",
               "name": "AddSerieAsync",
@@ -1484,7 +2147,44 @@
                 "typeSimple": "System.Void"
               },
               "allowAnonymous": null,
-              "implementFrom": "ScriptedReviews.Watchlists.iWatchlistAppService"
+              "implementFrom": "ScriptedReviews.Watchlists.IWatchlistAppService"
+            },
+            "RemoveSerieAsyncBySerieId": {
+              "uniqueName": "RemoveSerieAsyncBySerieId",
+              "name": "RemoveSerieAsync",
+              "httpMethod": "DELETE",
+              "url": "api/app/watchlist/serie/{serieId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "serieId",
+                  "typeAsString": "System.Int32, System.Private.CoreLib",
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "serieId",
+                  "name": "serieId",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.Watchlists.IWatchlistAppService"
             },
             "GetSeriesWithChangesAsync": {
               "uniqueName": "GetSeriesWithChangesAsync",
@@ -1499,7 +2199,22 @@
                 "typeSimple": "[ScriptedReviews.Watchlists.Dtos.WatchlistDto]"
               },
               "allowAnonymous": null,
-              "implementFrom": "ScriptedReviews.Watchlists.iWatchlistAppService"
+              "implementFrom": "ScriptedReviews.Watchlists.IWatchlistAppService"
+            },
+            "ClearChangesAsync": {
+              "uniqueName": "ClearChangesAsync",
+              "name": "ClearChangesAsync",
+              "httpMethod": "POST",
+              "url": "api/app/watchlist/clear-changes",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "ScriptedReviews.Watchlists.IWatchlistAppService"
             }
           }
         }
@@ -4112,7 +4827,7 @@
     }
   },
   "types": {
-    "ScriptedReviews.Ratings.CreateRatingDto": {
+    "ScriptedReviews.ErrorLogs.ErrorLogDto": {
       "baseType": null,
       "isEnum": false,
       "enumNames": null,
@@ -4120,7 +4835,253 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "SeriesId",
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Level",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Message",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Exception",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Source",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Endpoint",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "HttpMethod",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "HttpStatusCode",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserId",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "IpAddress",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreatedAt",
+          "jsonName": null,
+          "type": "System.DateTime",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ScriptedReviews.MonitoringLogs.ApiMonitoringLogDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Endpoint",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "HttpMethod",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ResponseTime",
+          "jsonName": null,
+          "type": "System.Int64",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "HttpStatusCode",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserAgent",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "IPAddress",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreatedAt",
+          "jsonName": null,
+          "type": "System.DateTime",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ScriptedReviews.Notifications.Dtos.NotificationDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Int32>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "UserId",
           "jsonName": null,
           "type": "System.Guid",
           "typeSimple": "string",
@@ -4132,7 +5093,64 @@
           "regex": null
         },
         {
-          "name": "Rating",
+          "name": "Description",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Type",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "WasRead",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "SentTime",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ScriptedReviews.Ratings.CreateRatingDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "SeriesId",
           "jsonName": null,
           "type": "System.Int32",
           "typeSimple": "number",
@@ -4141,6 +5159,18 @@
           "maxLength": null,
           "minimum": null,
           "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RatingNumber",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": "1",
+          "maximum": "5",
           "regex": null
         },
         {
@@ -4191,8 +5221,8 @@
         {
           "name": "SeriesId",
           "jsonName": null,
-          "type": "System.Guid",
-          "typeSimple": "string",
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -4201,7 +5231,7 @@
           "regex": null
         },
         {
-          "name": "Rating",
+          "name": "RatingNumber",
           "jsonName": null,
           "type": "System.Int32",
           "typeSimple": "number",
@@ -4238,6 +5268,96 @@
         }
       ]
     },
+    "ScriptedReviews.Ratings.UpdateRatingDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "RatingNumber",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": "1",
+          "maximum": "5",
+          "regex": null
+        },
+        {
+          "name": "Comment",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "ScriptedReviews.Seasons.SeasonDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Int32>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Number",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Description",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ReleaseDate",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Chapters",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "ScriptedReviews.Series.CreateUpdateSerieDto": {
       "baseType": null,
       "isEnum": false,
@@ -4247,6 +5367,126 @@
       "properties": [
         {
           "name": "Title",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Genre",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ReleaseDate",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Duration",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Director",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Writer",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Cast",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Image",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Country",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Rating",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Description",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -4267,6 +5507,18 @@
       "genericArguments": null,
       "properties": [
         {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "Title",
           "jsonName": null,
           "type": "System.String",
@@ -4279,7 +5531,19 @@
           "regex": null
         },
         {
-          "name": "Poster",
+          "name": "Description",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Image",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -4303,10 +5567,130 @@
           "regex": null
         },
         {
-          "name": "Year",
+          "name": "Language",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ReleaseDate",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Duration",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Rating",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Country",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Director",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Cast",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Writer",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ImdbId",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TotalSeasons",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Seasons",
+          "jsonName": null,
+          "type": "[ScriptedReviews.Seasons.SeasonDto]",
+          "typeSimple": "[ScriptedReviews.Seasons.SeasonDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -4336,10 +5720,10 @@
           "regex": null
         },
         {
-          "name": "Id",
+          "name": "Name",
           "jsonName": null,
-          "type": "System.Int32",
-          "typeSimple": "number",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -4348,9 +5732,9 @@
           "regex": null
         },
         {
-          "name": "Name",
+          "name": "UserId",
           "jsonName": null,
-          "type": "System.String",
+          "type": "System.Guid",
           "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
