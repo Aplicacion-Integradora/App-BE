@@ -1,0 +1,168 @@
+<div class="movie-grid-container">
+
+  <div class="d-flex justify-content-between align-items-end mb-4 px-3 pt-3">
+    <div>
+      <h1 class="app-title">🎬 SCRIPTED<span class="text-white">REVIEWS</span></h1>
+      <p class="text-secondary mb-0" *ngIf="!modoBusqueda">Tu biblioteca personal</p>
+      <p class="text-secondary mb-0" *ngIf="modoBusqueda">Resultados de la búsqueda global</p>
+    </div>
+
+    <button *ngIf="modoBusqueda" class="btn btn-outline-light btn-sm" (click)="cargarMisSeriesBD(); serieTitle=''">
+      ⬅️ Volver al Inicio
+    </button>
+  </div>
+
+  <div class="search-bar-container px-3 mb-4">
+    <div class="input-group input-group-lg shadow-sm">
+      <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="serieTitle"
+        (keyup.enter)="searchSeries()" placeholder="Buscar en OMDB..." />
+
+      <select class="form-select bg-dark text-white border-secondary" [(ngModel)]="selectedGenre"
+        style="max-width: 150px;">
+        <option value="">Todos</option>
+        <option *ngFor="let g of genres" [value]="g">{{ g }}</option>
+      </select>
+
+      <button class="btn btn-danger px-4" (click)="searchSeries()">Buscar</button>
+    </div>
+  </div>
+
+  <div class="movie-grid px-3" *ngIf="series.length > 0">
+
+    <div class="movie-card" *ngFor="let serie of series">
+      <img [src]="serie.image || serie.Poster || serie.poster"
+        onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'" class="card-img">
+
+      <div class="movie-info-overlay">
+        <h5 class="movie-title">{{ serie.title || serie.Title }}</h5>
+        <div class="meta-info">
+          <span class="year badge bg-secondary">{{ serie.releaseDate || serie.Year || serie.year }}</span>
+          <span *ngIf="serie.rating" class="rating ms-2">⭐ {{ serie.rating }}</span>
+        </div>
+
+        <div class="action-buttons mt-3">
+
+          <ng-container *ngIf="modoBusqueda">
+            <button *ngIf="!isAlreadySaved(serie.imdbID || serie.imdbId)" class="btn-icon add-btn"
+              title="Agregar a mi biblioteca"
+              (click)="importarSerie(serie.imdbID || serie.imdbId, serie.Title || serie.title)">
+              <i class="fa fa-plus"></i>
+            </button>
+
+            <button *ngIf="isAlreadySaved(serie.imdbID || serie.imdbId)" class="btn-icon saved-btn"
+              title="Ya está en tu biblioteca" disabled>
+              <i class="fa fa-check"></i>
+            </button>
+
+            <button class="btn-icon info-btn" title="Ver Info Básica" (click)="openDetails(detailsModal, serie)">
+              <i class="fa fa-info"></i>
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="!modoBusqueda">
+            <button class="btn-icon info-btn" title="Ver Detalles" (click)="openDetails(detailsModal, serie)">
+              <i class="fa fa-info"></i>
+            </button>
+
+            <button class="btn-icon watchlist-btn" title="Agregar a Lista de Seguimiento (Próximamente)">
+              <i class="fa fa-bookmark"></i>
+            </button>
+
+            <div class="badge-saved ms-auto" title="Guardada">
+              <i class="fa fa-check-circle text-success" style="font-size: 20px;"></i>
+            </div>
+          </ng-container>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="no-results text-center mt-5" *ngIf="series.length === 0 && haBuscado">
+    <div style="font-size: 4rem;">😕</div>
+    <h3 class="text-white mt-3">No hay resultados para "{{ serieTitle }}"</h3>
+    <p class="text-secondary mt-2">
+      Por favor, revisa la ortografía o intenta con otro título (ej. inglés vs español).
+    </p>
+  </div>
+
+  <div class="no-results text-center mt-5 text-muted" *ngIf="series.length === 0 && !haBuscado && !modoBusqueda">
+    <div style="font-size: 3rem; opacity: 0.5;">📂</div>
+    <p>Tu biblioteca está vacía. ¡Busca series arriba para agregar!</p>
+  </div>
+
+</div>
+
+<ng-template #detailsModal let-modal>
+  <div class="dark-modal-content">
+
+    <button type="button" class="close-modal-btn" (click)="modal.dismiss()">
+      <i class="fa fa-times"></i>
+    </button>
+
+    <div class="row g-0">
+      <div class="col-md-5 bg-black d-flex align-items-center justify-content-center p-4">
+        <img [src]="selectedSerie.image" class="img-fluid rounded shadow-lg" style="max-height: 400px;"
+          onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'">
+      </div>
+
+      <div class="col-md-7 p-4 info-col">
+        <h2 class="text-white fw-bold mb-2">{{ selectedSerie.title }}</h2>
+
+        <div class="mb-3">
+          <span *ngIf="selectedSerie.genre" class="badge bg-danger me-2">{{ selectedSerie.genre }}</span>
+          <span *ngIf="selectedSerie.releaseDate" class="text-light me-2">{{ selectedSerie.releaseDate }}</span>
+          <span *ngIf="selectedSerie.rating" class="text-warning">⭐ {{ selectedSerie.rating }}</span>
+        </div>
+
+        <div class="meta-details text-gray-400 small mb-3">
+          <p *ngIf="selectedSerie.cast" class="mb-1">
+            <strong class="text-white">Elenco:</strong> {{ selectedSerie.cast }}
+          </p>
+          <p *ngIf="selectedSerie.writer" class="mb-1">
+            <strong class="text-white">Escritor:</strong> {{ selectedSerie.writer }}
+          </p>
+          <p *ngIf="selectedSerie.country" class="mb-1">
+            <strong class="text-white">País:</strong> {{ selectedSerie.country }}
+          </p>
+        </div>
+
+        <p class="text-gray-300 description-text">
+          {{ selectedSerie.description || 'No hay descripción disponible.' }}
+        </p>
+        <h5 class="text-white border-bottom border-secondary pb-2 mt-4">Temporadas</h5>
+
+        <div class="seasons-scroll">
+          <div *ngFor="let season of selectedSerie.seasons" class="season-item">
+            <div class="d-flex justify-content-between">
+              <span class="text-primary fw-bold">Temporada {{ season.number }}</span>
+              <span class="text-muted small">{{ season.releaseDate }}</span>
+            </div>
+            <small class="text-gray-400">{{ season.chapters }} episodios</small>
+          </div>
+
+          <div *ngIf="!selectedSerie.seasons?.length" class="text-muted fst-italic mt-2">
+            No hay información de temporadas disponible en vista previa.
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-top border-secondary d-flex flex-wrap gap-2">
+          <button class="btn btn-warning text-dark fw-bold" title="Próximamente">
+            <i class="fa fa-star me-2"></i> Calificar
+            <span class="badge bg-dark text-white ms-2">Pronto</span>
+          </button>
+
+          <button class="btn btn-outline-light" title="Próximamente">
+            <i class="fa fa-plus me-2"></i> Mi Lista
+            <span class="badge bg-secondary ms-2">Pronto</span>
+          </button>
+
+          <button class="btn btn-dark border-secondary ms-auto" (click)="modal.close()">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
